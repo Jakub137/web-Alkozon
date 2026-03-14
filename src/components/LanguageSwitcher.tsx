@@ -1,16 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function LanguageSwitcher() {
-  const [lang, setLang] = useState<"pl" | "en">("pl");
+  // Pobieramy aktualny język i funkcję do jego zmiany z naszego Contextu
+  const { lang, setLang } = useLanguage();
 
-  const base =
-  "w-11 h-8 object-cover cursor-pointer rounded-sm border transition-all duration-200";
+  const base = "w-10 h-7 object-cover cursor-pointer rounded-sm border transition-all duration-200";
 
   return (
     <div className="flex gap-2 items-center">
-      
       {/* PL */}
       <img
         src="/pl.svg"
@@ -18,7 +17,7 @@ export default function LanguageSwitcher() {
         onClick={() => setLang("pl")}
         className={`${base} ${
           lang === "pl"
-            ? "border-[1.5px] border-gray-500"
+            ? "border-[1.5px] border-green-500"
             : "border-[1.5px] border-gray-500 hover:opacity-80"
         }`}
       />
@@ -30,7 +29,7 @@ export default function LanguageSwitcher() {
         onClick={() => setLang("en")}
         className={`${base} ${
           lang === "en"
-            ? "border-[1.5px] border-gray-500"
+            ? "border-[1.5px] border-green-500"
             : "border-[1.5px] border-gray-500 hover:opacity-80"
         }`}
       />

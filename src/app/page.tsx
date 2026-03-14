@@ -1,23 +1,28 @@
+"use client";
+
 import Link from "next/link";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function Home() {
+  const { dict } = useLanguage();
+
   return (
     <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col items-center justify-center text-center grow">
       <h1 className="text-5xl font-extrabold text-slate-900 mb-6">
-        Odkryj świat najlepszych alkoholi
+        {dict.home.title}
       </h1>
       <p className="text-lg text-slate-600 mb-12 max-w-2xl">
-        Zamawiaj ulubione trunki z dostawą, poznawaj ich historię i stwórz własne, niestandardowe zamówienie prosto z naszej destylarni.
+        {dict.home.subtitle}
       </p>
       
       {/* Kafelki centrowane przez Flexbox */}
       <div className="flex flex-wrap justify-center gap-6 max-w-4xl">
-        <Tile icon="🍷" title="Sklep / Katalog" desc="Przeglądaj i zamawiaj gotowe trunki" />
-        <Tile icon="🛒" title="Koszyk" desc="Twój aktualny koszyk" />
-        <Tile icon="🚚" title="Status zamówienia" desc="Sprawdź gdzie jest Twoja paczka" />
-        <Tile icon="📚" title="Historia alkoholi" desc="Poznaj gatunki i tradycje" />
-        <Tile icon="🧪" title="Zamówienie własne" desc="Skomponuj własny trunek" />
-        <Tile icon="❓" title="FAQ" desc="Najczęściej zadawane pytania" />
+        <Tile icon="🍷" title={dict.home.tiles.shop.title} desc={dict.home.tiles.shop.desc} />
+        <Tile icon="🛒" title={dict.home.tiles.cart.title} desc={dict.home.tiles.cart.desc} />
+        <Tile icon="🚚" title={dict.home.tiles.status.title} desc={dict.home.tiles.status.desc} />
+        <Tile icon="📚" title={dict.home.tiles.history.title} desc={dict.home.tiles.history.desc} />
+        <Tile icon="🧪" title={dict.home.tiles.custom.title} desc={dict.home.tiles.custom.desc} />
+        <Tile icon="❓" title={dict.home.tiles.faq.title} desc={dict.home.tiles.faq.desc} />
       </div>
     </div>
   );

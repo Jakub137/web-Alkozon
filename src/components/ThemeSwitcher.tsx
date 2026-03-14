@@ -1,8 +1,10 @@
 "use client";
 import { useState } from "react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function ThemeSwitcher() {
   const [isDark, setIsDark] = useState(false);
+  const { dict } = useLanguage();
 
   return (
     <button
@@ -13,7 +15,7 @@ export default function ThemeSwitcher() {
           : "bg-slate-500 text-white"
       }`}
     >
-      {isDark ? "Tryb ciemny" : "Tryb jasny"}
+      {isDark ? dict.navbar.darkMode : dict.navbar.lightMode}
     </button>
   );
 }
