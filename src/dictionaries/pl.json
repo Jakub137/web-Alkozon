@@ -1,0 +1,19 @@
+{
+  "navbar": {
+    "lightMode": "Tryb jasny",
+    "darkMode": "Tryb ciemny",
+    "login": "Zaloguj się"
+  },
+  "home": {
+    "title": "Odkryj świat najlepszych alkoholi",
+    "subtitle": "Zamawiaj ulubione trunki z dostawą, poznawaj ich historię i stwórz własne, niestandardowe zamówienie prosto z naszej destylarni.",
+    "tiles": {
+      "shop": { "title": "Sklep / Katalog", "desc": "Przeglądaj i zamawiaj gotowe trunki" },
+      "cart": { "title": "Koszyk", "desc": "Twój aktualny koszyk" },
+      "status": { "title": "Status zamówienia", "desc": "Sprawdź gdzie jest Twoja paczka" },
+      "history": { "title": "Historia alkoholi", "desc": "Poznaj gatunki i tradycje" },
+      "custom": { "title": "Zamówienie własne", "desc": "Skomponuj własny trunek" },
+      "faq": { "title": "FAQ", "desc": "Najczęściej zadawane pytania" }
+    }
+  }
+}

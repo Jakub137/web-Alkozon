@@ -1,0 +1,19 @@
+{
+  "navbar": {
+    "lightMode": "Light Mode",
+    "darkMode": "Dark Mode",
+    "login": "Sign In"
+  },
+  "home": {
+    "title": "Discover the world of premium spirits",
+    "subtitle": "Order your favorite drinks with delivery, learn their history, and create your own custom order straight from our distillery.",
+    "tiles": {
+      "shop": { "title": "Shop / Catalog", "desc": "Browse and order ready-made spirits" },
+      "cart": { "title": "Cart", "desc": "Your current shopping cart" },
+      "status": { "title": "Order Status", "desc": "Track your package" },
+      "history": { "title": "History of Spirits", "desc": "Learn about genres and traditions" },
+      "custom": { "title": "Custom Order", "desc": "Compose your own spirit" },
+      "faq": { "title": "FAQ", "desc": "Frequently asked questions" }
+    }
+  }
+}
