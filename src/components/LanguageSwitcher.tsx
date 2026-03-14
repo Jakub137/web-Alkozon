@@ -3,7 +3,7 @@
 import { useLanguage } from "../context/LanguageContext";
 
 export default function LanguageSwitcher() {
-  // Pobieramy aktualny język i funkcję do jego zmiany z naszego Contextu
+  // Pobieram aktualny język i funkcję do jego zmiany z Contextu
   const { lang, setLang } = useLanguage();
 
   const base = "w-10 h-7 object-cover cursor-pointer rounded-sm border transition-all duration-200";

@@ -8,14 +8,13 @@ export default function Home() {
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col items-center justify-center text-center grow">
-      <h1 className="text-5xl font-extrabold text-slate-900 mb-6">
+      <h1 className="text-5xl font-extrabold text-slate-900 dark:text-slate-100 mb-6 transition-colors">
         {dict.home.title}
       </h1>
-      <p className="text-lg text-slate-600 mb-12 max-w-2xl">
+      <p className="text-lg text-slate-600 dark:text-slate-300 mb-12 max-w-2xl transition-colors">
         {dict.home.subtitle}
       </p>
       
-      {/* Kafelki centrowane przez Flexbox */}
       <div className="flex flex-wrap justify-center gap-6 max-w-4xl">
         <Tile icon="🍷" title={dict.home.tiles.shop.title} desc={dict.home.tiles.shop.desc} />
         <Tile icon="🛒" title={dict.home.tiles.cart.title} desc={dict.home.tiles.cart.desc} />
@@ -31,10 +30,10 @@ export default function Home() {
 // Komponent kafelka
 function Tile({ icon, title, desc }: { icon: string, title: string, desc: string }) {
   return (
-    <Link href="#" className="flex flex-col items-center justify-center w-64 h-40 bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md hover:border-blue-400 transition-all group">
+    <Link href="#" className="flex flex-col items-center justify-center w-64 h-40 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm dark:shadow-slate-900/50 hover:shadow-md dark:hover:shadow-slate-900/70 hover:border-blue-400 dark:hover:border-blue-500 transition-all group">
       <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">{icon}</div>
-      <h2 className="text-lg font-bold text-slate-800 mb-1">{title}</h2>
-      <p className="text-xs text-slate-500 text-center px-4">{desc}</p>
+      <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-1 transition-colors">{title}</h2>
+      <p className="text-xs text-slate-500 dark:text-slate-400 text-center px-4 transition-colors">{desc}</p>
     </Link>
   );
 }

@@ -16,14 +16,30 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pl">
-      <body className="min-h-screen flex flex-col bg-white text-slate-900 font-sans antialiased">
+    <html lang="pl" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                const theme = localStorage.getItem('theme');
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const isDark = theme === 'dark' || (!theme && prefersDark);
+                if (isDark) {
+                  document.documentElement.classList.add('dark');
+                }
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body className="min-h-screen flex flex-col bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-sans antialiased transition-colors">
         <Providers>
           {/* Pasek Nawigacji */}
-          <header className="w-full bg-white shadow-sm py-4 px-6 flex justify-between items-center h-20">
+          <header className="w-full bg-white dark:bg-slate-800 shadow-sm py-4 px-6 flex justify-between items-center h-20 transition-colors">
             
             {/* Lewa strona - Logo i nazwa */}
-            <div className="w-48 text-2xl font-bold text-slate-800 tracking-tight flex items-center gap-3">
+            <div className="w-48 text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight flex items-center gap-3">
               <img src="/logo.png" alt="Alkozon Logo" className="w-14 h-14 rounded-2xl object-cover shrink-0" /> 
               Alkozon
             </div>
@@ -31,7 +47,7 @@ export default function RootLayout({
             {/* Środek - pusta, elastyczna przestrzeń */}
             <div className="flex-1"></div>
 
-            {/* Prawa strona - Akcje */}
+            {/* Prawa strona */}
             <div className="w-auto flex gap-2 items-center justify-end">
               <LanguageSwitcher />           
               <ThemeSwitcher />
