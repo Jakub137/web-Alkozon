@@ -11,7 +11,7 @@ export default function LoginButton() {
     <button 
       className={`w-28 px-0 py-2 rounded-lg text-sm font-medium transition text-center ${
         theme === "dark"
-          ? "bg-white text-slate-900 hover:bg-slate-100"
+          ? "bg-blue-600 text-white hover:bg-blue-700"
           : "bg-slate-900 text-white hover:bg-slate-800"
       }`}
     >
