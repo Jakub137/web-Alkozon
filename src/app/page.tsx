@@ -16,7 +16,7 @@ export default function Home() {
       </p>
       
       <div className="flex flex-wrap justify-center gap-6 max-w-4xl">
-        <Tile icon="🍷" title={dict.home.tiles.shop.title} desc={dict.home.tiles.shop.desc} />
+        <Tile icon="🍷" title={dict.home.tiles.shop.title} desc={dict.home.tiles.shop.desc} href="/shop" />
         <Tile icon="🛒" title={dict.home.tiles.cart.title} desc={dict.home.tiles.cart.desc} />
         <Tile icon="🚚" title={dict.home.tiles.status.title} desc={dict.home.tiles.status.desc} />
         <Tile icon="📚" title={dict.home.tiles.history.title} desc={dict.home.tiles.history.desc} />
@@ -27,10 +27,9 @@ export default function Home() {
   );
 }
 
-// Komponent kafelka
-function Tile({ icon, title, desc }: { icon: string, title: string, desc: string }) {
+function Tile({ icon, title, desc, href = "#" }: { icon: string, title: string, desc: string, href?: string }) {
   return (
-    <Link href="#" className="flex flex-col items-center justify-center w-64 h-40 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm dark:shadow-slate-900/50 hover:shadow-md dark:hover:shadow-slate-900/70 hover:border-blue-400 dark:hover:border-blue-500 transition-all group">
+    <Link href={href} className="flex flex-col items-center justify-center w-64 h-40 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm dark:shadow-slate-900/50 hover:shadow-md dark:hover:shadow-slate-900/70 hover:border-blue-400 dark:hover:border-blue-500 transition-all group">
       <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">{icon}</div>
       <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-1 transition-colors">{title}</h2>
       <p className="text-xs text-slate-500 dark:text-slate-400 text-center px-4 transition-colors">{desc}</p>

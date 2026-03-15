@@ -15,5 +15,29 @@
       "custom": { "title": "Zamówienie własne", "desc": "Skomponuj własny trunek" },
       "faq": { "title": "FAQ", "desc": "Najczęściej zadawane pytania" }
     }
+  },
+  "shop": {
+    "title": "Sklep / Katalog",
+    "subtitle": "Przeglądaj naszą szeroką ofertę alkoholi premium",
+    "search": {
+      "placeholder": "Szukaj produktu..."
+    },
+    "sort": {
+      "label": "Sortuj",
+      "priceAsc": "Cena: rosnąco",
+      "priceDesc": "Cena: malejąco",
+      "nameAsc": "Alfabetycznie A-Z",
+      "nameDesc": "Alfabetycznie Z-A"
+    },
+    "filters": {
+      "title": "Filtry",
+      "category": "Kategoria",
+      "priceRange": "Przedział cenowy"
+    },
+    "product": {
+      "addToCart": "Dodaj do koszyka",
+      "price": "Cena"
+    },
+    "noProducts": "Brak produktów do wyświetlenia"
   }
 }

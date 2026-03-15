@@ -15,5 +15,29 @@
       "custom": { "title": "Custom Order", "desc": "Compose your own spirit" },
       "faq": { "title": "FAQ", "desc": "Frequently asked questions" }
     }
+  },
+  "shop": {
+    "title": "Shop / Catalog",
+    "subtitle": "Browse our wide selection of premium spirits",
+    "search": {
+      "placeholder": "Search products..."
+    },
+    "sort": {
+      "label": "Sort",
+      "priceAsc": "Price: low to high",
+      "priceDesc": "Price: high to low",
+      "nameAsc": "Alphabetically A-Z",
+      "nameDesc": "Alphabetically Z-A"
+    },
+    "filters": {
+      "title": "Filters",
+      "category": "Category",
+      "priceRange": "Price range"
+    },
+    "product": {
+      "addToCart": "Add to cart",
+      "price": "Price"
+    },
+    "noProducts": "No products to display"
   }
 }
