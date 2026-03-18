@@ -22,7 +22,7 @@ export default function CartPage() {
       </header>
 
       {cartItems.length === 0 ? (
-        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 text-center shadow-sm dark:shadow-slate-900/50">
+        <div className="w-full sm:w-[560px] sm:max-w-[560px] mx-auto bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 text-center shadow-sm dark:shadow-slate-900/50">
           <p className="text-slate-600 dark:text-slate-300 mb-5">{dict.shop.cart.empty}</p>
           <Link
             href="/shop"
@@ -32,11 +32,11 @@ export default function CartPage() {
           </Link>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="w-full sm:w-[560px] sm:max-w-[560px] mx-auto space-y-4">
           {cartItems.map((item) => (
             <div
               key={item.product.id}
-              className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 sm:p-5 shadow-sm dark:shadow-slate-900/50 flex flex-col sm:flex-row sm:items-center gap-4"
+              className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 sm:p-5 shadow-sm dark:shadow-slate-900/50 flex flex-col sm:flex-row sm:items-center gap-4"
             >
               <div className="flex-1 min-w-0">
                 <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 truncate">
@@ -56,18 +56,18 @@ export default function CartPage() {
               <button
                 type="button"
                 onClick={() => removeFromCart(item.product.id)}
-                className="h-9 px-3 rounded-md border border-slate-300 dark:border-slate-600 text-sm text-slate-700 dark:text-slate-200 hover:border-red-500 hover:text-red-600 dark:hover:text-red-400 transition-colors shrink-0"
+                className="h-9 min-w-[92px] px-3 inline-flex items-center justify-center rounded-md border border-slate-300 dark:border-slate-600 text-sm text-slate-700 dark:text-slate-200 hover:border-red-500 hover:text-red-600 dark:hover:text-red-400 transition-colors shrink-0 whitespace-nowrap"
               >
                 {dict.shop.cart.remove}
               </button>
             </div>
           ))}
 
-          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm dark:shadow-slate-900/50 flex items-center justify-between gap-4">
-            <span className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+          <div className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm dark:shadow-slate-900/50 flex items-center justify-between gap-4">
+            <span className="text-lg font-semibold text-slate-900 dark:text-slate-100 whitespace-nowrap">
               {dict.shop.cart.total}
             </span>
-            <span className="text-2xl font-extrabold text-slate-900 dark:text-slate-100">
+            <span className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 whitespace-nowrap">
               {totalPrice.toFixed(2)} zl
             </span>
           </div>
