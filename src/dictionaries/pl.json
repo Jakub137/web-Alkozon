@@ -32,11 +32,33 @@
     "filters": {
       "title": "Filtry",
       "category": "Kategoria",
-      "priceRange": "Przedział cenowy"
+      "priceRange": "Przedział cenowy",
+      "priceMin": "Min. cena",
+      "priceMax": "Max. cena"
+    },
+    "categories": {
+      "vodka": "Wódka",
+      "whisky": "Whisky",
+      "wine": "Wino",
+      "beer": "Piwo",
+      "liqueur": "Likiery"
     },
     "product": {
       "addToCart": "Dodaj do koszyka",
       "price": "Cena"
+    },
+    "pagination": {
+      "prev": "Poprzednia",
+      "next": "Następna"
+    },
+    "details": {
+      "backToShop": "Powrót do sklepu",
+      "descriptionTitle": "Opis",
+      "historyTitle": "Historia",
+      "capacity": "Pojemność",
+      "alcoholContent": "Zawartość alkoholu",
+      "description": "Tu będzie pełny opis produktu, który będzie pochodził z API.",
+      "history": "Tu będzie historia trunku, którą będzie dawać API."
     },
     "noProducts": "Brak produktów do wyświetlenia"
   }

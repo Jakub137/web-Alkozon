@@ -32,11 +32,33 @@
     "filters": {
       "title": "Filters",
       "category": "Category",
-      "priceRange": "Price range"
+      "priceRange": "Price range",
+      "priceMin": "Min price",
+      "priceMax": "Max price"
+    },
+    "categories": {
+      "vodka": "Vodka",
+      "whisky": "Whisky",
+      "wine": "Wine",
+      "beer": "Beer",
+      "liqueur": "Liqueurs"
     },
     "product": {
       "addToCart": "Add to cart",
       "price": "Price"
+    },
+    "pagination": {
+      "prev": "Previous",
+      "next": "Next"
+    },
+    "details": {
+      "backToShop": "Back to shop",
+      "descriptionTitle": "Description",
+      "historyTitle": "History",
+      "capacity": "Capacity",
+      "alcoholContent": "Alcohol content",
+      "description": "A full product description will be loaded from the API.",
+      "history": "A product history will be loaded from the API."
     },
     "noProducts": "No products to display"
   }

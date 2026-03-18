@@ -1,2 +1,7 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
+
+/* Stabilizuje szerokość okna (brak "skoku" przy pojawianiu/znikaniu paska przewijania). */
+html {
+  overflow-y: scroll;
+}

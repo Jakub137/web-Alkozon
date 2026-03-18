@@ -33,7 +33,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-screen flex flex-col bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-sans antialiased transition-colors">
+      <body className="min-h-screen flex flex-col overflow-y-scroll overflow-x-hidden bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-sans antialiased transition-colors">
         <Providers>
           {/* Pasek Nawigacji */}
           <header className="w-full bg-white dark:bg-slate-800 shadow-sm py-4 px-6 flex justify-between items-center h-20 transition-colors">
