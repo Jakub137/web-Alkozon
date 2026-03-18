@@ -1,18 +1,16 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { Product, ProductCategory } from "@/types/product";
+import { ProductCategory } from "@/types/product";
 import { mockProducts } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 import { useLanguage } from "@/context/LanguageContext";
+import { useCart } from "@/context/CartContext";
 
 const ITEMS_PER_PAGE = 8;
 
 type SortKey = "priceAsc" | "priceDesc" | "nameAsc" | "nameDesc";
-type CartItem = {
-  product: Product;
-  quantity: number;
-};
 
 function useDebouncedValue<T>(value: T, delayMs: number) {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -27,6 +25,7 @@ function useDebouncedValue<T>(value: T, delayMs: number) {
 
 export default function ShopPage() {
   const { dict } = useLanguage();
+  const { cartItems, cartItemsCount, addToCart, removeFromCart } = useCart();
   const categoryOptions: ProductCategory[] = ["vodka", "whisky", "wine", "beer", "liqueur"];
 
   const priceBounds = useMemo(() => {
@@ -56,7 +55,6 @@ export default function ShopPage() {
   );
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -126,27 +124,6 @@ export default function ShopPage() {
       prev.includes(cat) ? prev.filter((x) => x !== cat) : [...prev, cat]
     );
   };
-
-  const addToCart = (product: Product) => {
-    setCartItems((prev) => {
-      const existing = prev.find((item) => item.product.id === product.id);
-      if (existing) {
-        return prev.map((item) =>
-          item.product.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-        );
-      }
-      return [...prev, { product, quantity: 1 }];
-    });
-  };
-
-  const removeFromCart = (productId: string) => {
-    setCartItems((prev) => prev.filter((item) => item.product.id !== productId));
-  };
-
-  const cartItemsCount = useMemo(
-    () => cartItems.reduce((sum, item) => sum + item.quantity, 0),
-    [cartItems]
-  );
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grow flex flex-col">
@@ -367,6 +344,13 @@ export default function ShopPage() {
               ))}
             </ul>
           )}
+
+          <Link
+            href="/cart?from=shop"
+            className="mt-3 w-full h-10 px-3 inline-flex items-center justify-center rounded-lg bg-green-600 hover:bg-green-600 dark:bg-green-500 dark:hover:bg-green-700 text-white text-sm font-medium transition-colors"
+          >
+            {dict.shop.cart.summary}
+          </Link>
         </div>
       </div>
     </div>

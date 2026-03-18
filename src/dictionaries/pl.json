@@ -63,9 +63,13 @@
     },
     "cart": {
       "title": "Koszyk",
+      "pageTitle": "Podsumowanie zakupów",
       "items": "Liczba elementów",
       "empty": "Koszyk jest pusty",
-      "remove": "Usuń"
+      "remove": "Usuń",
+      "summary": "Podsumowanie",
+      "backToShop": "Wróć do sklepu",
+      "total": "Suma"
     },
     "noProducts": "Brak produktów do wyświetlenia"
   }

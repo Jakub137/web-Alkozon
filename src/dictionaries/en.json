@@ -63,9 +63,13 @@
     },
     "cart": {
       "title": "Cart",
+      "pageTitle": "Order summary",
       "items": "Items count",
       "empty": "Cart is empty",
-      "remove": "Remove"
+      "remove": "Remove",
+      "summary": "Summary",
+      "backToShop": "Back to shop",
+      "total": "Total"
     },
     "noProducts": "No products to display"
   }
