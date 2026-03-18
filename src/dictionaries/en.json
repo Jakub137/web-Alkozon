@@ -2,7 +2,8 @@
   "navbar": {
     "lightMode": "Light Mode",
     "darkMode": "Dark Mode",
-    "login": "Sign In"
+    "login": "Sign In",
+    "returnHome": "Return"
   },
   "home": {
     "title": "Discover the world of premium spirits",

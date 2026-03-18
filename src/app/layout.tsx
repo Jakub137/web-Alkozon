@@ -3,6 +3,7 @@ import "./globals.css";
 import LanguageSwitcher from "../components/LanguageSwitcher";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
 import LoginButton from "@/components/LoginButton";
+import BackHomeButton from "@/components/BackHomeButton";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {
@@ -49,6 +50,7 @@ export default function RootLayout({
 
             {/* Prawa strona */}
             <div className="w-auto flex gap-2 items-center justify-end">
+              <BackHomeButton />
               <LanguageSwitcher />           
               <ThemeSwitcher />
               <LoginButton />

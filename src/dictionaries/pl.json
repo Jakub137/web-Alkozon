@@ -2,7 +2,8 @@
   "navbar": {
     "lightMode": "Tryb jasny",
     "darkMode": "Tryb ciemny",
-    "login": "Zaloguj się"
+    "login": "Zaloguj się",
+    "returnHome": "Powrót"
   },
   "home": {
     "title": "Odkryj świat najlepszych alkoholi",
