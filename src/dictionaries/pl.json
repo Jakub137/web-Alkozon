@@ -72,5 +72,69 @@
       "total": "Suma"
     },
     "noProducts": "Brak produktów do wyświetlenia"
+  },
+  "faqPage": {
+    "title": "FAQ",
+    "subtitle": "Najczęściej zadawane pytania dotyczące zamówień, dostawy i produktów.",
+    "searchPlaceholder": "Szukaj pytania...",
+    "noResults": "Brak pytań pasujących do wyszukiwania.",
+    "categories": {
+      "all": "Wszystkie",
+      "orders": "Zamówienia",
+      "payments": "Płatności",
+      "delivery": "Dostawa",
+      "products": "Produkty",
+      "account": "Konto"
+    },
+    "items": [
+      {
+        "id": "order-1",
+        "category": "orders",
+        "question": "Jak złożyć zamówienie?",
+        "answer": "Wejdź do sklepu, dodaj produkty do koszyka i kliknij przycisk Podsumowanie."
+      },
+      {
+        "id": "order-2",
+        "category": "orders",
+        "question": "Czy mogę anulować zamówienie?",
+        "answer": "Tak, jeśli zamówienie nie zostało jeszcze przekazane do realizacji."
+      },
+      {
+        "id": "payment-1",
+        "category": "payments",
+        "question": "Jakie metody płatności są dostępne?",
+        "answer": "W wersji projektowej traktujemy płatności jako etap do podpięcia po stronie API."
+      },
+      {
+        "id": "delivery-1",
+        "category": "delivery",
+        "question": "Ile trwa dostawa?",
+        "answer": "Standardowa dostawa zajmuje od 1 do 3 dni roboczych."
+      },
+      {
+        "id": "delivery-2",
+        "category": "delivery",
+        "question": "Czy mogę śledzić paczkę?",
+        "answer": "Docelowo tak - status zamówienia będzie dostępny po wdrożeniu backendu."
+      },
+      {
+        "id": "product-1",
+        "category": "products",
+        "question": "Czy produkty mają pełne opisy?",
+        "answer": "Na razie używamy danych mockowych. Pełne opisy będą pobierane z API."
+      },
+      {
+        "id": "product-2",
+        "category": "products",
+        "question": "Czy ceny są aktualne?",
+        "answer": "W obecnej wersji to ceny demonstracyjne używane do testów interfejsu."
+      },
+      {
+        "id": "account-1",
+        "category": "account",
+        "question": "Czy muszę mieć konto, żeby dodać produkty do koszyka?",
+        "answer": "Nie. Koszyk działa lokalnie i nie wymaga logowania."
+      }
+    ]
   }
 }

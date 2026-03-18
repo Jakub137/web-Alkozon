@@ -21,7 +21,7 @@ export default function Home() {
         <Tile icon="🚚" title={dict.home.tiles.status.title} desc={dict.home.tiles.status.desc} />
         <Tile icon="📚" title={dict.home.tiles.history.title} desc={dict.home.tiles.history.desc} />
         <Tile icon="🧪" title={dict.home.tiles.custom.title} desc={dict.home.tiles.custom.desc} />
-        <Tile icon="❓" title={dict.home.tiles.faq.title} desc={dict.home.tiles.faq.desc} />
+        <Tile icon="❓" title={dict.home.tiles.faq.title} desc={dict.home.tiles.faq.desc} href="/faq" />
       </div>
     </div>
   );

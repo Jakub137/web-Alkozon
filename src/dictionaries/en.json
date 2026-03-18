@@ -72,5 +72,69 @@
       "total": "Total"
     },
     "noProducts": "No products to display"
+  },
+  "faqPage": {
+    "title": "FAQ",
+    "subtitle": "Frequently asked questions about orders, delivery and products.",
+    "searchPlaceholder": "Search questions...",
+    "noResults": "No questions match your search.",
+    "categories": {
+      "all": "All",
+      "orders": "Orders",
+      "payments": "Payments",
+      "delivery": "Delivery",
+      "products": "Products",
+      "account": "Account"
+    },
+    "items": [
+      {
+        "id": "order-1",
+        "category": "orders",
+        "question": "How do I place an order?",
+        "answer": "Go to the shop, add products to the cart, and click the Summary button."
+      },
+      {
+        "id": "order-2",
+        "category": "orders",
+        "question": "Can I cancel my order?",
+        "answer": "Yes, if the order has not been sent to fulfillment yet."
+      },
+      {
+        "id": "payment-1",
+        "category": "payments",
+        "question": "Which payment methods are available?",
+        "answer": "In this project version, payments are treated as a later API integration step."
+      },
+      {
+        "id": "delivery-1",
+        "category": "delivery",
+        "question": "How long does delivery take?",
+        "answer": "Standard delivery usually takes from 1 to 3 business days."
+      },
+      {
+        "id": "delivery-2",
+        "category": "delivery",
+        "question": "Can I track my package?",
+        "answer": "Eventually yes - order tracking will be available after backend implementation."
+      },
+      {
+        "id": "product-1",
+        "category": "products",
+        "question": "Do products have full descriptions?",
+        "answer": "For now we use mock data. Full descriptions will come from the API."
+      },
+      {
+        "id": "product-2",
+        "category": "products",
+        "question": "Are the prices final?",
+        "answer": "In the current version, prices are demo values used for interface testing."
+      },
+      {
+        "id": "account-1",
+        "category": "account",
+        "question": "Do I need an account to add products to the cart?",
+        "answer": "No. The cart currently works locally and does not require login."
+      }
+    ]
   }
 }
