@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { ProductCategory } from "@/types/product";
+import { Product, ProductCategory } from "@/types/product";
 import { mockProducts } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 import { useLanguage } from "@/context/LanguageContext";
@@ -9,6 +9,10 @@ import { useLanguage } from "@/context/LanguageContext";
 const ITEMS_PER_PAGE = 8;
 
 type SortKey = "priceAsc" | "priceDesc" | "nameAsc" | "nameDesc";
+type CartItem = {
+  product: Product;
+  quantity: number;
+};
 
 function useDebouncedValue<T>(value: T, delayMs: number) {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -52,6 +56,7 @@ export default function ShopPage() {
   );
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -121,6 +126,27 @@ export default function ShopPage() {
       prev.includes(cat) ? prev.filter((x) => x !== cat) : [...prev, cat]
     );
   };
+
+  const addToCart = (product: Product) => {
+    setCartItems((prev) => {
+      const existing = prev.find((item) => item.product.id === product.id);
+      if (existing) {
+        return prev.map((item) =>
+          item.product.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        );
+      }
+      return [...prev, { product, quantity: 1 }];
+    });
+  };
+
+  const removeFromCart = (productId: string) => {
+    setCartItems((prev) => prev.filter((item) => item.product.id !== productId));
+  };
+
+  const cartItemsCount = useMemo(
+    () => cartItems.reduce((sum, item) => sum + item.quantity, 0),
+    [cartItems]
+  );
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grow flex flex-col">
@@ -245,7 +271,7 @@ export default function ShopPage() {
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {pageItems.map((product) => (
-                  <ProductCard key={product.id} product={product} />
+                  <ProductCard key={product.id} product={product} onAddToCart={addToCart} />
                 ))}
               </div>
 
@@ -292,6 +318,54 @@ export default function ShopPage() {
                 </div>
               )}
             </>
+          )}
+        </div>
+      </div>
+
+      <div className="fixed bottom-4 left-4 sm:bottom-6 sm:right-6 z-40 w-72 max-w-[calc(100vw-2rem)]">
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl dark:shadow-slate-900/60 p-4">
+          <div className="flex items-start gap-3 mb-3">
+            <div className="relative shrink-0">
+              <span className="text-3xl leading-none">🛒</span>
+              <span className="absolute -top-2 -left-2 min-w-5 h-5 px-1 rounded-full bg-blue-600 text-white text-[11px] font-bold flex items-center justify-center">
+                {cartItemsCount}
+              </span>
+            </div>
+
+            <div className="min-w-0">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                {dict.shop.cart.title}
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                {dict.shop.cart.items}: {cartItemsCount}
+              </p>
+            </div>
+          </div>
+
+          {cartItems.length === 0 ? (
+            <p className="text-sm text-slate-500 dark:text-slate-400">{dict.shop.cart.empty}</p>
+          ) : (
+            <ul className="max-h-44 overflow-y-auto space-y-2 pr-1">
+              {cartItems.map((item) => (
+                <li
+                  key={item.product.id}
+                  className="text-sm text-slate-700 dark:text-slate-200 flex items-center justify-between gap-3"
+                >
+                  <span className="truncate">{item.product.name}</span>
+                  <div className="shrink-0 flex items-center gap-2">
+                    <span className="text-xs text-slate-500 dark:text-slate-400">x{item.quantity}</span>
+                    <button
+                      type="button"
+                      onClick={() => removeFromCart(item.product.id)}
+                      className="h-7 px-2 rounded-md border border-slate-300 dark:border-slate-600 text-xs text-slate-700 dark:text-slate-200 hover:border-red-500 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                      aria-label={dict.shop.cart.remove}
+                    >
+                      {dict.shop.cart.remove}
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
           )}
         </div>
       </div>

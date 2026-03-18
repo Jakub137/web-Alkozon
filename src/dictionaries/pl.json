@@ -60,6 +60,12 @@
       "description": "Tu będzie pełny opis produktu, który będzie pochodził z API.",
       "history": "Tu będzie historia trunku, którą będzie dawać API."
     },
+    "cart": {
+      "title": "Koszyk",
+      "items": "Liczba elementów",
+      "empty": "Koszyk jest pusty",
+      "remove": "Usuń"
+    },
     "noProducts": "Brak produktów do wyświetlenia"
   }
 }

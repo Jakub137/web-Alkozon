@@ -60,6 +60,12 @@
       "description": "A full product description will be loaded from the API.",
       "history": "A product history will be loaded from the API."
     },
+    "cart": {
+      "title": "Cart",
+      "items": "Items count",
+      "empty": "Cart is empty",
+      "remove": "Remove"
+    },
     "noProducts": "No products to display"
   }
 }

@@ -6,9 +6,10 @@ import { useLanguage } from "@/context/LanguageContext";
 
 interface ProductCardProps {
   product: Product;
+  onAddToCart?: (product: Product) => void;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product, onAddToCart }: ProductCardProps) {
   const { dict } = useLanguage();
 
   return (
@@ -35,6 +36,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           
           <button
             type="button"
+            onClick={() => onAddToCart?.(product)}
             className="w-full min-w-0 h-11 px-4 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-800 text-white rounded-lg font-medium transition-colors flex items-center justify-center whitespace-nowrap truncate"
           >          
             {dict.shop.product.addToCart}
