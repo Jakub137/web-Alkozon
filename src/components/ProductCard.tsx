@@ -7,9 +7,10 @@ import { useLanguage } from "@/context/LanguageContext";
 interface ProductCardProps {
   product: Product;
   onAddToCart?: (product: Product) => void;
+  isAddDisabled?: boolean;
 }
 
-export default function ProductCard({ product, onAddToCart }: ProductCardProps) {
+export default function ProductCard({ product, onAddToCart, isAddDisabled = false }: ProductCardProps) {
   const { dict } = useLanguage();
 
   return (
@@ -36,8 +37,9 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
           
           <button
             type="button"
+            disabled={isAddDisabled}
             onClick={() => onAddToCart?.(product)}
-            className="w-full min-w-0 h-11 px-4 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-800 text-white rounded-lg font-medium transition-colors flex items-center justify-center whitespace-nowrap truncate"
+            className="w-full min-w-0 h-11 px-4 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-800 text-white rounded-lg font-medium transition-colors flex items-center justify-center whitespace-nowrap truncate disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600 disabled:dark:hover:bg-blue-500"
           >          
             {dict.shop.product.addToCart}
           </button>

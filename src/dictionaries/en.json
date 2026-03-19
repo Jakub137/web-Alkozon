@@ -65,6 +65,8 @@
       "title": "Cart",
       "pageTitle": "Order summary",
       "items": "Items count",
+      "limit": "Limit",
+      "limitReached": "Cart item limit reached.",
       "empty": "Cart is empty",
       "remove": "Remove",
       "summary": "Summary",
@@ -195,7 +197,9 @@
       "wordsLabel": "words"
     },
     "messages": {
-      "added": "Custom order added to cart."
+      "added": "Custom order added to cart.",
+      "limitTotalReached": "Cart item limit reached.",
+      "limitCustomReached": "Custom order limit reached."
     }
   }
 }

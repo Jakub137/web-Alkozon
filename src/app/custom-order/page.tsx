@@ -68,7 +68,7 @@ function limitWords(value: string, maxWords: number) {
 
 export default function CustomOrderPage() {
   const { dict } = useLanguage();
-  const { addToCart } = useCart();
+  const { addToCart, cartItemsCount, cartItemsLimit, customOrderItemsCount, customOrderItemsLimit } = useCart();
 
   const [step, setStep] = useState(1);
   const [selectedBase, setSelectedBase] = useState<CustomBase>("whisky");
@@ -78,7 +78,9 @@ export default function CustomOrderPage() {
   const [intensity, setIntensity] = useState<number>(3);
   const [customName, setCustomName] = useState("");
   const [note, setNote] = useState("");
+  const [toastType, setToastType] = useState<"success" | "limit">("success");
   const [addedMessageVisible, setAddedMessageVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
 
   useEffect(() => {
     const config = baseConfig[selectedBase];
@@ -122,6 +124,15 @@ export default function CustomOrderPage() {
   const canSubmit = customName.trim().length >= 3;
   const customNameLength = customName.length;
   const noteWordCount = countWords(note);
+  const isTotalCartLimitReached = cartItemsCount >= cartItemsLimit;
+  const isCustomOrderLimitReached = customOrderItemsCount >= customOrderItemsLimit;
+
+  const showToast = (message: string, type: "success" | "limit") => {
+    setToastMessage(message);
+    setToastType(type);
+    setAddedMessageVisible(true);
+    window.setTimeout(() => setAddedMessageVisible(false), 2200);
+  };
 
   const handleCustomNameChange = (value: string) => {
     setCustomName(value.slice(0, MAX_CUSTOM_NAME_CHARS));
@@ -145,10 +156,17 @@ export default function CustomOrderPage() {
       alcoholContent: Number(abv.toFixed(1)),
     };
 
-    addToCart(customProduct);
-    setAddedMessageVisible(true);
+    const result = addToCart(customProduct);
+    if (!result.ok) {
+      const message =
+        result.reason === "custom_limit"
+          ? dict.customOrderPage.messages.limitCustomReached
+          : dict.customOrderPage.messages.limitTotalReached;
+      showToast(message, "limit");
+      return;
+    }
 
-    window.setTimeout(() => setAddedMessageVisible(false), 2200);
+    showToast(dict.customOrderPage.messages.added, "success");
   };
 
   return (
@@ -388,13 +406,20 @@ export default function CustomOrderPage() {
               <button
                 type="button"
                 onClick={handleAddToCart}
-                disabled={!canSubmit || addedMessageVisible}
+                disabled={!canSubmit || addedMessageVisible || isTotalCartLimitReached || isCustomOrderLimitReached}
                 className="h-11 min-w-[160px] px-4 rounded-lg bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
               >
                 {dict.customOrderPage.buttons.addToCart}
               </button>
             )}
           </div>
+          {step === 3 && (isTotalCartLimitReached || isCustomOrderLimitReached) && (
+            <p className="mt-2 text-xs text-red-600 dark:text-red-400 text-right">
+              {isCustomOrderLimitReached
+                ? dict.customOrderPage.messages.limitCustomReached
+                : dict.customOrderPage.messages.limitTotalReached}
+            </p>
+          )}
         </section>
 
         <aside className="w-full lg:w-[276px] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm dark:shadow-slate-900/50 h-fit">
@@ -464,8 +489,14 @@ export default function CustomOrderPage() {
       </div>
 
       {addedMessageVisible && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 h-10 px-4 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 text-sm font-medium flex items-center shadow-md dark:shadow-slate-900/60 whitespace-nowrap">
-          {dict.customOrderPage.messages.added}
+        <div
+          className={`fixed bottom-4 left-1/2 -translate-x-1/2 z-50 h-10 px-4 rounded-lg text-sm font-medium flex items-center shadow-md dark:shadow-slate-900/60 whitespace-nowrap ${
+            toastType === "success"
+              ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300"
+              : "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300"
+          }`}
+        >
+          {toastMessage}
         </div>
       )}
     </div>

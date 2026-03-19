@@ -25,8 +25,9 @@ function useDebouncedValue<T>(value: T, delayMs: number) {
 
 export default function ShopPage() {
   const { dict } = useLanguage();
-  const { cartItems, cartItemsCount, addToCart, removeFromCart } = useCart();
+  const { cartItems, cartItemsCount, cartItemsLimit, addToCart, removeFromCart } = useCart();
   const categoryOptions: ProductCategory[] = ["vodka", "whisky", "wine", "beer", "liqueur"];
+  const isCartLimitReached = cartItemsCount >= cartItemsLimit;
 
   const priceBounds = useMemo(() => {
     let min = Number.POSITIVE_INFINITY;
@@ -248,7 +249,12 @@ export default function ShopPage() {
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {pageItems.map((product) => (
-                  <ProductCard key={product.id} product={product} onAddToCart={addToCart} />
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    onAddToCart={addToCart}
+                    isAddDisabled={isCartLimitReached}
+                  />
                 ))}
               </div>
 
@@ -316,8 +322,17 @@ export default function ShopPage() {
               <p className="text-xs text-slate-500 dark:text-slate-400">
                 {dict.shop.cart.items}: {cartItemsCount}
               </p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                {dict.shop.cart.limit}: {cartItemsLimit}
+              </p>
             </div>
           </div>
+
+          {isCartLimitReached && (
+            <p className="mb-3 text-xs text-red-600 dark:text-red-400">
+              {dict.shop.cart.limitReached}
+            </p>
+          )}
 
           {cartItems.length === 0 ? (
             <p className="text-sm text-slate-500 dark:text-slate-400">{dict.shop.cart.empty}</p>

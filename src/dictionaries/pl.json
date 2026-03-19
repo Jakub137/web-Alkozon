@@ -65,6 +65,8 @@
       "title": "Koszyk",
       "pageTitle": "Podsumowanie zakupów",
       "items": "Liczba elementów",
+      "limit": "Limit",
+      "limitReached": "Osiągnięto limit produktów w koszyku.",
       "empty": "Koszyk jest pusty",
       "remove": "Usuń",
       "summary": "Podsumowanie",
@@ -195,7 +197,9 @@
       "wordsLabel": "słów"
     },
     "messages": {
-      "added": "Dodano zamówienie własne do koszyka."
+      "added": "Dodano zamówienie własne do koszyka.",
+      "limitTotalReached": "Osiągnięto limit produktów w koszyku.",
+      "limitCustomReached": "Osiągnięto limit zamówień własnych w koszyku."
     }
   }
 }
