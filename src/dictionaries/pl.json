@@ -42,7 +42,8 @@
       "whisky": "Whisky",
       "wine": "Wino",
       "beer": "Piwo",
-      "liqueur": "Likiery"
+      "liqueur": "Likiery",
+      "rum": "Rum"
     },
     "product": {
       "addToCart": "Dodaj do koszyka",
@@ -138,6 +139,24 @@
         "answer": "Nie. Koszyk działa lokalnie i nie wymaga logowania."
       }
     ]
+  },
+  "historyPage": {
+    "title": "Historia alkoholi",
+    "subtitle": "Wybierz kategorie i poznaj skrocona historie rozwoju najpopularniejszych trunkow z naszego katalogu.",
+    "searchPlaceholder": "Szukaj kategorii lub opisu...",
+    "noResults": "Brak kategorii pasujacych do wyszukiwania.",
+    "readMore": "Czytaj historie",
+    "backToHistory": "Powrot do historii",
+    "goToShop": "Przejdz do katalogu",
+    "notFoundTitle": "Nie znaleziono kategorii historii",
+    "notFoundDescription": "Sprawdz, czy adres jest poprawny albo wroc do listy kategorii.",
+    "sections": {
+      "origin": "Pochodzenie",
+      "evolution": "Jak to sie rozwijalo",
+      "timeline": "Os czasu",
+      "curiosities": "Ciekawostki",
+      "sources": "Zrodla"
+    }
   },
   "customOrderPage": {
     "title": "Zamówienie własne",

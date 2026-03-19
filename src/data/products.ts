@@ -91,4 +91,13 @@ export const mockProducts: Product[] = [
     category: "wine",
     alcoholContent: 12,
   },
+  {
+    id: "11",
+    name: "Havana Club Añejo 7",
+    capacity: "0.7L",
+    price: 119.99,
+    image: "/products/havana-club.jpg",
+    category: "rum",
+    alcoholContent: 40,
+  },
 ];

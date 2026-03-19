@@ -6,7 +6,7 @@ import { Product, ProductCategory } from "@/types/product";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/context/CartContext";
 
-type CustomBase = Exclude<ProductCategory, "beer">;
+type CustomBase = Exclude<ProductCategory, "beer" | "rum">;
 type CapacityOption = "0.5L" | "0.7L" | "1.0L";
 type FlavorKey = "sweet" | "dry" | "fruity" | "smoky" | "herbal" | "barrel";
 

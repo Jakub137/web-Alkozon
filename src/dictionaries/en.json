@@ -42,7 +42,8 @@
       "whisky": "Whisky",
       "wine": "Wine",
       "beer": "Beer",
-      "liqueur": "Liqueurs"
+      "liqueur": "Liqueurs",
+      "rum": "Rum"
     },
     "product": {
       "addToCart": "Add to cart",
@@ -138,6 +139,24 @@
         "answer": "No. The cart currently works locally and does not require login."
       }
     ]
+  },
+  "historyPage": {
+    "title": "History of spirits",
+    "subtitle": "Choose a category and explore a compact history of the most popular spirits from our catalog.",
+    "searchPlaceholder": "Search category or description...",
+    "noResults": "No matching history categories.",
+    "readMore": "Read history",
+    "backToHistory": "Back to history",
+    "goToShop": "Go to catalog",
+    "notFoundTitle": "History category not found",
+    "notFoundDescription": "Check if the address is correct or go back to the category list.",
+    "sections": {
+      "origin": "Origin",
+      "evolution": "How it evolved",
+      "timeline": "Timeline",
+      "curiosities": "Curiosities",
+      "sources": "Sources"
+    }
   },
   "customOrderPage": {
     "title": "Custom order",

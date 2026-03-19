@@ -1,4 +1,4 @@
-export type ProductCategory = "vodka" | "whisky" | "wine" | "beer" | "liqueur";
+export type ProductCategory = "vodka" | "whisky" | "wine" | "beer" | "liqueur" | "rum";
 
 export interface Product {
   id: string;

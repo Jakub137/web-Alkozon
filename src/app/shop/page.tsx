@@ -26,7 +26,7 @@ function useDebouncedValue<T>(value: T, delayMs: number) {
 export default function ShopPage() {
   const { dict } = useLanguage();
   const { cartItems, cartItemsCount, cartItemsLimit, addToCart, removeFromCart } = useCart();
-  const categoryOptions: ProductCategory[] = ["vodka", "whisky", "wine", "beer", "liqueur"];
+  const categoryOptions: ProductCategory[] = ["vodka", "whisky", "wine", "beer", "liqueur", "rum"];
   const isCartLimitReached = cartItemsCount >= cartItemsLimit;
 
   const priceBounds = useMemo(() => {
