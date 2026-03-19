@@ -136,5 +136,65 @@
         "answer": "No. The cart currently works locally and does not require login."
       }
     ]
+  },
+  "customOrderPage": {
+    "title": "Custom order",
+    "subtitle": "Configure your own signature spirit and see an estimated price in real time.",
+    "steps": {
+      "step1": "1. Base",
+      "step2": "2. Flavor",
+      "step3": "3. Finish"
+    },
+    "sections": {
+      "base": "Step 1: Spirit base",
+      "flavor": "Step 2: Flavor profile",
+      "finish": "Step 3: Finish and summary"
+    },
+    "fields": {
+      "base": "Choose base",
+      "capacity": "Choose bottle size",
+      "strength": "Alcohol strength",
+      "flavors": "Flavor profiles",
+      "intensity": "Intensity",
+      "customName": "Custom spirit name",
+      "customNamePlaceholder": "e.g. Jakub's Smoky Reserve",
+      "note": "Distillery note",
+      "notePlaceholder": "e.g. fruitier finish, less sweetness..."
+    },
+    "flavors": {
+      "sweet": "Sweet",
+      "dry": "Dry",
+      "fruity": "Fruity",
+      "smoky": "Smoky",
+      "herbal": "Herbal",
+      "barrel": "Barrel-aged"
+    },
+    "buttons": {
+      "back": "Back",
+      "next": "Next",
+      "addToCart": "Add to cart"
+    },
+    "summary": {
+      "title": "Configuration summary",
+      "base": "Base",
+      "capacity": "Capacity",
+      "strength": "Strength",
+      "intensity": "Intensity",
+      "flavors": "Flavor count",
+      "estimatedPrice": "Price"
+    },
+    "pricing": {
+      "base": "Base price",
+      "capacity": "After capacity",
+      "strength": "Strength adjustment",
+      "flavors": "Flavor surcharge",
+      "intensity": "Intensity multiplier"
+    },
+    "validation": {
+      "nameHint": "Name should contain at least 3 characters."
+    },
+    "messages": {
+      "added": "Custom order added to cart."
+    }
   }
 }

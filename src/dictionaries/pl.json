@@ -136,5 +136,65 @@
         "answer": "Nie. Koszyk działa lokalnie i nie wymaga logowania."
       }
     ]
+  },
+  "customOrderPage": {
+    "title": "Zamówienie własne",
+    "subtitle": "Skonfiguruj swój autorski trunek i sprawdź orientacyjną cenę w czasie rzeczywistym.",
+    "steps": {
+      "step1": "1. Baza",
+      "step2": "2. Smak",
+      "step3": "3. Wykończenie"
+    },
+    "sections": {
+      "base": "Krok 1: Baza trunku",
+      "flavor": "Krok 2: Charakter smaku",
+      "finish": "Krok 3: Wykończenie i podsumowanie"
+    },
+    "fields": {
+      "base": "Wybierz bazę",
+      "capacity": "Wybierz pojemność",
+      "strength": "Moc alkoholu",
+      "flavors": "Profile smakowe",
+      "intensity": "Intensywność",
+      "customName": "Nazwa własna trunku",
+      "customNamePlaceholder": "Np. Dymna Rezerwa Jakuba",
+      "note": "Notatka dla destylarni",
+      "notePlaceholder": "Np. bardziej owocowy finisz, mniej słodyczy..."
+    },
+    "flavors": {
+      "sweet": "Słodki",
+      "dry": "Wytrawny",
+      "fruity": "Owocowy",
+      "smoky": "Dymny",
+      "herbal": "Ziołowy",
+      "barrel": "Beczkowy"
+    },
+    "buttons": {
+      "back": "Wstecz",
+      "next": "Dalej",
+      "addToCart": "Dodaj do koszyka"
+    },
+    "summary": {
+      "title": "Podsumowanie konfiguracji",
+      "base": "Baza",
+      "capacity": "Pojemność",
+      "strength": "Moc",
+      "intensity": "Intensywność",
+      "flavors": "Liczba smaków",
+      "estimatedPrice": "Cena"
+    },
+    "pricing": {
+      "base": "Cena bazowa",
+      "capacity": "Po pojemności",
+      "strength": "Korekta mocy",
+      "flavors": "Dopłata za profile",
+      "intensity": "Mnożnik intensywności"
+    },
+    "validation": {
+      "nameHint": "Nazwa powinna mieć co najmniej 3 znaki."
+    },
+    "messages": {
+      "added": "Dodano zamówienie własne do koszyka."
+    }
   }
 }
