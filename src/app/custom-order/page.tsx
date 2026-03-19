@@ -38,6 +38,8 @@ const intensityMultiplier: Record<number, number> = {
 };
 
 const premiumFlavors = new Set<FlavorKey>(["smoky", "barrel"]);
+const MAX_CUSTOM_NAME_CHARS = 20;
+const MAX_NOTE_WORDS = 100;
 
 function toEnding99(value: number) {
   const floored = Math.max(0, Math.floor(value));
@@ -46,6 +48,22 @@ function toEnding99(value: number) {
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
+}
+
+function countWords(value: string) {
+  const trimmed = value.trim();
+  if (!trimmed) return 0;
+  return trimmed.split(/\s+/).length;
+}
+
+function limitWords(value: string, maxWords: number) {
+  const trimmed = value.trim();
+  if (!trimmed) return "";
+
+  const words = trimmed.split(/\s+/);
+  if (words.length <= maxWords) return value;
+
+  return words.slice(0, maxWords).join(" ");
 }
 
 export default function CustomOrderPage() {
@@ -102,6 +120,16 @@ export default function CustomOrderPage() {
 
   const canGoToStep3 = true;
   const canSubmit = customName.trim().length >= 3;
+  const customNameLength = customName.length;
+  const noteWordCount = countWords(note);
+
+  const handleCustomNameChange = (value: string) => {
+    setCustomName(value.slice(0, MAX_CUSTOM_NAME_CHARS));
+  };
+
+  const handleNoteChange = (value: string) => {
+    setNote(limitWords(value, MAX_NOTE_WORDS));
+  };
 
   const handleAddToCart = () => {
     if (!canSubmit) return;
@@ -303,12 +331,18 @@ export default function CustomOrderPage() {
                 <input
                   type="text"
                   value={customName}
-                  onChange={(e) => setCustomName(e.target.value)}
+                  onChange={(e) => handleCustomNameChange(e.target.value)}
+                  maxLength={MAX_CUSTOM_NAME_CHARS}
                   placeholder={dict.customOrderPage.fields.customNamePlaceholder}
                   className="w-full h-11 px-4 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
                 />
-                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 flex items-center justify-between gap-3">
+                  <span>
                   {dict.customOrderPage.validation.nameHint}
+                  </span>
+                  <span className="whitespace-nowrap">
+                    {customNameLength}/{MAX_CUSTOM_NAME_CHARS}
+                  </span>
                 </p>
               </div>
 
@@ -318,11 +352,14 @@ export default function CustomOrderPage() {
                 </label>
                 <textarea
                   value={note}
-                  onChange={(e) => setNote(e.target.value)}
+                  onChange={(e) => handleNoteChange(e.target.value)}
                   placeholder={dict.customOrderPage.fields.notePlaceholder}
                   rows={4}
                   className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors resize-y"
                 />
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 text-right">
+                  {noteWordCount}/{MAX_NOTE_WORDS} {dict.customOrderPage.validation.wordsLabel}
+                </p>
               </div>
 
               {addedMessageVisible && (

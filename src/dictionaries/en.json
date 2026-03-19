@@ -191,7 +191,8 @@
       "intensity": "Intensity multiplier"
     },
     "validation": {
-      "nameHint": "Name should contain at least 3 characters."
+      "nameHint": "Name should contain at least 3 characters.",
+      "wordsLabel": "words"
     },
     "messages": {
       "added": "Custom order added to cart."

@@ -191,7 +191,8 @@
       "intensity": "Mnożnik intensywności"
     },
     "validation": {
-      "nameHint": "Nazwa powinna mieć co najmniej 3 znaki."
+      "nameHint": "Nazwa powinna mieć co najmniej 3 znaki.",
+      "wordsLabel": "słów"
     },
     "messages": {
       "added": "Dodano zamówienie własne do koszyka."
