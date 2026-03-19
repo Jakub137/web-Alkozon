@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Product, ProductCategory } from "@/types/product";
 import { useLanguage } from "@/context/LanguageContext";
@@ -81,6 +82,7 @@ export default function CustomOrderPage() {
   const [toastType, setToastType] = useState<"success" | "limit">("success");
   const [addedMessageVisible, setAddedMessageVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+  const [showGoToSummaryButton, setShowGoToSummaryButton] = useState(false);
 
   useEffect(() => {
     const config = baseConfig[selectedBase];
@@ -167,6 +169,7 @@ export default function CustomOrderPage() {
     }
 
     showToast(dict.customOrderPage.messages.added, "success");
+    setShowGoToSummaryButton(true);
   };
 
   return (
@@ -403,14 +406,24 @@ export default function CustomOrderPage() {
                 {dict.customOrderPage.buttons.next}
               </button>
             ) : (
-              <button
-                type="button"
-                onClick={handleAddToCart}
-                disabled={!canSubmit || addedMessageVisible || isTotalCartLimitReached || isCustomOrderLimitReached}
-                className="h-11 min-w-[160px] px-4 rounded-lg bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
-              >
-                {dict.customOrderPage.buttons.addToCart}
-              </button>
+              <div className="flex items-center gap-2">
+                {showGoToSummaryButton && (
+                  <Link
+                    href="/cart?from=custom-order"
+                    className="h-11 min-w-[180px] px-4 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 font-medium inline-flex items-center justify-center transition-colors hover:border-blue-500"
+                  >
+                    {dict.customOrderPage.buttons.goToSummary}
+                  </Link>
+                )}
+                <button
+                  type="button"
+                  onClick={handleAddToCart}
+                  disabled={!canSubmit || addedMessageVisible || isTotalCartLimitReached || isCustomOrderLimitReached}
+                  className="h-11 min-w-[160px] px-4 rounded-lg bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
+                >
+                  {dict.customOrderPage.buttons.addToCart}
+                </button>
+              </div>
             )}
           </div>
           {step === 3 && (isTotalCartLimitReached || isCustomOrderLimitReached) && (

@@ -174,7 +174,8 @@
     "buttons": {
       "back": "Back",
       "next": "Next",
-      "addToCart": "Add to cart"
+      "addToCart": "Add to cart",
+      "goToSummary": "Go to summary"
     },
     "summary": {
       "title": "Configuration summary",

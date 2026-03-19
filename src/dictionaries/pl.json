@@ -174,7 +174,8 @@
     "buttons": {
       "back": "Wstecz",
       "next": "Dalej",
-      "addToCart": "Dodaj do koszyka"
+      "addToCart": "Dodaj do koszyka",
+      "goToSummary": "Przejdź do podsumowania"
     },
     "summary": {
       "title": "Podsumowanie konfiguracji",
