@@ -159,7 +159,7 @@ export default function CustomOrderPage() {
         </div>
       </div>
 
-      <div className="w-full sm:w-[920px] sm:max-w-[920px] mx-auto grid grid-cols-1 lg:grid-cols-[620px_276px] gap-6">
+      <div className="w-full sm:w-[920px] sm:max-w-[920px] mx-auto grid grid-cols-1 lg:grid-cols-[620px_276px] gap-6 items-start">
         <section className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 sm:p-6 shadow-sm dark:shadow-slate-900/50">
           {step === 1 && (
             <div className="space-y-6">
