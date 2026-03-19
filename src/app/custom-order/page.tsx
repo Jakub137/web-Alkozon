@@ -132,7 +132,7 @@ export default function CustomOrderPage() {
   };
 
   const handleAddToCart = () => {
-    if (!canSubmit) return;
+    if (!canSubmit || addedMessageVisible) return;
 
     const generatedName = customName.trim();
     const customProduct: Product = {
@@ -362,11 +362,6 @@ export default function CustomOrderPage() {
                 </p>
               </div>
 
-              {addedMessageVisible && (
-                <div className="h-10 px-4 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 text-sm font-medium flex items-center">
-                  {dict.customOrderPage.messages.added}
-                </div>
-              )}
             </div>
           )}
 
@@ -393,7 +388,7 @@ export default function CustomOrderPage() {
               <button
                 type="button"
                 onClick={handleAddToCart}
-                disabled={!canSubmit}
+                disabled={!canSubmit || addedMessageVisible}
                 className="h-11 min-w-[160px] px-4 rounded-lg bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
               >
                 {dict.customOrderPage.buttons.addToCart}
@@ -467,6 +462,12 @@ export default function CustomOrderPage() {
           </div>
         </aside>
       </div>
+
+      {addedMessageVisible && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 h-10 px-4 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 text-sm font-medium flex items-center shadow-md dark:shadow-slate-900/60 whitespace-nowrap">
+          {dict.customOrderPage.messages.added}
+        </div>
+      )}
     </div>
   );
 }
