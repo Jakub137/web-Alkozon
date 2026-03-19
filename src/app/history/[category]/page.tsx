@@ -72,6 +72,28 @@ export default function HistoryCategoryPage() {
 
           <div>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
+              {dict.historyPage.sections.process}
+            </h2>
+            <div className="space-y-3">
+              {entry.process.map((step, index) => (
+                <div
+                  key={step.title.en}
+                  className="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-900/30"
+                >
+                  <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 mb-1">
+                    {dict.historyPage.processStepLabel} {index + 1}
+                  </p>
+                  <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-1">
+                    {step.title[lang]}
+                  </h3>
+                  <p className="text-sm text-slate-700 dark:text-slate-300">{step.description[lang]}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
               {dict.historyPage.sections.timeline}
             </h2>
             <div className="space-y-3">
@@ -85,6 +107,27 @@ export default function HistoryCategoryPage() {
                     {item.title[lang]}
                   </h3>
                   <p className="text-sm text-slate-700 dark:text-slate-300">{item.description[lang]}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
+              {dict.historyPage.sections.gallery}
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {[1, 2, 3, 4].map((slot) => (
+                <div
+                  key={slot}
+                  className="rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600 bg-slate-50/70 dark:bg-slate-900/30 p-3"
+                >
+                  <div className="h-36 rounded-lg bg-slate-200 dark:bg-slate-700/60 flex items-center justify-center text-slate-500 dark:text-slate-400 text-sm text-center px-3">
+                    {dict.historyPage.imagePlaceholderTitle}
+                  </div>
+                  <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                    {dict.historyPage.imagePlaceholderDescription} {slot}
+                  </p>
                 </div>
               ))}
             </div>

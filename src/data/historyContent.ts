@@ -13,11 +13,17 @@ export type HistoryTimelineItem = {
   description: LocalizedText;
 };
 
+export type HistoryProcessStep = {
+  title: LocalizedText;
+  description: LocalizedText;
+};
+
 export type HistoryEntry = {
   icon: string;
   teaser: LocalizedText;
   origin: LocalizedText;
   evolution: LocalizedText;
+  process: HistoryProcessStep[];
   curiosities: LocalizedText[];
   timeline: HistoryTimelineItem[];
   sources: { label: string; url: string }[];
@@ -51,6 +57,36 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
       pl: "Nowoczesna wodka to efekt rozwoju technologii rektyfikacji, filtracji i standaryzacji jakosci. Dzisiaj oprocz wodki czystej popularne sa wersje smakowe i premium, a kategoria ma silne znaczenie kulturowe i eksportowe.",
       en: "Modern vodka is the result of advances in rectification, filtration, and quality standards. Today, besides plain vodka, flavored and premium variants are popular, and the category has strong cultural and export value.",
     },
+    process: [
+      {
+        title: { pl: "Surowiec i zacier", en: "Raw material and mash" },
+        description: {
+          pl: "Produkcja zaczyna sie od surowcow rolniczych, najczesciej zboz lub ziemniakow, z ktorych przygotowuje sie zacier.",
+          en: "Production starts with agricultural raw materials, most often grains or potatoes, used to prepare the mash.",
+        },
+      },
+      {
+        title: { pl: "Fermentacja", en: "Fermentation" },
+        description: {
+          pl: "Drozdze przetwarzaja cukry na alkohol, tworzac baze pod dalsza destylacje.",
+          en: "Yeast converts sugars into alcohol, creating the base for further distillation.",
+        },
+      },
+      {
+        title: { pl: "Destylacja i rektyfikacja", en: "Distillation and rectification" },
+        description: {
+          pl: "Alkohol jest oczyszczany i standaryzowany, aby uzyskac neutralny profil i odpowiednia moc.",
+          en: "Alcohol is purified and standardized to achieve a neutral profile and target strength.",
+        },
+      },
+      {
+        title: { pl: "Laczenie z woda i filtracja", en: "Blending with water and filtration" },
+        description: {
+          pl: "Spirytus miesza sie z woda do docelowej mocy, a finalny produkt przechodzi filtracje.",
+          en: "Spirit is blended with water to the target ABV, and the final product goes through filtration.",
+        },
+      },
+    ],
     curiosities: [
       {
         pl: "W wielu krajach definicja wodki jest prawnie regulowana (np. minimalna zawartosc alkoholu).",
@@ -121,6 +157,36 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
       pl: "Kluczowym krokiem bylo dojrzewanie w beczkach, ktore nadaje whisky charakter. Rewolucja przemyslowa oraz rozwoj eksportu spowodowaly, ze whisky stala sie kategoria globalna.",
       en: "A key step was barrel maturation, which gives whisky its character. Industrialization and export growth turned whisky into a global category.",
     },
+    process: [
+      {
+        title: { pl: "Slodowanie i zacieranie", en: "Malting and mashing" },
+        description: {
+          pl: "Zboze jest przygotowywane i zacierane, aby uwolnic cukry potrzebne do fermentacji.",
+          en: "Grain is prepared and mashed to release sugars needed for fermentation.",
+        },
+      },
+      {
+        title: { pl: "Fermentacja", en: "Fermentation" },
+        description: {
+          pl: "Drozdze zamieniaja cukry na alkohol, tworzac tzw. wash o nizszej mocy.",
+          en: "Yeast turns sugars into alcohol, creating a lower-strength wash.",
+        },
+      },
+      {
+        title: { pl: "Destylacja", en: "Distillation" },
+        description: {
+          pl: "Destylacja koncentruje aromaty i alkohol, a styl zalezy od aparatury i metody.",
+          en: "Distillation concentrates aromas and alcohol, and style depends on equipment and method.",
+        },
+      },
+      {
+        title: { pl: "Dojrzewanie w beczkach", en: "Cask maturation" },
+        description: {
+          pl: "Whisky dojrzewa przez lata, nabierajac koloru i charakteru smakowego.",
+          en: "Whisky matures for years, gaining color and flavor character.",
+        },
+      },
+    ],
     curiosities: [
       {
         pl: "Pisownia 'whisky' i 'whiskey' bywa zalezna od kraju i tradycji producenta.",
@@ -188,6 +254,36 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
       pl: "Na przestrzeni wiekow doskonalono metody fermentacji, przechowywania i selekcji szczepow. Dzisiaj wino ma ogromna roznorodnosc regionalna i stylowa, od trunkow codziennych po kolekcjonerskie.",
       en: "Over the centuries, fermentation, storage, and grape selection methods improved. Today wine shows huge regional and stylistic diversity, from everyday bottles to collectible labels.",
     },
+    process: [
+      {
+        title: { pl: "Winobranie", en: "Harvest" },
+        description: {
+          pl: "Dojrzale winogrona sa zbierane recznie lub mechanicznie i selekcjonowane.",
+          en: "Ripe grapes are harvested manually or mechanically and selected.",
+        },
+      },
+      {
+        title: { pl: "Fermentacja moszczu", en: "Must fermentation" },
+        description: {
+          pl: "Cukry z winogron sa zamieniane na alkohol przez drozdze.",
+          en: "Grape sugars are converted into alcohol by yeast.",
+        },
+      },
+      {
+        title: { pl: "Dojrzewanie", en: "Aging" },
+        description: {
+          pl: "Wino dojrzewa w zbiornikach lub beczkach, stabilizujac smak i aromat.",
+          en: "Wine ages in tanks or barrels, stabilizing flavor and aroma.",
+        },
+      },
+      {
+        title: { pl: "Butelkowanie", en: "Bottling" },
+        description: {
+          pl: "Po klarowaniu i kontroli jakosci wino trafia do butelek.",
+          en: "After clarification and quality control, wine is bottled.",
+        },
+      },
+    ],
     curiosities: [
       {
         pl: "Wino bylo jednym z najwazniejszych towarow handlowych starozytnosci.",
@@ -258,6 +354,36 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
       pl: "Rozwoj technologii warzelniczych, drozdzy i kontroli jakosci doprowadzil do ogromnej roznorodnosci stylow. Wspolczesnie obok wielkich browarow dynamicznie rozwija sie scena kraftowa.",
       en: "Advances in brewing technology, yeast use, and quality control led to huge style diversity. Today, alongside large breweries, craft brewing grows rapidly.",
     },
+    process: [
+      {
+        title: { pl: "Zacieranie", en: "Mashing" },
+        description: {
+          pl: "Slod miesza sie z woda, aby wydobyc cukry fermentowalne.",
+          en: "Malted grain is mixed with water to extract fermentable sugars.",
+        },
+      },
+      {
+        title: { pl: "Gotowanie z chmielem", en: "Boiling with hops" },
+        description: {
+          pl: "Brzeczka jest gotowana i chmielona, co buduje goryczke i aromat.",
+          en: "Wort is boiled and hopped, building bitterness and aroma.",
+        },
+      },
+      {
+        title: { pl: "Fermentacja", en: "Fermentation" },
+        description: {
+          pl: "Drozdze przeksztalcaja cukry w alkohol i CO2.",
+          en: "Yeast converts sugars into alcohol and CO2.",
+        },
+      },
+      {
+        title: { pl: "Lezakowanie i rozlew", en: "Conditioning and packaging" },
+        description: {
+          pl: "Piwo dojrzewa, po czym trafia do butelek, puszek lub kegow.",
+          en: "Beer conditions and is then packaged into bottles, cans, or kegs.",
+        },
+      },
+    ],
     curiosities: [
       {
         pl: "Przez wieki piwo bywalo bezpieczniejszym napojem niz surowa woda.",
@@ -325,6 +451,36 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
       pl: "Z czasem likiery staly sie popularne jako trunki deserowe i skladniki koktajli. Dzisiaj kategoria obejmuje szerokie spektrum stylow: kremowe, ziolowe, cytrusowe czy korzenne.",
       en: "Over time, liqueurs became popular as dessert drinks and cocktail ingredients. Today the category spans many styles: creamy, herbal, citrus, and spiced.",
     },
+    process: [
+      {
+        title: { pl: "Baza alkoholowa", en: "Alcohol base" },
+        description: {
+          pl: "Punktem wyjscia jest neutralny destylat lub inny alkohol bazowy.",
+          en: "The starting point is a neutral distillate or another alcohol base.",
+        },
+      },
+      {
+        title: { pl: "Maceracja lub infuzja", en: "Maceration or infusion" },
+        description: {
+          pl: "Do alkoholu dodaje sie ziola, owoce, przyprawy lub inne skladniki aromatyczne.",
+          en: "Herbs, fruits, spices, or other aromatic ingredients are added to the alcohol.",
+        },
+      },
+      {
+        title: { pl: "Dosladzanie i balans", en: "Sweetening and balancing" },
+        description: {
+          pl: "Producent dopasowuje poziom cukru, mocy i aromatu do stylu likieru.",
+          en: "The producer adjusts sugar level, strength, and aroma to the intended style.",
+        },
+      },
+      {
+        title: { pl: "Filtracja i butelkowanie", en: "Filtration and bottling" },
+        description: {
+          pl: "Finalny produkt jest stabilizowany i rozlewany do butelek.",
+          en: "The final product is stabilized and bottled.",
+        },
+      },
+    ],
     curiosities: [
       {
         pl: "Wiele likierow ma charakterystyczne, strzezone receptury producentow.",
@@ -398,6 +554,36 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
       pl: "Od napoju kojarzonego z zegluga i handlem rum stal sie pelnoprawna kategoria degustacyjna. Dzisiaj obejmuje style lekkie, ciezsze, dojrzewane oraz nowoczesne interpretacje koktajlowe.",
       en: "From a drink associated with sailing and trade, rum became a full tasting category. Today it includes light styles, heavier ones, aged expressions, and modern cocktail-focused interpretations.",
     },
+    process: [
+      {
+        title: { pl: "Surowce z trzciny cukrowej", en: "Sugarcane raw materials" },
+        description: {
+          pl: "Rum produkuje sie ze sfermentowanego soku trzcinowego, koncentratu lub melasy.",
+          en: "Rum is made from fermented sugarcane juice, concentrate, or molasses.",
+        },
+      },
+      {
+        title: { pl: "Fermentacja", en: "Fermentation" },
+        description: {
+          pl: "Drozdze tworza alkohol i zwiazki aromatyczne zalezne od stylu destylarni.",
+          en: "Yeast creates alcohol and aromatic compounds depending on distillery style.",
+        },
+      },
+      {
+        title: { pl: "Destylacja", en: "Distillation" },
+        description: {
+          pl: "Wykorzystuje sie rozne aparaty, co wplywa na lekki lub ciezszy profil rumu.",
+          en: "Different stills are used, shaping a lighter or heavier rum profile.",
+        },
+      },
+      {
+        title: { pl: "Dojrzewanie i blend", en: "Aging and blending" },
+        description: {
+          pl: "Czesc rumow dojrzewa w beczkach, a finalny charakter czesto buduje blend kilku partii.",
+          en: "Some rums mature in casks, and the final character is often built by blending batches.",
+        },
+      },
+    ],
     curiosities: [
       {
         pl: "Nazwa i styl rumu roznia sie regionalnie (np. ron, rhum, rum).",

@@ -150,10 +150,15 @@
     "goToShop": "Go to catalog",
     "notFoundTitle": "History category not found",
     "notFoundDescription": "Check if the address is correct or go back to the category list.",
+    "processStepLabel": "Step",
+    "imagePlaceholderTitle": "Photo placeholder (add later)",
+    "imagePlaceholderDescription": "Suggested image slot",
     "sections": {
       "origin": "Origin",
       "evolution": "How it evolved",
+      "process": "Production process",
       "timeline": "Timeline",
+      "gallery": "Gallery / photo placeholders",
       "curiosities": "Curiosities",
       "sources": "Sources"
     }

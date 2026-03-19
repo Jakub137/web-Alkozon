@@ -150,10 +150,15 @@
     "goToShop": "Przejdz do katalogu",
     "notFoundTitle": "Nie znaleziono kategorii historii",
     "notFoundDescription": "Sprawdz, czy adres jest poprawny albo wroc do listy kategorii.",
+    "processStepLabel": "Krok",
+    "imagePlaceholderTitle": "Miejsce na zdjecie (dodasz pozniej)",
+    "imagePlaceholderDescription": "Proponowane zdjecie nr",
     "sections": {
       "origin": "Pochodzenie",
       "evolution": "Jak to sie rozwijalo",
+      "process": "Proces tworzenia",
       "timeline": "Os czasu",
+      "gallery": "Galeria / miejsca na zdjecia",
       "curiosities": "Ciekawostki",
       "sources": "Zrodla"
     }
