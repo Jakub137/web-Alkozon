@@ -142,25 +142,25 @@
   },
   "historyPage": {
     "title": "Historia alkoholi",
-    "subtitle": "Wybierz kategorie i poznaj skrocona historie rozwoju najpopularniejszych trunkow z naszego katalogu.",
+    "subtitle": "Wybierz kategorię i poznaj skróconą historię rozwoju najpopularniejszych trunków z naszego katalogu.",
     "searchPlaceholder": "Szukaj kategorii lub opisu...",
-    "noResults": "Brak kategorii pasujacych do wyszukiwania.",
-    "readMore": "Czytaj historie",
-    "backToHistory": "Powrot do historii",
-    "goToShop": "Przejdz do katalogu",
+    "noResults": "Brak kategorii pasujących do wyszukiwania.",
+    "readMore": "Czytaj historię",
+    "backToHistory": "Powrót do historii",
+    "goToShop": "Przejdź do katalogu",
     "notFoundTitle": "Nie znaleziono kategorii historii",
-    "notFoundDescription": "Sprawdz, czy adres jest poprawny albo wroc do listy kategorii.",
+    "notFoundDescription": "Sprawdź, czy adres jest poprawny albo wróć do listy kategorii.",
     "processStepLabel": "Krok",
-    "imagePlaceholderTitle": "Miejsce na zdjecie (dodasz pozniej)",
-    "imagePlaceholderDescription": "Proponowane zdjecie nr",
+    "imagePlaceholderTitle": "Miejsce na zdjęcie (dodasz później)",
+    "imagePlaceholderDescription": "Proponowane zdjęcie nr",
     "sections": {
       "origin": "Pochodzenie",
-      "evolution": "Jak to sie rozwijalo",
+      "evolution": "Jak to się rozwijało",
       "process": "Proces tworzenia",
-      "timeline": "Os czasu",
-      "gallery": "Galeria / miejsca na zdjecia",
+      "timeline": "Oś czasu",
+      "gallery": "Galeria / miejsca na zdjęcia",
       "curiosities": "Ciekawostki",
-      "sources": "Zrodla"
+      "sources": "Źródła"
     }
   },
   "customOrderPage": {

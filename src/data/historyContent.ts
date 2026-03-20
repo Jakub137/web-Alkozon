@@ -106,39 +106,39 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
         period: "XIV-XVI w.",
         title: { pl: "Poczatki destylatow", en: "Early distillates" },
         description: {
-          pl: "Destylowane alkohole funkcjonuja glownie jako preparaty lecznicze.",
-          en: "Distilled alcohols are used mainly as medicinal preparations.",
+          pl: "Destylowane alkohole funkcjonuja glownie jako preparaty lecznicze i apteczne, a nie napoje codzienne. Wiedza o destylacji rozprzestrzenia sie stopniowo miedzy osrodkami rzemieslniczymi i klasztornymi.",
+          en: "Distilled alcohols are used mainly as medicinal and apothecary preparations rather than everyday drinks. Distillation knowledge spreads gradually between craft centers and monastic communities.",
         },
       },
       {
         period: "XVII-XVIII w.",
         title: { pl: "Rozwoj produkcji", en: "Production growth" },
         description: {
-          pl: "Rozwoj gorzelnictwa i coraz wieksza dostepnosc trunku.",
-          en: "Distillery development and wider beverage availability.",
+          pl: "Rozwoj gorzelnictwa zwieksza skale produkcji oraz dostepnosc trunku w handlu lokalnym. Wodka zaczyna pelnic nie tylko role praktyczna, ale tez towarzyska i obyczajowa.",
+          en: "Distillery development increases production scale and makes the spirit more available in local trade. Vodka starts to play not only a practical role, but also a social and cultural one.",
         },
       },
       {
         period: "XIX-XX w.",
         title: { pl: "Standaryzacja", en: "Standardization" },
         description: {
-          pl: "Rozwoj rektyfikacji i norm produkcyjnych.",
-          en: "Advances in rectification and production standards.",
+          pl: "Rozwoj rektyfikacji, kontroli jakosci i norm produkcyjnych ujednolica profil trunku. Nowoczesne gorzelnie przechodza z rzemiosla lokalnego do bardziej przemyslowego modelu wytwarzania.",
+          en: "Advances in rectification, quality control, and production standards make spirit profiles more consistent. Distilleries move from local craft toward a more industrial production model.",
         },
       },
       {
         period: "XXI w.",
         title: { pl: "Rynek globalny", en: "Global market" },
         description: {
-          pl: "Silna obecność marek premium i wersji smakowych.",
-          en: "Strong presence of premium brands and flavored versions.",
+          pl: "Wodka staje sie kategoria globalna z silna obecnoscia marek premium i wersji smakowych. Rosnie znaczenie designu, pochodzenia surowca i narracji marki, nie tylko samej mocy alkoholu.",
+          en: "Vodka becomes a global category with strong premium and flavored segments. Design, raw-material origin, and brand storytelling gain importance alongside alcohol strength.",
         },
       },
     ],
     sources: [
-      { label: "Wikipedia: Wodka", url: "https://pl.wikipedia.org/wiki/W%C3%B3dka" },
+      { label: "Wikipedia: Wódka", url: "https://pl.wikipedia.org/wiki/W%C3%B3dka" },
       {
-        label: "TopAlko: Historia wodki",
+        label: "TopAlko: Historia wódki",
         url: "https://topalko.pl/blog/news/historia-wodki-gdzie-i-kiedy-powstala",
       },
     ],
@@ -206,32 +206,32 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
         period: "XV-XVI w.",
         title: { pl: "Wczesne destylaty", en: "Early distillates" },
         description: {
-          pl: "Produkcja lokalna, czesto powiazana z klasztorami.",
-          en: "Local production, often linked to monasteries.",
+          pl: "Produkcja ma glownie skale lokalna i czesto jest powiazana z klasztorami oraz gospodarstwami. Trunek jest surowszy niz dzisiejsza whisky, ale tworzy fundament pod przyszle style regionalne.",
+          en: "Production is mostly local and often linked to monasteries and farms. The drink is rougher than modern whisky, yet it lays the foundation for future regional styles.",
         },
       },
       {
         period: "XVIII w.",
         title: { pl: "Regulacje i podatki", en: "Regulation and taxation" },
         description: {
-          pl: "Zmiany prawne porzadkuja i ograniczaja nielegalna produkcje.",
-          en: "Legal changes organize and limit illicit production.",
+          pl: "Zmiany prawne i podatkowe porzadkuja rynek, ale rownoczesnie wywoluja napiecia wokol nielegalnej produkcji. Ujednolicenie zasad stopniowo wzmacnia legalne gorzelnie i jakość wyrobow.",
+          en: "Legal and tax changes organize the market, while also creating tensions around illicit production. Standardized rules gradually strengthen licensed distilleries and product quality.",
         },
       },
       {
         period: "XIX w.",
         title: { pl: "Skala przemyslowa", en: "Industrial scale" },
         description: {
-          pl: "Technologia i logistyka wspieraja eksport i rozwoj marek.",
-          en: "Technology and logistics support exports and brand growth.",
+          pl: "Postep technologiczny w destylacji oraz logistyce umozliwia produkcje na duza skale i eksport. Powstaja silne marki, a whisky zaczyna byc rozpoznawalna poza rynkami lokalnymi.",
+          en: "Advances in distillation technology and logistics enable large-scale production and exports. Strong brands emerge, and whisky becomes recognizable beyond local markets.",
         },
       },
       {
         period: "XX-XXI w.",
         title: { pl: "Globalna popularnosc", en: "Global popularity" },
         description: {
-          pl: "Whisky staje sie jednym z filarow swiatowego rynku premium.",
-          en: "Whisky becomes one of the pillars of the global premium market.",
+          pl: "Whisky staje sie jednym z filarow swiatowego rynku premium i kultury degustacyjnej. Rosnie zainteresowanie edycjami limitowanymi, pochodzeniem beczek i profilem smakowym regionow.",
+          en: "Whisky becomes one of the pillars of the global premium and tasting market. Interest grows in limited releases, cask provenance, and regional flavor profiles.",
         },
       },
     ],
@@ -247,7 +247,7 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
       en: "Thousands of years of tradition: from ancient vines to modern regions and styles.",
     },
     origin: {
-      pl: "Historia wina siega starozytnosci i cywilizacji basenu Morza Srodziemnego. Uprawa winorosli byla elementem kultury, handlu i codziennego zycia.",
+      pl: "Historia wina sięga starożytności i cywilizacji basenu Morza Śródziemnego. Uprawa winorośli była elementem kultury, handlu i codziennego życia.",
       en: "Wine history reaches back to antiquity and Mediterranean civilizations. Viticulture was part of culture, trade, and daily life.",
     },
     evolution: {
@@ -286,7 +286,7 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
     ],
     curiosities: [
       {
-        pl: "Wino bylo jednym z najwazniejszych towarow handlowych starozytnosci.",
+        pl: "Wino było jednym z najważniejszych towarów handlowych starożytności.",
         en: "Wine was one of the most important trade goods in antiquity.",
       },
       {
@@ -300,35 +300,35 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
     ],
     timeline: [
       {
-        period: "starozytnosc",
+        period: "starożytność",
         title: { pl: "Narodziny winiarstwa", en: "Birth of winemaking" },
         description: {
-          pl: "Pierwsze udokumentowane praktyki fermentacji winogron.",
-          en: "First documented grape fermentation practices.",
+          pl: "Pojawiaja sie pierwsze udokumentowane praktyki fermentacji winogron i przechowywania wina. Wino staje sie elementem rytualow, handlu oraz codziennej diety w wielu cywilizacjach.",
+          en: "The first documented practices of grape fermentation and wine storage appear. Wine becomes part of rituals, trade, and everyday diet in many civilizations.",
         },
       },
       {
-        period: "sredniowiecze",
+        period: "średniowiecze",
         title: { pl: "Rozwoj klasztorny", en: "Monastic development" },
         description: {
-          pl: "Klasztory utrzymuja i rozwijaja wiedze o uprawie i produkcji.",
-          en: "Monasteries preserve and develop viticulture and production knowledge.",
+          pl: "Klasztory utrzymuja ciaglosc wiedzy o uprawie winorosli, selekcji i przechowywaniu trunku. Dzieki temu wiele praktyk winiarskich przetrwalo i zostalo usystematyzowanych.",
+          en: "Monasteries preserve continuity of knowledge about viticulture, selection, and storage. Thanks to this, many winemaking practices survive and become more systematized.",
         },
       },
       {
         period: "XVIII-XIX w.",
         title: { pl: "Ekspansja handlowa", en: "Commercial expansion" },
         description: {
-          pl: "Wino umacnia pozycje na rynkach europejskich.",
-          en: "Wine strengthens its position in European markets.",
+          pl: "Wino umacnia pozycje na rynkach europejskich, a handel staje sie coraz bardziej miedzynarodowy. Regiony zaczynaja budowac reputacje oparta na stylu, szczepach i jakości.",
+          en: "Wine strengthens its position in European markets, and trade becomes increasingly international. Regions begin building reputations based on style, grape varieties, and quality.",
         },
       },
       {
         period: "XX-XXI w.",
         title: { pl: "Nowe regiony", en: "New world regions" },
         description: {
-          pl: "Do glownego nurtu wchodza regiony spoza klasycznej Europy.",
-          en: "Regions outside classical Europe enter the mainstream.",
+          pl: "Do glownego nurtu wchodza regiony spoza klasycznej Europy, zmieniajac globalna mape wina. Jednoczesnie rosnie rola technologii, edukacji konsumentow i precyzyjnej kontroli jakosci.",
+          en: "Regions outside classical Europe enter the mainstream, reshaping the global wine map. At the same time, technology, consumer education, and precise quality control gain importance.",
         },
       },
     ],
@@ -400,35 +400,35 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
     ],
     timeline: [
       {
-        period: "starozytnosc",
+        period: "starożytność",
         title: { pl: "Pierwsze warzenie", en: "First brewing" },
         description: {
-          pl: "Poczatki fermentowanych napojow zbozowych.",
-          en: "Beginnings of fermented grain beverages.",
+          pl: "Poczatki fermentowanych napojow zbozowych siegaja najstarszych cywilizacji rolniczych. Piwo ma wtedy charakter prostego napoju odzywczego, warzonego z lokalnych surowcow.",
+          en: "The beginnings of fermented grain beverages trace back to the earliest agricultural civilizations. Beer then has the character of a simple nourishing drink brewed from local ingredients.",
         },
       },
       {
-        period: "sredniowiecze",
+        period: "średniowiecze",
         title: { pl: "Lokalne browary", en: "Local breweries" },
         description: {
-          pl: "Rozwoj rzemiosla browarniczego w miastach i klasztorach.",
-          en: "Development of brewing craft in towns and monasteries.",
+          pl: "Rzemioslo browarnicze rozwija sie w miastach i klasztorach, gdzie doskonalone sa techniki warzenia. Piwo staje sie waznym elementem codziennego zycia i lokalnej gospodarki.",
+          en: "Brewing craft develops in towns and monasteries, where brewing techniques are refined. Beer becomes an important part of everyday life and local economies.",
         },
       },
       {
         period: "XIX w.",
         title: { pl: "Przemysl i standaryzacja", en: "Industry and standards" },
         description: {
-          pl: "Skok technologiczny i wzrost skali produkcji.",
-          en: "Technological leap and production scale growth.",
+          pl: "Rozwoj przemyslu i nauki o fermentacji pozwala lepiej kontrolowac jakosc i powtarzalnosc. Produkcja rosnie skokowo, a piwo zaczyna byc szeroko dystrybuowane.",
+          en: "Industrial progress and fermentation science improve quality control and consistency. Production grows rapidly, and beer becomes widely distributed.",
         },
       },
       {
         period: "XXI w.",
         title: { pl: "Renesans kraftu", en: "Craft renaissance" },
         description: {
-          pl: "Nowe style i mala produkcja o wyraznym charakterze.",
-          en: "New styles and small-batch brewing with distinct character.",
+          pl: "Renesans browarow rzemieslniczych przywraca eksperymenty i roznorodnosc stylow. Konsumenci coraz czesciej zwracaja uwage na sklad, pochodzenie i profil aromatyczny piwa.",
+          en: "The craft brewery renaissance brings back experimentation and style diversity. Consumers increasingly focus on ingredients, origin, and aroma profile.",
         },
       },
     ],
@@ -497,35 +497,35 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
     ],
     timeline: [
       {
-        period: "sredniowiecze-renesans",
+        period: "średniowiecze-renesans",
         title: { pl: "Korzenie ziolowe", en: "Herbal roots" },
         description: {
-          pl: "Nalewy i ekstrakty funkcjonuja glownie jako preparaty.",
-          en: "Infusions and extracts function mainly as preparations.",
+          pl: "Nalewy i ekstrakty na ziolach funkcjonuja glownie jako preparaty lecznicze i domowe remedia. Smak i slodycz odgrywaja role drugoplanowa wobec praktycznego zastosowania.",
+          en: "Herbal infusions and extracts function mainly as medicinal preparations and home remedies. Flavor and sweetness play a secondary role to practical use.",
         },
       },
       {
         period: "XVII-XIX w.",
         title: { pl: "Rozwoj receptur", en: "Recipe development" },
         description: {
-          pl: "Powstaja rozpoznawalne style regionalne i markowe.",
-          en: "Recognizable regional and branded styles emerge.",
+          pl: "Powstaja coraz bardziej dopracowane receptury, a producenci buduja style regionalne i markowe. Likiery zaczynaja byc postrzegane jako osobna kategoria trunkow, nie tylko dodatek.",
+          en: "Recipes become more refined, and producers build regional and branded styles. Liqueurs start to be seen as a standalone category, not only an additive.",
         },
       },
       {
         period: "XX w.",
         title: { pl: "Popularnosc barowa", en: "Bar popularity" },
         description: {
-          pl: "Likiery trafiaja szeroko do koktajli i gastronomii.",
-          en: "Liqueurs become widely used in cocktails and gastronomy.",
+          pl: "Likiery trafiaja szeroko do koktajli i gastronomii, bo ulatwiaja budowanie zlozonych profili smakowych. Wiele marek zyskuje globalna rozpoznawalnosc dzieki kulturze barowej.",
+          en: "Liqueurs become widely used in cocktails and gastronomy because they help build layered flavor profiles. Many brands gain global recognition through bar culture.",
         },
       },
       {
         period: "XXI w.",
         title: { pl: "Nowe smaki", en: "New flavors" },
         description: {
-          pl: "Producenci eksperymentuja z profilem smakowym i premiumizacją.",
-          en: "Producers experiment with flavor profiles and premium positioning.",
+          pl: "Producenci eksperymentuja z nowymi smakami, nizsza zawartoscia cukru i wariantami premium. Rosnie rola autentycznosci skladnikow oraz historii marki w decyzjach zakupowych.",
+          en: "Producers experiment with new flavors, lower sugar levels, and premium expressions. Ingredient authenticity and brand story play a growing role in purchase decisions.",
         },
       },
     ],
@@ -535,7 +535,7 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
         url: "https://zeropol.pl/artykul/likier-historia-gatunki-i-slynne-koktajle",
       },
       {
-        label: "Cortez World: Swiat likierow",
+        label: "Cortez World: Świat likierów",
         url: "https://cortezworld.com/gatunki-alkoholi-likiery-poznaj-fascynujacy-swiat-likierow/",
       },
     ],
@@ -603,39 +603,39 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
         period: "XVI-XVII w.",
         title: { pl: "Poczatki na Karaibach", en: "Caribbean beginnings" },
         description: {
-          pl: "Rozwoj masowej produkcji wraz z plantacjami trzciny cukrowej.",
-          en: "Mass production grows alongside sugarcane plantations.",
+          pl: "Rozwoj plantacji trzciny cukrowej tworzy warunki do masowej produkcji destylatow trzcinowych. Rum stopniowo przechodzi droge od lokalnego trunku do towaru handlowego.",
+          en: "The expansion of sugarcane plantations creates conditions for mass production of cane distillates. Rum gradually moves from a local drink to a commercial commodity.",
         },
       },
       {
         period: "XVII-XVIII w.",
         title: { pl: "Handel morski", en: "Maritime trade" },
         description: {
-          pl: "Rum staje sie istotnym towarem w handlu kolonialnym.",
-          en: "Rum becomes a major commodity in colonial trade.",
+          pl: "Rum staje sie istotnym towarem w handlu morskim i kolonialnym, laczac porty Atlantyku. Jego znaczenie ekonomiczne rośnie wraz z rozwojem szlakow transportowych.",
+          en: "Rum becomes a major commodity in maritime and colonial trade, linking Atlantic ports. Its economic importance grows alongside expanding shipping routes.",
         },
       },
       {
         period: "XIX-XX w.",
         title: { pl: "Standaryzacja stylow", en: "Style standardization" },
         description: {
-          pl: "Rozwoj technik destylacji i dojrzewania.",
-          en: "Distillation and maturation techniques advance.",
+          pl: "Rozwoj technik destylacji, filtracji i dojrzewania porzadkuje style rumu na poszczegolnych rynkach. Producenci zaczynaja mocniej akcentowac roznice miedzy profilami lekkimi, ciezszymi i dojrzewanymi.",
+          en: "Advances in distillation, filtration, and maturation help standardize rum styles across markets. Producers increasingly emphasize differences between light, heavier, and aged profiles.",
         },
       },
       {
         period: "XXI w.",
         title: { pl: "Renesans premium", en: "Premium renaissance" },
         description: {
-          pl: "Coraz wieksza rola rumow dojrzewanych i degustacyjnych.",
-          en: "Aged and sipping rums gain importance.",
+          pl: "Coraz wieksza role zyskuja rumy dojrzewane i degustacyjne, kierowane do bardziej swiadomego odbiorcy. Rynek rozwija sie rownoczesnie w segmencie koktajlowym i premium collectorskim.",
+          en: "Aged and sipping rums gain a stronger position, targeting a more informed audience. The market grows in both cocktail-driven and premium collector segments.",
         },
       },
     ],
     sources: [
       { label: "Wikipedia: Rum", url: "https://pl.wikipedia.org/wiki/Rum" },
       {
-        label: "Dunder Store: Rum historia i wspolczesnosc",
+        label: "Dunder Store: Rum historia i współczesność",
         url: "https://dunder.store/blog/rum/rum-historia-i-wspolczesnosc/?srsltid=AfmBOoqOPDkt5LiF4GzEqOxT91XAeqS0GWBJlLobkK13tmAenjCVIpis",
       },
     ],

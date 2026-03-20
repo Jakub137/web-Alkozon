@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
+import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 import { historyContent, isHistoryCategory } from "@/data/historyContent";
@@ -10,11 +11,27 @@ export default function HistoryCategoryPage() {
   const { dict, lang } = useLanguage();
   const params = useParams<{ category: string }>();
   const categoryParam = params?.category ?? "";
+  const [previewSlot, setPreviewSlot] = useState<number | null>(null);
 
   const entry = useMemo(() => {
     if (!isHistoryCategory(categoryParam)) return null;
     return historyContent[categoryParam];
   }, [categoryParam]);
+
+  useEffect(() => {
+    if (previewSlot === null) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setPreviewSlot(null);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [previewSlot]);
 
   if (!entry || !isHistoryCategory(categoryParam)) {
     return (
@@ -118,23 +135,27 @@ export default function HistoryCategoryPage() {
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {[1, 2, 3, 4].map((slot) => (
-                <div
-                  key={slot}
-                  className="rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600 bg-slate-50/70 dark:bg-slate-900/30 p-3"
-                >
-                  <div className="h-36 rounded-lg bg-slate-200 dark:bg-slate-700/60 flex items-center justify-center text-slate-500 dark:text-slate-400 text-sm text-center px-3">
-                    {dict.historyPage.imagePlaceholderTitle}
-                  </div>
-                  <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-                    {dict.historyPage.imagePlaceholderDescription} {slot}
-                  </p>
+                <div key={slot} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/30 p-2">
+                  <button
+                    type="button"
+                    onClick={() => setPreviewSlot(slot)}
+                    className="relative h-40 w-full overflow-hidden rounded-lg cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                  >
+                    <Image
+                      src={`/history/${categoryParam}/${slot}.png`}
+                      alt={`${dict.shop.categories[categoryParam]} ${slot}`}
+                      fill
+                      sizes="(min-width: 640px) 50vw, 100vw"
+                      className="object-cover transition-transform duration-200 hover:scale-105"
+                    />
+                  </button>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        <aside className="w-full lg:w-[276px] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm dark:shadow-slate-900/50 space-y-5">
+        <aside className="w-full lg:w-[276px] lg:fixed lg:top-61 lg:left-[calc(50%+184px)] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm dark:shadow-slate-900/50 space-y-5 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
           <div>
             <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-3">
               {dict.historyPage.sections.curiosities}
@@ -177,6 +198,35 @@ export default function HistoryCategoryPage() {
           </Link>
         </aside>
       </div>
+
+      {previewSlot !== null && (
+        <div
+          className="fixed inset-0 z-50 bg-black/80 p-4 sm:p-8"
+          onClick={() => setPreviewSlot(null)}
+          role="dialog"
+          aria-modal="true"
+        >
+          <button
+            type="button"
+            onClick={() => setPreviewSlot(null)}
+            className="absolute top-4 right-4 h-10 w-10 rounded-full bg-white/15 hover:bg-white/25 text-white text-2xl leading-none flex items-center justify-center"
+            aria-label="Close image preview"
+          >
+            ×
+          </button>
+          <div className="relative mx-auto h-full w-full max-w-6xl">
+            <Image
+              src={`/history/${categoryParam}/${previewSlot}.png`}
+              alt={`${dict.shop.categories[categoryParam]} ${previewSlot}`}
+              fill
+              sizes="100vw"
+              className="object-contain"
+              onClick={(event) => event.stopPropagation()}
+              priority
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
