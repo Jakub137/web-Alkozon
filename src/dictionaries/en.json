@@ -163,6 +163,61 @@
       "sources": "Sources"
     }
   },
+  "orderStatusPage": {
+    "title": "Order status",
+    "subtitle": "Enter your order number and email address to check the current fulfillment stage.",
+    "form": {
+      "orderNumberLabel": "Order number",
+      "orderNumberPlaceholder": "e.g. ALK-2026-0002",
+      "emailLabel": "Email",
+      "emailPlaceholder": "e.g. anna@example.com",
+      "submit": "Check status"
+    },
+    "notFound": "No order found for the provided number and email. Verify your data and try again.",
+    "details": {
+      "title": "Order details",
+      "orderNumber": "Order number",
+      "placedAt": "Placed at",
+      "status": "Status",
+      "estimatedDelivery": "Estimated delivery"
+    },
+    "statuses": {
+      "received": "Received",
+      "paid": "Paid",
+      "processing": "Processing",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled",
+      "payment_failed": "Payment failed",
+      "returned": "Returned"
+    },
+    "progress": {
+      "title": "Order progress",
+      "steps": {
+        "received": "Received",
+        "processing": "Processing",
+        "shipped": "Shipped",
+        "delivered": "Delivered"
+      }
+    },
+    "nextStepsTitle": "What's next?",
+    "nextSteps": {
+      "received": "Your order has been received. We will confirm payment and send it to fulfillment shortly.",
+      "paid": "Payment has been confirmed. We are moving your order to picking and packing.",
+      "processing": "We are preparing your package for shipment. We will notify you once it leaves the warehouse.",
+      "shipped": "The package has been shipped. Check the tracking number to monitor delivery.",
+      "delivered": "Your package has been delivered. Thank you for your order!",
+      "cancelled": "This order has been cancelled. If you need help, please contact us.",
+      "payment_failed": "We could not confirm payment. Try again or contact us for support.",
+      "returned": "This order has been returned. Contact us to arrange the next step."
+    },
+    "trackingPrefix": "Tracking:",
+    "buttons": {
+      "goToShop": "Go to shop",
+      "contact": "Contact"
+    },
+    "contactEmail": "contact@alkozon.com"
+  },
   "customOrderPage": {
     "title": "Custom order",
     "subtitle": "Configure your own signature spirit and see an estimated price in real time.",

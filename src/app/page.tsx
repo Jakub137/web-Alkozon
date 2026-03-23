@@ -18,7 +18,7 @@ export default function Home() {
       <div className="flex flex-wrap justify-center gap-6 max-w-4xl">
         <Tile icon="🍷" title={dict.home.tiles.shop.title} desc={dict.home.tiles.shop.desc} href="/shop" />
         <Tile icon="🛒" title={dict.home.tiles.cart.title} desc={dict.home.tiles.cart.desc} href="/cart" />
-        <Tile icon="🚚" title={dict.home.tiles.status.title} desc={dict.home.tiles.status.desc} />
+        <Tile icon="🚚" title={dict.home.tiles.status.title} desc={dict.home.tiles.status.desc} href="/order-status" />
         <Tile icon="📚" title={dict.home.tiles.history.title} desc={dict.home.tiles.history.desc} href="/history" />
         <Tile icon="🧪" title={dict.home.tiles.custom.title} desc={dict.home.tiles.custom.desc} href="/custom-order" />
         <Tile icon="❓" title={dict.home.tiles.faq.title} desc={dict.home.tiles.faq.desc} href="/faq" />

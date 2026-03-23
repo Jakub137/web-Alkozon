@@ -163,6 +163,61 @@
       "sources": "Źródła"
     }
   },
+  "orderStatusPage": {
+    "title": "Status zamówienia",
+    "subtitle": "Wpisz numer zamówienia i adres e-mail, aby sprawdzić aktualny etap realizacji.",
+    "form": {
+      "orderNumberLabel": "Numer zamówienia",
+      "orderNumberPlaceholder": "Np. ALK-2026-0002",
+      "emailLabel": "E-mail",
+      "emailPlaceholder": "Np. anna@example.com",
+      "submit": "Sprawdź status"
+    },
+    "notFound": "Nie znaleziono zamówienia dla podanego numeru i e-maila. Sprawdź dane i spróbuj ponownie.",
+    "details": {
+      "title": "Szczegóły zamówienia",
+      "orderNumber": "Numer zamówienia",
+      "placedAt": "Data złożenia",
+      "status": "Status",
+      "estimatedDelivery": "Szacowana dostawa"
+    },
+    "statuses": {
+      "received": "Przyjęte",
+      "paid": "Opłacone",
+      "processing": "W realizacji",
+      "shipped": "Wysłane",
+      "delivered": "Dostarczone",
+      "cancelled": "Anulowane",
+      "payment_failed": "Płatność nieudana",
+      "returned": "Zwrot"
+    },
+    "progress": {
+      "title": "Postęp zamówienia",
+      "steps": {
+        "received": "Przyjęte",
+        "processing": "W realizacji",
+        "shipped": "Wysłane",
+        "delivered": "Dostarczone"
+      }
+    },
+    "nextStepsTitle": "Co dalej?",
+    "nextSteps": {
+      "received": "Zamówienie zostało przyjęte. Wkrótce potwierdzimy płatność i przekażemy je do realizacji.",
+      "paid": "Płatność została zaksięgowana. Przekazujemy zamówienie do kompletacji.",
+      "processing": "Przygotowujemy Twoją paczkę do wysyłki. Damy znać, gdy opuści magazyn.",
+      "shipped": "Paczka została nadana. Sprawdź numer śledzenia i monitoruj dostawę.",
+      "delivered": "Przesyłka została doręczona. Dziękujemy za zamówienie!",
+      "cancelled": "To zamówienie zostało anulowane. Jeśli potrzebujesz pomocy, skontaktuj się z nami.",
+      "payment_failed": "Nie udało się potwierdzić płatności. Spróbuj ponownie lub skontaktuj się z nami.",
+      "returned": "Zamówienie zostało zwrócone. Skontaktuj się z nami, aby ustalić dalsze kroki."
+    },
+    "trackingPrefix": "Śledzenie:",
+    "buttons": {
+      "goToShop": "Przejdź do sklepu",
+      "contact": "Kontakt"
+    },
+    "contactEmail": "kontakt@alkozon.pl"
+  },
   "customOrderPage": {
     "title": "Zamówienie własne",
     "subtitle": "Skonfiguruj swój autorski trunek i sprawdź orientacyjną cenę w czasie rzeczywistym.",
