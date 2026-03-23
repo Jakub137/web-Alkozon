@@ -24,6 +24,7 @@ export type HistoryEntry = {
   origin: LocalizedText;
   evolution: LocalizedText;
   process: HistoryProcessStep[];
+  gallery: LocalizedText[];
   curiosities: LocalizedText[];
   timeline: HistoryTimelineItem[];
   sources: { label: string; url: string }[];
@@ -85,6 +86,24 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
           pl: "Spirytus miesza sie z woda do docelowej mocy, a finalny produkt przechodzi filtracje.",
           en: "Spirit is blended with water to the target ABV, and the final product goes through filtration.",
         },
+      },
+    ],
+    gallery: [
+      {
+        pl: "Sposoby butelkowania wódki na przestrzeni dziejów.",
+        en: "Methods of bottling vodka throughout history.",
+      },
+      {
+        pl: "Archiwalne ujecie starszego mężczyny produkującego wódkę w ogrodzie.",
+        en: "An archival view of  an older man making vodka in his garden.",
+      },
+      {
+        pl: "Historyczna, rzemieslnicza produkcja wódki w Rosji w XX wieku.",
+        en: "Historical, craft vodka production in Russia in the 20th century.",
+      },
+      {
+        pl: "Wspolczesna kultura spozycia mocnych alkoholi.",
+        en: "Contemporary spirits-drinking culture.",
       },
     ],
     curiosities: [
@@ -187,6 +206,24 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
         },
       },
     ],
+    gallery: [
+      {
+        pl: "Zdjęcie z czasów prohibicji - lata 20. XX wieku. Fotografia dokumentuje masowe niszczenie zapasów whiskey, wylewajać je do ścieków.",
+        en: "Photo from the Prohibition era - 1920s. The photograph documents the mass destruction of whiskey stocks, pouring them into sewers.",
+      },
+      {
+        pl: "Według przypuszczeń znalezione whisky zostało destylowane w 1833 roku i rozlane do butelek w 1841 roku.",
+        en: "The found whisky is believed to have been distilled in 1833 and bottled in 1841.",
+      },
+      {
+        pl: "Najstarsza whisky to Old Glenlivet 1843, która jest własnością Nguyen Dinh Tuan Viet (Wietnam) w Ho Chi Minh City, Wietnam, co zostało zweryfikowane 23 kwietnia 2025 roku.",
+        en: "The oldest whisky is the Old Glenlivet 1843 and is owned by Nguyen Dinh Tuan Viet (Vietnam) in Ho Chi Minh City, Vietnam, as verified on 23 April 2025.",
+      },
+      {
+        pl: "Dopełnianie beczki starego szkockiego whisky w piwnicy handlarza winami na zachodnim końcu miasta, etykietowanie, butelkowanie i układanie na półkach. Rok 1927.",
+        en: "Filling an old Scottish whisky cask in a cellar by a wine merchant at the western end of the city, labeling, bottling, and shelving. Year 1927.",
+      },
+    ],
     curiosities: [
       {
         pl: "Pisownia 'whisky' i 'whiskey' bywa zalezna od kraju i tradycji producenta.",
@@ -284,6 +321,24 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
         },
       },
     ],
+    gallery: [
+      {
+        pl: "Starożytna rzymska mozaika przedstawiająca tradycyjny proces produkcji wina, stanowiąca ważny element codzienności antycznego świata śródziemnomorskiego.",
+        en: "An ancient Roman mosaic depicting a traditional wine production process, a significant element of daily life in the ancient Mediterranean world.",
+      },
+      {
+        pl: "Starożytne amfory i gliniane naczynia do przechowywania wina w piwnicach. Zdjęcie ilustruje początki winiarstwa i najstarsze dowody na uprawę winorośli w Gruzji około 7000 r. p.n.e.",
+        en: "Ancient amphorae and clay vessels for storing wine in cellars. The photograph illustrates the origins of winemaking and the earliest evidence of grape cultivation in Georgia around 7000 BC.",
+      },
+      {
+        pl: "Kolekcja XVIII- i XIX-wiecznych butelek madery (m.in. Lenox Madeira) i innych historycznych trunków. Zgodnie z podpisem, te rzadkie wina zostały odkryte w Liberty Hall Museum w miejscowości Union (w stanie New Jersey).",
+        en: "Collection of 18th- and 19th-century Madeira (including Lenox Madeira) and other historical spirits bottles. According to the caption, these rare wines were discovered in the Liberty Hall Museum in the town of Union (in the state of New Jersey).",
+      },
+      {
+        pl: "Fotografia ta ilustruje dawne metody magazynowania wina, nawiązując do najstarszych śladów winiarstwa datowanych na 7000–4100 r. p.n.e. (odkrytych m.in. w Chinach, Gruzji, Iranie czy Grecji).",
+        en: "This photograph illustrates ancient methods of wine storage, referring to the earliest traces of winemaking dated to 7000–4100 BC (discovered in China, Georgia, Iran, or Greece).",
+      },
+    ],
     curiosities: [
       {
         pl: "Wino było jednym z najważniejszych towarów handlowych starożytności.",
@@ -338,6 +393,7 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
         label: "o-winie.pl: Krotka historia wina",
         url: "https://o-winie.pl/jak-kupowac-i-jak-pic/krotka-historia-wina/",
       },
+      { label: "Vinoe Bamino", url: "https://www.vinoecamino.it/history/" },
     ],
   },
   beer: {
@@ -382,6 +438,24 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
           pl: "Piwo dojrzewa, po czym trafia do butelek, puszek lub kegow.",
           en: "Beer conditions and is then packaged into bottles, cans, or kegs.",
         },
+      },
+    ],
+    gallery: [
+      {
+        pl: "Fotografia przedstawia glinianą tabliczkę zapisaną pismem klinowym, służącą do ewidencjonowania przydziałów piwa. Piwo w starożytnej Mezopotamii było podstawą codziennej diety i miało gęstą konsystencję przypominającą owsiankę. To właśnie ta gęsta forma trunku (zawierająca kawałki chleba i ziół) sprawiła, że Sumerowie i Babilończycy wynaleźli słomki, aby móc wygodnie go pić.",
+        en: "A clay tablet inscribed with cuneiform script, used for recording beer allocations. Beer in ancient Mesopotamia was the basis of daily diet and had a thick consistency resembling oatmeal. It was precisely this dense form of spirit (containing pieces of bread and herbs) that led the Sumerians and Babylonians to invent straws, so they could drink it conveniently.",
+      },
+      {
+        pl: "Ilustracja przedstawia XIV-wieczny fresk o silnym charakterze moralizatorskim. Scena ukazuje duchownego toczącego trunek, którego otaczają groteskowe demony. Symbolizują one pokusę i ciągłe próby sprowadzenia pobożnych na złą drogę. To wymowne malowidło służyło jako bezpośrednia przestroga dla wiernych przed pijaństwem, łakomstwem i uleganiem grzesznym podszeptom.",
+        en: "An illustration of a 14th-century fresco with a strong moralizing character. The scene shows a priest drinking a spirit, surrounded by grotesque demon figures. These symbols represent temptation and continuous attempts to lead pious people onto the wrong path. This striking painting served as a direct warning to the faithful against drunkenness, gluttony, and sinful whispers.",
+      },
+      {
+        pl: "Karta kolekcjonerska przedstawiająca XVII-wieczny browar. Niemiecka firma Liebig Extract of Meat Company, założona w 1840 roku, dystrybuowała serię kart kolekcjonerskich ilustrujących historię piwa. Muzeum Minibrowaru Pike, Seattle, stan Waszyngton.",
+        en: "Trade card depicting a 17th-century brewery. The German Liebig Extract of Meat Company, founded in 1840, distributed a series of trading cards illustrating the history of beer. pike microbrewery museum, seattle, wa",
+      },
+      {
+        pl: "Archiwalna fotografia dokumentująca industrializację browarnictwa. Widoczne na hali maszyny oraz dziesiątki drewnianych beczek obrazują kluczowy moment przejścia od tradycyjnego rzemiosła do masowej, ustandaryzowanej produkcji piwa na przemysłową skalę.",
+        en: "Archival photograph documenting the industrialization of brewing. Machines visible in the hall and dozens of wooden barrels illustrate the key moment of transition from traditional craft to mass, standardized production of beer on an industrial scale.",
       },
     ],
     curiosities: [
@@ -448,15 +522,15 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
       en: "Liqueurs originate from infused spirits and herbal preparations. At first, they were closely linked to pharmacy and monastic use.",
     },
     evolution: {
-      pl: "Z czasem likiery staly sie popularne jako trunki deserowe i skladniki koktajli. Dzisiaj kategoria obejmuje szerokie spektrum stylow: kremowe, ziolowe, cytrusowe czy korzenne.",
-      en: "Over time, liqueurs became popular as dessert drinks and cocktail ingredients. Today the category spans many styles: creamy, herbal, citrus, and spiced.",
+      pl: "Do konca XVIII wieku dominowaly likiery ziolowo-przyprawowe, czesto opisywane w kontekscie wspierania trawienia. W XIX i XX wieku mocno rozwinely sie style owocowe i deserowe, a wspolczesnie kategoria obejmuje szerokie spektrum: kremowe, ziolowe, cytrusowe, korzenne i kawowe.",
+      en: "Until the late 18th century, herbal and spice-driven liqueurs dominated, often associated with digestive use. In the 19th and 20th centuries, fruit and dessert styles expanded strongly, and today the category covers a broad spectrum: creamy, herbal, citrus, spiced, and coffee-based.",
     },
     process: [
       {
         title: { pl: "Baza alkoholowa", en: "Alcohol base" },
         description: {
-          pl: "Punktem wyjscia jest neutralny destylat lub inny alkohol bazowy.",
-          en: "The starting point is a neutral distillate or another alcohol base.",
+          pl: "Punktem wyjscia moze byc neutralny destylat albo inny alkohol bazowy, np. brandy, rum, whisky czy wodka.",
+          en: "The starting point can be a neutral distillate or another base spirit, such as brandy, rum, whisky, or vodka.",
         },
       },
       {
@@ -481,10 +555,28 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
         },
       },
     ],
+    gallery: [
+      {
+        pl: "Prohibicja Stanów Zjednoczonych Ameryki: zniszczenie skonfiskowanego trunku około Bożego Narodzenia w 1923 roku. Lokalizacja nieznana.",
+        en: "Prohibition United States of America: the destruction of confiscated liquor around Christmas time in 1923. Location unknown.",
+      },
+      {
+        pl: "Agenci federalni niszczą butelki likieru podczas prohibicji, 20/11/1923.",
+        en: "Federal agents destroying bottles of liquor during Prohibition, 11/20/1923.",
+      },
+      {
+        pl: "Kartuzjani produkujący światowej sławy likier Chartreuse w Marsylii, Francja w 1930 roku.",
+        en: "Carthusian Monks producing the world famous Chartreuse Liqueur at Marsielle, France in 1930.",
+      },
+      {
+        pl: "Archiwalne zdjęcie linii rozlewniczej likierów - przejście do produkcji seryjnej.",
+        en: "An archival photograph of a liqueur bottling line - shift to serial production.",
+      },
+    ],
     curiosities: [
       {
-        pl: "Wiele likierow ma charakterystyczne, strzezone receptury producentow.",
-        en: "Many liqueurs have distinctive producer-protected recipes.",
+        pl: "Wiele likierow ma charakterystyczne, strzezone receptury producentow i zastrzezone proporcje mieszania skladnikow.",
+        en: "Many liqueurs have distinctive producer-protected recipes and proprietary ingredient ratios.",
       },
       {
         pl: "Likiery czesto maja nizsza moc niz klasyczne wodki czy whisky, ale wieksza zawartosc cukru.",
@@ -493,6 +585,10 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
       {
         pl: "To jedna z najbardziej roznorodnych kategorii pod katem aromatow i zastosowan barowych.",
         en: "It is one of the most diverse categories in terms of aromas and bar applications.",
+      },
+      {
+        pl: "Historyczny termin \"ratafia\" bywal uzywany jako nazwa trunkow podawanych przy ratyfikacji umow i traktatow.",
+        en: "The historical term \"ratafia\" was used for drinks served during treaty and agreement ratifications.",
       },
     ],
     timeline: [
@@ -508,16 +604,16 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
         period: "XVII-XIX w.",
         title: { pl: "Rozwoj receptur", en: "Recipe development" },
         description: {
-          pl: "Powstaja coraz bardziej dopracowane receptury, a producenci buduja style regionalne i markowe. Likiery zaczynaja byc postrzegane jako osobna kategoria trunkow, nie tylko dodatek.",
-          en: "Recipes become more refined, and producers build regional and branded styles. Liqueurs start to be seen as a standalone category, not only an additive.",
+          pl: "Powstaja coraz bardziej dopracowane receptury, a producenci buduja style regionalne i markowe. W obiegu funkcjonuje tez okreslenie \"ratafia\", historycznie laczone z trunkami podawanymi przy ratyfikacji umow.",
+          en: "Recipes become more refined, and producers build regional and branded styles. The term \"ratafia\" is also used historically for drinks served during agreement ratifications.",
         },
       },
       {
         period: "XX w.",
         title: { pl: "Popularnosc barowa", en: "Bar popularity" },
         description: {
-          pl: "Likiery trafiaja szeroko do koktajli i gastronomii, bo ulatwiaja budowanie zlozonych profili smakowych. Wiele marek zyskuje globalna rozpoznawalnosc dzieki kulturze barowej.",
-          en: "Liqueurs become widely used in cocktails and gastronomy because they help build layered flavor profiles. Many brands gain global recognition through bar culture.",
+          pl: "Likiery trafiaja szeroko do koktajli i gastronomii, bo ulatwiaja budowanie zlozonych profili smakowych. Rosnie tez liczba baz alkoholowych uzywanych w produkcji: od brandy po rum, whisky czy wodke.",
+          en: "Liqueurs become widely used in cocktails and gastronomy because they help build layered flavor profiles. The number of base spirits used in production also expands, from brandy to rum, whisky, and vodka.",
         },
       },
       {
@@ -537,6 +633,10 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
       {
         label: "Cortez World: Świat likierów",
         url: "https://cortezworld.com/gatunki-alkoholi-likiery-poznaj-fascynujacy-swiat-likierow/",
+      },
+      {
+        label: "Liqueurs: A complete guide",
+        url: "https://www.nicks.com.au/info/a-complete-guide-to-liqueurs",
       },
     ],
   },
@@ -579,9 +679,27 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
       {
         title: { pl: "Dojrzewanie i blend", en: "Aging and blending" },
         description: {
-          pl: "Czesc rumow dojrzewa w beczkach, a finalny charakter czesto buduje blend kilku partii.",
+          pl: "Część rumow dojrzewa w beczkach, a finalny charakter czesto buduje blend kilku partii.",
           en: "Some rums mature in casks, and the final character is often built by blending batches.",
         },
+      },
+    ],
+    gallery: [
+      {
+        pl: "Historyczna ilustracja transportu beczek z rumem w handlu morskim.",
+        en: "A historical illustration of rum cask transport in maritime trade.",
+      },
+      {
+        pl: "Archiwalne butelki rumu pokazujace dawne style etykiet i butelkowania.",
+        en: "Archival rum bottles showing historical labeling and bottling styles.",
+      },
+      {
+        pl: "Beczki rumu na pokladzie statku - zwiazek trunku z zegluga i handlem.",
+        en: "Rum casks on a ship deck, highlighting the spirit's link with seafaring and trade.",
+      },
+      {
+        pl: "Zmagazynowany alkohol z czasow prohibicji - ukryte zapasy i improwizowane skladowanie.",
+        en: "Stored alcohol from the Prohibition era, showing hidden stock and improvised storage.",
       },
     ],
     curiosities: [

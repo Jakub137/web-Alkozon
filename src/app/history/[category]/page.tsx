@@ -18,6 +18,11 @@ export default function HistoryCategoryPage() {
     return historyContent[categoryParam];
   }, [categoryParam]);
 
+  const getGalleryImageSrc = (slot: number) => {
+    const captionSeed = entry?.gallery[slot - 1]?.pl ?? "";
+    return `/history/${categoryParam}/${slot}.png?v=${encodeURIComponent(captionSeed)}`;
+  };
+
   useEffect(() => {
     if (previewSlot === null) return;
 
@@ -134,7 +139,10 @@ export default function HistoryCategoryPage() {
               {dict.historyPage.sections.gallery}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {[1, 2, 3, 4].map((slot) => (
+              {entry.gallery.map((caption, index) => {
+                const slot = index + 1;
+
+                return (
                 <div key={slot} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/30 p-2">
                   <button
                     type="button"
@@ -142,15 +150,20 @@ export default function HistoryCategoryPage() {
                     className="relative h-40 w-full overflow-hidden rounded-lg cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                   >
                     <Image
-                      src={`/history/${categoryParam}/${slot}.png`}
-                      alt={`${dict.shop.categories[categoryParam]} ${slot}`}
+                      src={getGalleryImageSrc(slot)}
+                      alt={caption[lang]}
                       fill
                       sizes="(min-width: 640px) 50vw, 100vw"
+                      unoptimized
                       className="object-cover transition-transform duration-200 hover:scale-105"
                     />
                   </button>
+                  <p className="mt-2 px-1 text-xs leading-5 text-slate-600 dark:text-slate-300">
+                    {caption[lang]}
+                  </p>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </section>
@@ -216,14 +229,20 @@ export default function HistoryCategoryPage() {
           </button>
           <div className="relative mx-auto h-full w-full max-w-6xl">
             <Image
-              src={`/history/${categoryParam}/${previewSlot}.png`}
-              alt={`${dict.shop.categories[categoryParam]} ${previewSlot}`}
+              src={getGalleryImageSrc(previewSlot)}
+              alt={entry.gallery[previewSlot - 1]?.[lang] ?? `${dict.shop.categories[categoryParam]} ${previewSlot}`}
               fill
               sizes="100vw"
+              unoptimized
               className="object-contain"
               onClick={(event) => event.stopPropagation()}
               priority
             />
+            <div className="absolute left-0 right-0 bottom-0 p-3 sm:p-4 bg-black/45">
+              <p className="text-sm text-white">
+                {entry.gallery[previewSlot - 1]?.[lang]}
+              </p>
+            </div>
           </div>
         </div>
       )}
