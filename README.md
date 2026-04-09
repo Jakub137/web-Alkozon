@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Alkozon - Klient Webowy (Next.js)
 
-## Getting Started
+Aplikacja webowa dla systemu e-commerce Alkozon, realizująca zaawansowane mechanizmy prezentacyjne oraz twardy system zabezpieczeń front-endowych. Projekt zoptymalizowany pod kątem szybkości działania oraz czystego kodu.
 
-First, run the development server:
+## Technologie
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Framework:** Next.js 16 (App Router)
+- **Biblioteka:** React 19
+- **Język:** TypeScript
+- **Stylowanie:** Tailwind CSS v4
+- **Zarządzanie Stanem & Formularze:** React-Hook-Form, Zod (Schema-Based Validation)
+- **UI:** Przystosowane do standardów WCAG, Ikony Lucide React
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Główne funkcjonalności
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Architektura Bezpieczeństwa:** Izolowany kontekst AuthContext chroniący ścieżki i przechowujący tokeny sesyjne.
+- **Ochrona Anti Brute-Force (Rate Limiting):** Aplikacja uczy się wzorców i odrzuca dostęp do autoryzacji po osiągnięciu progu 5 błędnych prób.
+- **Funkcja Auto-Logout:** Hook stale monitorujący aktywność urządzenia i zabezpieczający pozostawione otwarte sesje poprzez automatyczne wylogowanie powiadomieniem (30s bezczynności).
+- **Zabezpieczenie przed Injection:** Pełne oparcie formularzy Logowania i Rejestracji na predykatach biblioteki Zod.
+- **Wielojęzyczność (i18n):** Globalny kontekst dla dynamicznych wdrożeń językowych (PL / ENG).
+- **Dark Mode:** Mechanizm Theme Switcher dopasowujący kontrasty przycisków i kafelków strony głównej.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Uruchomienie lokalne
 
-## Learn More
+Aby uruchomić aplikację w środowisku developerskim, upewnij się, że posiadasz zainstalowanego Node.js.
 
-To learn more about Next.js, take a look at the following resources:
+1. Pobierz brakujące moduły `node_modules`:
+   ```bash
+   npm install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. (Opcjonalnie) Zasil zmienne środowiskowe tworząc nową instancję `.env.local` na wzór `.env.example`, aby podłączyć bazowe URL do serwerów API.
+   
+3. Uruchom silnik deweloperski Next:
+   ```bash
+   npm run dev
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Otwórz [http://localhost:3000](http://localhost:3000) w swojej przeglądarce, by zobaczyć platformę.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+*Projekt uczelniany - Warstwa Webowa przygotowana w ramach zespołu Alkozon.*

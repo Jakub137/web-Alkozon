@@ -211,6 +211,15 @@
       "payment_failed": "We could not confirm payment. Try again or contact us for support.",
       "returned": "This order has been returned. Contact us to arrange the next step."
     },
+    "timelineTitle": "Status timeline",
+    "timelineNotePrefix": "Note:",
+    "items": {
+      "title": "Order items",
+      "quantityLabel": "Quantity",
+      "unitPriceLabel": "Unit price",
+      "totalItemsLabel": "Total quantity",
+      "totalValueLabel": "Order value"
+    },
     "trackingPrefix": "Tracking:",
     "buttons": {
       "goToShop": "Go to shop",

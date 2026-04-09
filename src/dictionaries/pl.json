@@ -211,6 +211,15 @@
       "payment_failed": "Nie udało się potwierdzić płatności. Spróbuj ponownie lub skontaktuj się z nami.",
       "returned": "Zamówienie zostało zwrócone. Skontaktuj się z nami, aby ustalić dalsze kroki."
     },
+    "timelineTitle": "Oś czasu zmian statusu",
+    "timelineNotePrefix": "Notatka:",
+    "items": {
+      "title": "Produkty w zamówieniu",
+      "quantityLabel": "Ilość",
+      "unitPriceLabel": "Cena za szt.",
+      "totalItemsLabel": "Łączna liczba sztuk",
+      "totalValueLabel": "Wartość zamówienia"
+    },
     "trackingPrefix": "Śledzenie:",
     "buttons": {
       "goToShop": "Przejdź do sklepu",

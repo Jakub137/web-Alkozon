@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { FormEvent, useMemo, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { findOrderByNumberAndEmail } from "@/data/orders";
@@ -42,6 +43,13 @@ function formatDate(value: string, locale: string) {
   return new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(value));
 }
 
+function formatDateTime(value: string, locale: string) {
+  return new Intl.DateTimeFormat(locale, {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(new Date(value));
+}
+
 export default function OrderStatusPage() {
   const { dict, lang } = useLanguage();
   const [orderNumber, setOrderNumber] = useState("");
@@ -56,6 +64,20 @@ export default function OrderStatusPage() {
     () => orderNumber.trim().length > 0 && email.trim().length > 0,
     [email, orderNumber]
   );
+  const orderItemsCount = useMemo(
+    () => order?.items?.reduce((sum, item) => sum + item.quantity, 0) ?? 0,
+    [order]
+  );
+  const orderItemsTotal = useMemo(
+    () => order?.items?.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0) ?? 0,
+    [order]
+  );
+  const statusHistory = useMemo(() => {
+    if (!order?.history?.length) return [];
+    return [...order.history].sort(
+      (left, right) => new Date(left.changedAt).getTime() - new Date(right.changedAt).getTime()
+    );
+  }, [order]);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -237,6 +259,87 @@ export default function OrderStatusPage() {
                 </a>
               </div>
             </section>
+
+            {statusHistory.length > 0 && (
+              <section className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 sm:p-6 shadow-sm dark:shadow-slate-900/50">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-4">
+                  {dict.orderStatusPage.timelineTitle}
+                </h3>
+                <div className="space-y-3">
+                  {statusHistory.map((item) => (
+                    <div
+                      key={`${item.status}-${item.changedAt}`}
+                      className="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-900/30"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <span
+                          className={`h-7 px-2.5 rounded-full text-xs font-semibold inline-flex items-center ${getStatusTone(item.status)}`}
+                        >
+                          {dict.orderStatusPage.statuses[item.status]}
+                        </span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400">
+                          {formatDateTime(item.changedAt, currentLocale)}
+                        </span>
+                      </div>
+                      {item.note && (
+                        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">
+                          {dict.orderStatusPage.timelineNotePrefix} {item.note}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {order.items && order.items.length > 0 && (
+              <section className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 sm:p-6 shadow-sm dark:shadow-slate-900/50">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-4">
+                  {dict.orderStatusPage.items.title}
+                </h3>
+                <div className="space-y-3">
+                  {order.items.map((item) => (
+                    <div
+                      key={item.id}
+                      className="rounded-xl border border-slate-200 dark:border-slate-700 p-3 bg-slate-50 dark:bg-slate-900/30 flex items-center gap-3"
+                    >
+                      <div className="relative h-14 w-14 rounded-lg overflow-hidden bg-slate-200 dark:bg-slate-700 shrink-0">
+                        {item.image ? (
+                          <Image src={item.image} alt={item.name} fill sizes="56px" className="object-cover" />
+                        ) : (
+                          <div className="h-full w-full flex items-center justify-center text-lg">🍾</div>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">
+                          {item.name}
+                        </p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
+                          {dict.orderStatusPage.items.quantityLabel}: {item.quantity} ·{" "}
+                          {dict.orderStatusPage.items.unitPriceLabel}: {item.unitPrice.toFixed(2)} zl
+                        </p>
+                      </div>
+                      <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 whitespace-nowrap">
+                        {(item.unitPrice * item.quantity).toFixed(2)} zl
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-4 rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-900/30 flex flex-wrap items-center justify-between gap-2">
+                  <p className="text-sm text-slate-600 dark:text-slate-300">
+                    {dict.orderStatusPage.items.totalItemsLabel}:{" "}
+                    <span className="font-semibold text-slate-900 dark:text-slate-100">{orderItemsCount}</span>
+                  </p>
+                  <p className="text-sm text-slate-600 dark:text-slate-300">
+                    {dict.orderStatusPage.items.totalValueLabel}:{" "}
+                    <span className="font-semibold text-slate-900 dark:text-slate-100">
+                      {orderItemsTotal.toFixed(2)} zl
+                    </span>
+                  </p>
+                </div>
+              </section>
+            )}
           </>
         )}
       </div>
