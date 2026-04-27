@@ -1,4 +1,12 @@
 {
+  "ageGate": {
+    "title": "Are you 18 or older?",
+    "description": "This site contains content intended only for adults. Please confirm your age to continue.",
+    "yes": "Yes, I am 18 or older",
+    "no": "I am under 18",
+    "restrictedMessageTitle": "Age restriction",
+    "restrictedMessage": "The option to order alcoholic products is disabled for you because you are underage."
+  },
   "navbar": {
     "lightMode": "Light Mode",
     "darkMode": "Dark Mode",

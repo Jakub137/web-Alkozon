@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Product } from "@/types/product";
 import { useLanguage } from "@/context/LanguageContext";
+import { useAge } from "@/context/AgeContext";
 
 interface ProductCardProps {
   product: Product;
@@ -12,6 +13,9 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, onAddToCart, isAddDisabled = false }: ProductCardProps) {
   const { dict } = useLanguage();
+  const { ageStatus } = useAge();
+
+  const isDisabled = isAddDisabled || ageStatus === "underage";
 
   return (
     <div className="w-full sm:w-[200px] h-[400px] sm:flex-none flex flex-col min-w-0 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm dark:shadow-slate-900/50 hover:shadow-md dark:hover:shadow-slate-900/70 hover:border-blue-400 dark:hover:border-blue-500 transition-all group overflow-hidden">
@@ -37,7 +41,7 @@ export default function ProductCard({ product, onAddToCart, isAddDisabled = fals
           
           <button
             type="button"
-            disabled={isAddDisabled}
+            disabled={isDisabled}
             onClick={() => onAddToCart?.(product)}
             className="w-full min-w-0 h-11 px-4 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-800 text-white rounded-lg font-medium transition-colors flex items-center justify-center whitespace-nowrap truncate disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600 disabled:dark:hover:bg-blue-500"
           >          

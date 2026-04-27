@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Product, ProductCategory } from "@/types/product";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/context/CartContext";
+import { useAge } from "@/context/AgeContext";
 
 type CustomBase = Exclude<ProductCategory, "beer" | "rum">;
 type CapacityOption = "0.5L" | "0.7L" | "1.0L";
@@ -70,6 +71,7 @@ function limitWords(value: string, maxWords: number) {
 export default function CustomOrderPage() {
   const { dict } = useLanguage();
   const { addToCart, cartItemsCount, cartItemsLimit, customOrderItemsCount, customOrderItemsLimit } = useCart();
+  const { ageStatus } = useAge();
 
   const [step, setStep] = useState(1);
   const [selectedBase, setSelectedBase] = useState<CustomBase>("whisky");
@@ -418,7 +420,7 @@ export default function CustomOrderPage() {
                 <button
                   type="button"
                   onClick={handleAddToCart}
-                  disabled={!canSubmit || addedMessageVisible || isTotalCartLimitReached || isCustomOrderLimitReached}
+                  disabled={!canSubmit || addedMessageVisible || isTotalCartLimitReached || isCustomOrderLimitReached || ageStatus === "underage"}
                   className="h-11 min-w-[160px] px-4 rounded-lg bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
                 >
                   {dict.customOrderPage.buttons.addToCart}
@@ -426,12 +428,18 @@ export default function CustomOrderPage() {
               </div>
             )}
           </div>
-          {step === 3 && (isTotalCartLimitReached || isCustomOrderLimitReached) && (
-            <p className="mt-2 text-xs text-red-600 dark:text-red-400 text-right">
-              {isCustomOrderLimitReached
-                ? dict.customOrderPage.messages.limitCustomReached
-                : dict.customOrderPage.messages.limitTotalReached}
-            </p>
+          {step === 3 && (
+            <div className="mt-2 text-xs text-red-600 dark:text-red-400 text-right">
+              {ageStatus === "underage" && (
+                <p>{dict.ageGate?.restrictedMessage || "Opcja składania zamówień na produkty alkoholowe jest dla Ciebie wyłączona."}</p>
+              )}
+              {isTotalCartLimitReached && ageStatus !== "underage" && (
+                <p>{dict.customOrderPage.messages.limitTotalReached}</p>
+              )}
+              {isCustomOrderLimitReached && ageStatus !== "underage" && (
+                <p>{dict.customOrderPage.messages.limitCustomReached}</p>
+              )}
+            </div>
           )}
         </section>
 

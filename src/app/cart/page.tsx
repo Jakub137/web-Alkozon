@@ -3,15 +3,24 @@
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/context/CartContext";
+import { useAge } from "@/context/AgeContext";
 
 export default function CartPage() {
   const { dict } = useLanguage();
   const { cartItems, cartItemsCount, removeFromCart } = useCart();
+  const { ageStatus } = useAge();
 
   const totalPrice = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grow">
+      {ageStatus === "underage" && (
+        <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-md shadow-sm">
+          <p className="font-bold">{dict.ageGate?.restrictedMessageTitle || "Ograniczenie wiekowe"}</p>
+          <p>{dict.ageGate?.restrictedMessage || "Opcja składania zamówień na produkty alkoholowe jest dla Ciebie wyłączona."}</p>
+        </div>
+      )}
+
       <header className="mb-8 text-center">
         <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-slate-100 mb-3 transition-colors">
           {dict.shop.cart.pageTitle}

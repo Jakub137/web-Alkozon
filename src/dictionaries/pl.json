@@ -1,4 +1,12 @@
 {
+  "ageGate": {
+    "title": "Czy masz ukończone 18 lat?",
+    "description": "Ta strona zawiera treści przeznaczone wyłącznie dla osób dorosłych. Prosimy o potwierdzenie wieku, aby kontynuować.",
+    "yes": "Tak, mam ukończone 18 lat",
+    "no": "Nie mam 18 lat",
+    "restrictedMessageTitle": "Ograniczenie wiekowe",
+    "restrictedMessage": "Opcja składania zamówień na produkty alkoholowe jest dla Ciebie wyłączona, ponieważ jesteś osobą niepełnoletnią."
+  },
   "navbar": {
     "lightMode": "Tryb jasny",
     "darkMode": "Tryb ciemny",
