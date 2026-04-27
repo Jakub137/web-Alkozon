@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/context/ThemeContext";
 import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { AgeProvider } from "@/context/AgeContext";
+import { NotificationProvider } from "@/context/NotificationContext";
 import { AutoLogoutListener } from "@/hooks/useAutoLogout";
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -13,10 +14,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <LanguageProvider>
         <AuthProvider>
           <AgeProvider>
-            <CartProvider>
-              {children}
-              <AutoLogoutListener />
-            </CartProvider>
+            <NotificationProvider>
+              <CartProvider>
+                {children}
+                <AutoLogoutListener />
+              </CartProvider>
+            </NotificationProvider>
           </AgeProvider>
         </AuthProvider>
       </LanguageProvider>
