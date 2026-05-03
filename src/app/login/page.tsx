@@ -9,7 +9,7 @@ import { Lock, Mail, Eye, EyeOff, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-const loginSchema = z.object({
+export const loginSchema = z.object({
   email: z.string().email({ message: "Niepoprawny format adresu email" }),
   password: z.string().min(1, { message: "Hasło jest wymagane" }),
 });
