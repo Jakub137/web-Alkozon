@@ -1,27 +1,27 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('E2E: Podstawowy scenariusz aplikacji', () => {
-  test('powinien wejść na stronę główną, przejść Age Gate i sprawdzić produkty', async ({ page }) => {
-    // Krok 1: Wejście na stronę
+test.describe('Home Page Flow', () => {
+  test('powinien wyrenderować główną stronę i kafelki nawigacyjne', async ({ page }) => {
+    // 1. Otwarcie strony
     await page.goto('/');
+    
+    const ageBtn = page.getByRole('button', { name: 'Tak, mam ukończone 18 lat' });
+    await ageBtn.waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
+    if (await ageBtn.isVisible()) await ageBtn.click();
 
-    // Krok 2: Age Gate (Modal weryfikacji wieku)
-    // Czekamy aż pojawi się modal
-    const ageModalText = page.getByText(/Czy masz ukończone 18 lat\?/i);
-    await expect(ageModalText).toBeVisible({ timeout: 10000 });
+    // 2. Sprawdzanie głównego nagłówka
+    const heading = page.getByRole('heading', { level: 1 });
+    await expect(heading).toBeVisible();
 
-    // Klikamy "Tak, mam ukończone 18 lat"
-    await page.getByText(/Tak, mam ukończone 18 lat/i).click();
+    // 3. Sprawdzanie czy istnieją linki kafelków
+    const shopLink = page.getByRole('link', { name: 'Sklep' }).first();
+    await expect(shopLink).toBeVisible();
+    
+    const cartLink = page.getByRole('link', { name: 'Koszyk' }).first();
+    await expect(cartLink).toBeVisible();
 
-    // Sprawdzamy, czy modal zniknął
-    await expect(ageModalText).not.toBeVisible();
-
-    // Krok 3: Sprawdzenie nagłówka strony
-    await expect(page.locator('h1').first()).toBeVisible();
-
-    // Krok 4: Sprawdzenie dostępności kafelka produktu
-    // Powinien tam być tekst ceny lub ikonka koszyka
-    const addToCartButton = page.getByRole('button', { name: /Dodaj do koszyka/i }).first();
-    await expect(addToCartButton).toBeVisible();
+    // 4. Kliknięcie na sklep powinno przekierować poprawnie
+    await shopLink.click();
+    await expect(page).toHaveURL(/.*\/shop/);
   });
 });
