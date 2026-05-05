@@ -112,7 +112,7 @@ export default function ShopPage() {
     if (total <= maxButtons) return Array.from({ length: total }, (_, i) => i + 1);
 
     let start = Math.max(1, currentPage - 2);
-    let end = Math.min(total, start + maxButtons - 1);
+    const end = Math.min(total, start + maxButtons - 1);
     start = Math.max(1, end - maxButtons + 1);
 
     const pages: number[] = [];
