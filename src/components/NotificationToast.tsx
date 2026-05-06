@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { AppNotification, useNotification } from "@/context/NotificationContext";
 import { X, CheckCircle, Info, AlertTriangle, XCircle } from "lucide-react";
 

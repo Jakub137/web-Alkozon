@@ -7,6 +7,7 @@ import { mockProducts } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/context/CartContext";
+import { CategoryIcon } from "@/components/CategoryIcon";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -162,7 +163,10 @@ export default function ShopPage() {
                           onChange={() => toggleCategory(cat)}
                           className="h-4 w-4 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 focus:ring-2 focus:ring-blue-500"
                         />
-                        <span className="truncate">{dict.shop.categories[cat]}</span>
+                        <span className="flex items-center gap-2 truncate">
+                          <CategoryIcon category={cat} className="w-4 h-4 text-slate-500" />
+                          {dict.shop.categories[cat]}
+                        </span>
                       </label>
                     );
                   })}

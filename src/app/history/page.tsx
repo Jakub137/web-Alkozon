@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { HISTORY_CATEGORIES, historyContent } from "@/data/historyContent";
+import { CategoryIcon } from "@/components/CategoryIcon";
 
 export default function HistoryPage() {
   const { dict, lang } = useLanguage();
@@ -59,8 +60,8 @@ export default function HistoryPage() {
                   <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">
                     {dict.shop.categories[category]}
                   </h2>
-                  <span className="text-2xl" aria-hidden>
-                    {entry.icon}
+                  <span className="text-2xl text-slate-500" aria-hidden>
+                    <CategoryIcon category={category} className="w-6 h-6" />
                   </span>
                 </div>
                 <p className="text-sm text-slate-600 dark:text-slate-300 overflow-hidden max-h-[96px]">

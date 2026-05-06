@@ -5,7 +5,8 @@ import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
-import { historyContent, isHistoryCategory } from "@/data/historyContent";
+import { historyContent, isHistoryCategory, HistoryCategory } from "@/data/historyContent";
+import { CategoryIcon } from "@/components/CategoryIcon";
 
 export default function HistoryCategoryPage() {
   const { dict, lang } = useLanguage();
@@ -68,8 +69,9 @@ export default function HistoryCategoryPage() {
         >
           {dict.historyPage.backToHistory}
         </Link>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-100 mb-2">
-          {entry.icon} {dict.shop.categories[categoryParam]}
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-100 mb-2 flex items-center gap-3">
+          <span className="text-slate-500"><CategoryIcon category={categoryParam as HistoryCategory} className="w-8 h-8" /></span>
+          {dict.shop.categories[categoryParam]}
         </h1>
         <p className="text-slate-600 dark:text-slate-300">{entry.teaser[lang]}</p>
       </header>

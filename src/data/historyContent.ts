@@ -19,7 +19,6 @@ export type HistoryProcessStep = {
 };
 
 export type HistoryEntry = {
-  icon: string;
   teaser: LocalizedText;
   origin: LocalizedText;
   evolution: LocalizedText;
@@ -45,7 +44,6 @@ export function isHistoryCategory(value: string): value is HistoryCategory {
 
 export const historyContent: Record<HistoryCategory, HistoryEntry> = {
   vodka: {
-    icon: "🧊",
     teaser: {
       pl: "Od medycznych destylatow do jednego z najbardziej rozpoznawalnych alkoholi Europy Wschodniej.",
       en: "From medicinal distillates to one of the most recognizable spirits in Eastern Europe.",
@@ -163,7 +161,6 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
     ],
   },
   whisky: {
-    icon: "🥃",
     teaser: {
       pl: "Historia od klasztornych destylatow po szkockie i irlandzkie style dojrzewane w beczkach.",
       en: "A story from monastic distillates to Scotch and Irish barrel-aged styles.",
@@ -278,7 +275,6 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
     ],
   },
   wine: {
-    icon: "🍇",
     teaser: {
       pl: "Tysiace lat tradycji: od starozytnych upraw winorosli po nowoczesne regiony i style.",
       en: "Thousands of years of tradition: from ancient vines to modern regions and styles.",
@@ -397,7 +393,6 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
     ],
   },
   beer: {
-    icon: "🍺",
     teaser: {
       pl: "Jeden z najstarszych napojow fermentowanych - od glinianych naczyn po nowoczesny kraft.",
       en: "One of the oldest fermented drinks - from clay vessels to modern craft brewing.",
@@ -512,7 +507,6 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
     ],
   },
   liqueur: {
-    icon: "🍸",
     teaser: {
       pl: "Slodkie i aromatyczne trunki laczace destylaty z ziolami, owocami i przyprawami.",
       en: "Sweet and aromatic spirits combining distillates with herbs, fruits, and spices.",
@@ -641,7 +635,6 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
     ],
   },
   rum: {
-    icon: "🏴‍☠️",
     teaser: {
       pl: "Od trzciny cukrowej i karaibskich destylarni po nowoczesne style premium.",
       en: "From sugarcane and Caribbean distilleries to modern premium styles.",

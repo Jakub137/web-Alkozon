@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import "./globals.css";
 import LanguageSwitcher from "../components/LanguageSwitcher";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
 import LoginButton from "@/components/LoginButton";
+import { Suspense } from "react";
 import BackHomeButton from "@/components/BackHomeButton";
 import { Providers } from "./providers";
 import AgeVerificationModal from "@/components/AgeVerificationModal";
@@ -45,7 +47,13 @@ export default function RootLayout({
             
             {/* Lewa strona - Logo i nazwa */}
             <div className="w-48 text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight flex items-center gap-3">
-              <img src="/logo.png" alt="Alkozon Logo" className="w-14 h-14 rounded-2xl object-cover shrink-0" /> 
+              <Image
+                src="/logo.png"
+                alt="Alkozon Logo"
+                width={56}
+                height={56}
+                className="w-14 h-14 rounded-2xl object-cover shrink-0"
+              />
               Alkozon
             </div>
             
@@ -54,7 +62,9 @@ export default function RootLayout({
 
             {/* Prawa strona */}
             <div className="w-auto flex gap-2 items-center justify-end">
-              <BackHomeButton />
+              <Suspense fallback={null}>
+                <BackHomeButton />
+              </Suspense>
               <LanguageSwitcher />           
               <ThemeSwitcher />
               <LoginButton />

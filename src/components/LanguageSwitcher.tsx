@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useLanguage } from "../context/LanguageContext";
 
 export default function LanguageSwitcher() {
@@ -11,9 +12,11 @@ export default function LanguageSwitcher() {
   return (
     <div className="flex gap-2 items-center">
       {/* PL */}
-      <img
+      <Image
         src="/pl.svg"
         alt="PL"
+        width={40}
+        height={28}
         onClick={() => setLang("pl")}
         className={`${base} ${
           lang === "pl"
@@ -23,9 +26,11 @@ export default function LanguageSwitcher() {
       />
 
       {/* EN */}
-      <img
+      <Image
         src="/us.svg"
         alt="EN"
+        width={40}
+        height={28}
         onClick={() => setLang("en")}
         className={`${base} ${
           lang === "en"
