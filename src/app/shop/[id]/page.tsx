@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 import { mockProducts } from "@/data/products";
 
@@ -44,8 +45,14 @@ export default function ShopProductPage({
       <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-sm dark:shadow-slate-900/50">
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="w-full lg:w-80">
-            <div className="w-full h-72 bg-slate-200 dark:bg-slate-900 rounded-xl flex items-center justify-center p-6">
-              <div className="text-6xl">🍷</div>
+            <div className="relative w-full h-72 bg-slate-200 dark:bg-slate-900 rounded-xl flex items-center justify-center p-6">
+              <Image
+                src={product.image}
+                alt={product.name}
+                fill
+                sizes="(max-width: 1024px) 100vw, 320px"
+                className="object-contain p-6"
+              />
             </div>
           </div>
 
@@ -97,7 +104,7 @@ export default function ShopProductPage({
             {dict.shop.details.descriptionTitle}
           </h2>
           <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-            {dict.shop.details.description}
+            {product.description || dict.shop.details.description}
           </p>
         </section>
 

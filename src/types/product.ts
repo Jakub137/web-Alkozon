@@ -8,4 +8,5 @@ export interface Product {
   image: string;
   category: ProductCategory;
   alcoholContent?: number;
+  description?: string;
 }

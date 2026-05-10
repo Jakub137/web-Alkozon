@@ -11,15 +11,15 @@ test.describe('Shop Page Flow', () => {
 
     // 2. Szukanie w pasku (test działania opóźnienia Debounce)
     const searchInput = page.getByPlaceholder('Szukaj produktu...');
-    await searchInput.fill('Chopin');
+    await searchInput.fill('Bernard');
     
     // Odczekanie na hook'a odpowiedzialnego za opóźnienie w szukaniu
     await page.waitForTimeout(500);
 
     // 3. Sprawdzenie, czy pojawił się dany produkt
-    await expect(page.getByText('Chopin Potato')).toBeVisible();
+    await expect(page.getByText('Bernard Swiateczny Lager')).toBeVisible();
 
     // 4. Upewnienie się, że produkty które nie pasują nie są widoczne
-    await expect(page.getByText('Kozuba Starkus')).not.toBeVisible();
+    await expect(page.getByText('Heineken')).not.toBeVisible();
   });
 });
