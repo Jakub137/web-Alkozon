@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
-import { mockProducts } from "@/data/products";
+import { getProductById } from "@/lib/api/products";
+import { ApiError } from "@/lib/api/types";
 
 export default function ShopProductPage({
   params,
@@ -11,9 +13,55 @@ export default function ShopProductPage({
   params: { id: string };
 }) {
   const { dict } = useLanguage();
-  const product = mockProducts.find((p) => p.id === params.id);
+  const [product, setProduct] = useState<Awaited<ReturnType<typeof getProductById>> | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  if (!product) {
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadProduct() {
+      try {
+        setIsLoading(true);
+        setNotFound(false);
+        setErrorMsg(null);
+        const data = await getProductById(params.id);
+        if (!cancelled) {
+          setProduct(data);
+        }
+      } catch (error) {
+        if (cancelled) return;
+        if (error instanceof ApiError && error.status === 404) {
+          setNotFound(true);
+          setProduct(null);
+        } else {
+          setErrorMsg("Nie udało się pobrać danych produktu.");
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    void loadProduct();
+    return () => {
+      cancelled = true;
+    };
+  }, [params.id]);
+
+  if (isLoading) {
+    return (
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grow">
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 text-center text-slate-600 dark:text-slate-300 shadow-sm dark:shadow-slate-900/50">
+          Ładowanie produktu...
+        </div>
+      </div>
+    );
+  }
+
+  if (notFound || !product) {
     return (
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grow">
         <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 text-center text-slate-600 dark:text-slate-300 shadow-sm dark:shadow-slate-900/50">
@@ -33,6 +81,11 @@ export default function ShopProductPage({
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grow">
+      {errorMsg && (
+        <div className="mb-6 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl px-4 py-3 text-sm text-red-700 dark:text-red-300">
+          {errorMsg}
+        </div>
+      )}
       <div className="mb-6">
         <Link
           href="/shop"

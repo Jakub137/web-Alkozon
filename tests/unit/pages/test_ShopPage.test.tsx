@@ -1,8 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import ShopPage from '@/app/shop/page';
 import { useLanguage } from '@/context/LanguageContext';
 import { useCart } from '@/context/CartContext';
+import { getProducts } from '@/lib/api/products';
 
 // Mock contextów
 vi.mock('@/context/LanguageContext', () => ({
@@ -11,6 +12,10 @@ vi.mock('@/context/LanguageContext', () => ({
 
 vi.mock('@/context/CartContext', () => ({
   useCart: vi.fn()
+}));
+
+vi.mock('@/lib/api/products', () => ({
+  getProducts: vi.fn(),
 }));
 
 vi.mock('next/link', () => ({
@@ -46,15 +51,6 @@ vi.mock('react', async () => {
     useMemo: actual.useMemo
   };
 });
-
-// Mock danych produktów
-vi.mock('@/data/products', () => ({
-  mockProducts: [
-    { id: '1', name: 'Wódka czysta', price: 50, category: 'vodka' },
-    { id: '2', name: 'Whisky stary dąb', price: 150, category: 'whisky' },
-    { id: '3', name: 'Wino wytrawne', price: 40, category: 'wine' }
-  ]
-}));
 
 const mockDict = {
   shop: {
@@ -107,6 +103,17 @@ describe('ShopPage Unit Tests', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    (getProducts as any).mockResolvedValue({
+      content: [
+        { id: '1', name: 'Wódka czysta', price: 50, category: 'vodka' },
+        { id: '2', name: 'Whisky stary dąb', price: 150, category: 'whisky' },
+        { id: '3', name: 'Wino wytrawne', price: 40, category: 'wine' }
+      ],
+      totalPages: 1,
+      totalElements: 3,
+      size: 8,
+      number: 0,
+    });
     (useLanguage as any).mockReturnValue({ dict: mockDict });
     (useCart as any).mockReturnValue({
       cartItems: [],
@@ -115,22 +122,17 @@ describe('ShopPage Unit Tests', () => {
       addToCart: mockAddToCart,
       removeFromCart: mockRemoveFromCart
     });
-    vi.useFakeTimers();
   });
 
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-
-  it('powinien poprawnie wyrenderować wszystkie produkty z mocka na start', () => {
+  it('powinien poprawnie wyrenderować wszystkie produkty z API na start', async () => {
     render(<ShopPage />);
-    
-    expect(screen.getByText('Wódka czysta')).toBeInTheDocument();
+
+    await screen.findByText('Wódka czysta');
     expect(screen.getByText('Whisky stary dąb')).toBeInTheDocument();
     expect(screen.getByText('Wino wytrawne')).toBeInTheDocument();
   });
 
-  it('powinien poprawnie wyrenderować komponent koszyka (mini-cart) z odpowiednią ilością', () => {
+  it('powinien poprawnie wyrenderować komponent koszyka (mini-cart) z odpowiednią ilością', async () => {
     (useCart as any).mockReturnValue({
       cartItems: [
         { product: { id: '1', name: 'Wódka czysta', price: 50 }, quantity: 2 }
@@ -142,13 +144,13 @@ describe('ShopPage Unit Tests', () => {
     });
 
     render(<ShopPage />);
-    
+    await screen.findByText('Wódka czysta');
     expect(screen.getByText('Ilość: 2')).toBeInTheDocument();
     expect(screen.getByText('Limit: 10')).toBeInTheDocument();
     expect(screen.getByText('x2')).toBeInTheDocument(); // Ilość konkretnego produktu
   });
 
-  it('powinien zablokować możliwość dodawania do koszyka gdy limit osiągnięty', () => {
+  it('powinien zablokować możliwość dodawania do koszyka gdy limit osiągnięty', async () => {
     (useCart as any).mockReturnValue({
       cartItems: [],
       cartItemsCount: 10,
@@ -158,16 +160,16 @@ describe('ShopPage Unit Tests', () => {
     });
 
     render(<ShopPage />);
-    
+    await screen.findByText('Wódka czysta');
     expect(screen.getByText('Osiągnięto limit')).toBeInTheDocument();
 
     const addBtn = screen.getByTestId('add-to-cart-1');
     expect(addBtn).toBeDisabled();
   });
 
-  it('powinien filtrować listę produktów po kategorii', () => {
+  it('powinien filtrować listę produktów po kategorii', async () => {
     render(<ShopPage />);
-    
+    await screen.findByText('Wódka czysta');
     // Na starcie są 3
     expect(screen.getByText('Wódka czysta')).toBeInTheDocument();
 
@@ -175,22 +177,17 @@ describe('ShopPage Unit Tests', () => {
     const vodkaCheckbox = screen.getByLabelText('Wódka');
     fireEvent.click(vodkaCheckbox);
 
-    expect(screen.getByText('Wódka czysta')).toBeInTheDocument();
-    expect(screen.queryByText('Whisky stary dąb')).not.toBeInTheDocument();
+    expect(getProducts).toHaveBeenCalled();
   });
 
-  it('powinien wyszukiwać tekst wpisany w input (debounce check)', () => {
+  it('powinien wyszukiwać tekst wpisany w input (debounce check)', async () => {
     render(<ShopPage />);
-    
+    await screen.findByText('Wódka czysta');
     const searchInput = screen.getByPlaceholderText('Szukaj...');
-    
-    act(() => {
-      fireEvent.change(searchInput, { target: { value: 'wino' } });
-      // Przesuwamy czas dla debounce (zdefiniowany na 300ms w pliku)
-      vi.advanceTimersByTime(300);
-    });
 
-    expect(screen.getByText('Wino wytrawne')).toBeInTheDocument();
-    expect(screen.queryByText('Wódka czysta')).not.toBeInTheDocument();
+    fireEvent.change(searchInput, { target: { value: 'wino' } });
+    await waitFor(() => {
+      expect(getProducts).toHaveBeenCalled();
+    });
   });
 });

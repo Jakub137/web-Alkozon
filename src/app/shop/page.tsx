@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { ProductCategory } from "@/types/product";
-import { mockProducts } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/context/CartContext";
 import { CategoryIcon } from "@/components/CategoryIcon";
+import { getProducts } from "@/lib/api/products";
+import { ApiError } from "@/lib/api/types";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -30,26 +31,17 @@ export default function ShopPage() {
   const categoryOptions: ProductCategory[] = ["vodka", "whisky", "wine", "beer", "liqueur", "rum"];
   const isCartLimitReached = cartItemsCount >= cartItemsLimit;
 
-  const priceBounds = useMemo(() => {
-    let min = Number.POSITIVE_INFINITY;
-    let max = Number.NEGATIVE_INFINITY;
-
-    for (const p of mockProducts) {
-      min = Math.min(min, p.price);
-      max = Math.max(max, p.price);
-    }
-
-    return { min, max };
-  }, []);
-
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebouncedValue(query, 300);
 
   const [sortKey, setSortKey] = useState<SortKey>("nameAsc");
   const [selectedCategories, setSelectedCategories] = useState<ProductCategory[]>([]);
-
-  const [priceMin, setPriceMin] = useState<number>(priceBounds.min);
-  const [priceMax, setPriceMax] = useState<number>(priceBounds.max);
+  const [priceMin, setPriceMin] = useState<number>(0);
+  const [priceMax, setPriceMax] = useState<number>(2000);
+  const [products, setProducts] = useState<Awaited<ReturnType<typeof getProducts>>["content"]>([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const selectedCategoriesKey = useMemo(
     () => selectedCategories.slice().sort().join(","),
@@ -62,49 +54,49 @@ export default function ShopPage() {
     setCurrentPage(1);
   }, [debouncedQuery, sortKey, selectedCategoriesKey, priceMin, priceMax]);
 
-  const filteredAndSorted = useMemo(() => {
-    const q = debouncedQuery.trim().toLowerCase();
-    const min = Math.min(priceMin, priceMax);
-    const max = Math.max(priceMin, priceMax);
-
-    const filtered = mockProducts.filter((p) => {
-      const matchQuery = q.length === 0 || p.name.toLowerCase().includes(q);
-      const matchCategory =
-        selectedCategories.length === 0 || selectedCategories.includes(p.category);
-      const matchPrice = p.price >= min && p.price <= max;
-
-      return matchQuery && matchCategory && matchPrice;
-    });
-
-    const sorted = filtered.slice();
-
-    sorted.sort((a, b) => {
-      switch (sortKey) {
-        case "priceAsc":
-          return a.price - b.price;
-        case "priceDesc":
-          return b.price - a.price;
-        case "nameAsc":
-          return a.name.localeCompare(b.name);
-        case "nameDesc":
-          return b.name.localeCompare(a.name);
-      }
-    });
-
-    return sorted;
-  }, [debouncedQuery, priceMin, priceMax, selectedCategories, sortKey]);
-
-  const totalPages = Math.max(1, Math.ceil(filteredAndSorted.length / ITEMS_PER_PAGE));
-
   useEffect(() => {
-    setCurrentPage((prev) => Math.min(prev, totalPages));
-  }, [totalPages]);
+    let cancelled = false;
 
-  const pageItems = useMemo(() => {
-    const start = (currentPage - 1) * ITEMS_PER_PAGE;
-    const end = start + ITEMS_PER_PAGE;
-    return filteredAndSorted.slice(start, end);
-  }, [filteredAndSorted, currentPage]);
+    async function loadProducts() {
+      try {
+        setIsLoading(true);
+        setErrorMsg(null);
+
+        const selectedCategory = selectedCategories.length === 1 ? selectedCategories[0] : undefined;
+        const response = await getProducts({
+          page: Math.max(currentPage - 1, 0),
+          size: ITEMS_PER_PAGE,
+          sort: sortKey,
+          q: debouncedQuery,
+          category: selectedCategory,
+          minPrice: Math.min(priceMin, priceMax),
+          maxPrice: Math.max(priceMin, priceMax),
+        });
+
+        if (cancelled) return;
+        setProducts(response.content);
+        setTotalPages(Math.max(1, response.totalPages));
+      } catch (error) {
+        if (cancelled) return;
+        if (error instanceof ApiError && error.status === 429) {
+          setErrorMsg("Zbyt wiele zapytań do wyszukiwarki. Spróbuj ponownie za chwilę.");
+        } else {
+          setErrorMsg("Nie udało się pobrać produktów.");
+        }
+        setProducts([]);
+        setTotalPages(1);
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    void loadProducts();
+    return () => {
+      cancelled = true;
+    };
+  }, [currentPage, debouncedQuery, selectedCategories, sortKey, priceMin, priceMax]);
 
   const visiblePages = useMemo(() => {
     const maxButtons = 5;
@@ -123,7 +115,7 @@ export default function ShopPage() {
 
   const toggleCategory = (cat: ProductCategory) => {
     setSelectedCategories((prev) =>
-      prev.includes(cat) ? prev.filter((x) => x !== cat) : [...prev, cat]
+      prev.includes(cat) ? [] : [cat]
     );
   };
 
@@ -187,8 +179,6 @@ export default function ShopPage() {
                       type="number"
                       value={Number.isFinite(priceMin) ? priceMin : 0}
                       step={0.01}
-                      min={priceBounds.min}
-                      max={priceBounds.max}
                       onChange={(e) => setPriceMin(Number(e.target.value))}
                       className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
                     />
@@ -201,8 +191,6 @@ export default function ShopPage() {
                       type="number"
                       value={Number.isFinite(priceMax) ? priceMax : 0}
                       step={0.01}
-                      min={priceBounds.min}
-                      max={priceBounds.max}
                       onChange={(e) => setPriceMax(Number(e.target.value))}
                       className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
                     />
@@ -245,14 +233,24 @@ export default function ShopPage() {
             </div>
           </div>
 
-          {filteredAndSorted.length === 0 ? (
+          {errorMsg && (
+            <div className="mb-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl px-4 py-3 text-sm text-red-700 dark:text-red-300">
+              {errorMsg}
+            </div>
+          )}
+
+          {isLoading ? (
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 text-center text-slate-600 dark:text-slate-300 shadow-sm dark:shadow-slate-900/50">
+              Ładowanie produktów...
+            </div>
+          ) : products.length === 0 ? (
             <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 text-center text-slate-600 dark:text-slate-300 shadow-sm dark:shadow-slate-900/50">
               {dict.shop.noProducts}
             </div>
           ) : (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {pageItems.map((product) => (
+                {products.map((product) => (
                   <ProductCard
                     key={product.id}
                     product={product}

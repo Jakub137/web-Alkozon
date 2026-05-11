@@ -14,7 +14,7 @@ const TestComponent = () => {
     accessToken: 'fake-token',
     refreshToken: 'fake-refresh-token',
     tokenType: 'Bearer',
-    expiresAt: Date.now() + 1000 * 60,
+    expiresAt: 9999999999999,
     user: {
       username: 'testuser',
       email: 'test@example.com',
