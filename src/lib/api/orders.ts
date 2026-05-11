@@ -20,7 +20,7 @@ interface ApiOrderResponse {
   items: ApiOrderItem[];
 }
 
-function mapStatus(status: ApiOrderResponse["status"]): OrderStatus {
+export function mapBackendOrderStatusToUi(status: BackendOrderStatus): OrderStatus {
   switch (status) {
     case "SUBMITTED":
       return "received";
@@ -56,7 +56,7 @@ export function extractOrderId(orderNumber: string): string {
 }
 
 export function mapApiOrderToRecord(apiOrder: ApiOrderResponse, email = ""): OrderRecord {
-  const status = mapStatus(apiOrder.status);
+  const status = mapBackendOrderStatusToUi(apiOrder.status);
   return {
     orderNumber: `ORD-${apiOrder.id}`,
     email,

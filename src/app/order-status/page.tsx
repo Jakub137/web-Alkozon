@@ -7,8 +7,9 @@ import { useLanguage } from "@/context/LanguageContext";
 import { findOrderByNumberAndEmail } from "@/data/orders";
 import { BackendOrderStatus, OrderProgressStep, OrderRecord, OrderStatus } from "@/types/order";
 import { useAuth } from "@/context/AuthContext";
-import { extractOrderId, getMyOrders, getOrderById } from "@/lib/api/orders";
+import { extractOrderId, getMyOrders, getOrderById, mapBackendOrderStatusToUi } from "@/lib/api/orders";
 import { ApiError } from "@/lib/api/types";
+import { subscribeOrderStatusUpdates } from "@/lib/realtime/orderUpdates";
 
 const PROGRESS_STEPS: OrderProgressStep[] = ["received", "processing", "shipped", "delivered"];
 
@@ -153,6 +154,32 @@ export default function OrderStatusPage() {
       cancelled = true;
     };
   }, [token, user?.email, authorizedRequest]);
+
+  useEffect(() => {
+    if (!token) return;
+
+    return subscribeOrderStatusUpdates(token, (event) => {
+      const nextUiStatus = mapBackendOrderStatusToUi(event.status);
+      const targetOrderNumber = `ORD-${event.orderId}`;
+
+      setMyOrders((prev) =>
+        prev.map((entry) =>
+          entry.orderNumber === targetOrderNumber
+            ? { ...entry, status: nextUiStatus, apiStatus: event.status }
+            : entry
+        )
+      );
+
+      setOrder((prev) => {
+        if (!prev || prev.orderNumber !== targetOrderNumber) return prev;
+        return {
+          ...prev,
+          status: nextUiStatus,
+          apiStatus: event.status,
+        };
+      });
+    });
+  }, [token]);
 
   useEffect(() => {
     const paramValue = new URLSearchParams(window.location.search).get("orderId");
