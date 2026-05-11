@@ -8,6 +8,8 @@ import { useAuth } from "@/context/AuthContext";
 import { Lock, Mail, Eye, EyeOff, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { loginApi } from "@/lib/api/auth";
+import { ApiError } from "@/lib/api/types";
 
 export const loginSchema = z.object({
   email: z.string().email({ message: "Niepoprawny format adresu email" }),
@@ -26,6 +28,7 @@ export default function LoginPage() {
   const [attempts, setAttempts] = useState(0);
   const [isLocked, setIsLocked] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -40,26 +43,38 @@ export default function LoginPage() {
     setAttempts(savedAttempts);
   }, []);
 
-  const onSubmit = (data: LoginFormValues) => {
+  const onSubmit = async (data: LoginFormValues) => {
     if (isLocked) return;
 
-    // TODO: Zastąpić prawdziwym wywołaniem API po HTTPS
-    // Na potrzeby MVP Desktopu/Weba mockujemy poprawne passy.
-    if (data.email === "test@test.pl" && data.password === "Test1234!") {
-      login("TestUser", "mocked-jwt-token-from-brute-force-safe-login");
+    try {
+      setIsSubmitting(true);
+      const session = await loginApi(data);
+      login(session);
       localStorage.removeItem("login_attempts"); // reset na sukces
       router.push("/");
-    } else {
+    } catch (error) {
       const newAttempts = attempts + 1;
       setAttempts(newAttempts);
       localStorage.setItem("login_attempts", newAttempts.toString());
       
+      if (error instanceof ApiError && error.status === 429) {
+        setErrorMsg("Zbyt wiele prób logowania. Spróbuj ponownie za chwilę.");
+        return;
+      }
+
       if (newAttempts >= MAX_ATTEMPTS) {
         setIsLocked(true);
         setErrorMsg("Konto zablokowane z powodu zbyt wielu nieudanych prób logowania.");
       } else {
-        setErrorMsg(`Błędne dane. Ochrona Brute-Force: Pozostało prób ${MAX_ATTEMPTS - newAttempts}`);
+        const fallback = `Błędne dane. Ochrona Brute-Force: Pozostało prób ${MAX_ATTEMPTS - newAttempts}`;
+        if (error instanceof ApiError) {
+          setErrorMsg(error.message || fallback);
+        } else {
+          setErrorMsg(fallback);
+        }
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -92,7 +107,7 @@ export default function LoginPage() {
               <input
                 {...register("email")}
                 type="email"
-                disabled={isLocked}
+                disabled={isLocked || isSubmitting}
                 className="block w-full pl-10 pr-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-slate-900 text-slate-900 dark:text-white sm:text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 placeholder="test@test.pl"
               />
@@ -109,7 +124,7 @@ export default function LoginPage() {
               <input
                 {...register("password")}
                 type={showPassword ? "text" : "password"}
-                disabled={isLocked}
+                disabled={isLocked || isSubmitting}
                 className="block w-full pl-10 pr-10 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-slate-900 text-slate-900 dark:text-white sm:text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 placeholder="••••••••"
               />
@@ -117,7 +132,7 @@ export default function LoginPage() {
                 type="button"
                 className="absolute inset-y-0 right-0 pr-3 flex items-center"
                 onClick={() => setShowPassword(!showPassword)}
-                disabled={isLocked}
+                disabled={isLocked || isSubmitting}
               >
                 {showPassword ? (
                   <EyeOff className="h-5 w-5 text-slate-400 hover:text-slate-500 transition-colors" />
@@ -131,15 +146,11 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            disabled={isLocked}
+            disabled={isLocked || isSubmitting}
             className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-slate-400 disabled:dark:bg-slate-700 disabled:text-slate-300 disabled:cursor-not-allowed transition-colors"
           >
-            {isLocked ? "System Zablokowany" : "Zaloguj się"}
+            {isLocked ? "System Zablokowany" : isSubmitting ? "Logowanie..." : "Zaloguj się"}
           </button>
-          
-          <div className="text-center mt-4">
-              <p className="text-xs text-slate-500 dark:text-slate-500">Do testów użyj: test@test.pl / Test1234!</p>
-          </div>
         </form>
       </div>
     </div>

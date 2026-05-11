@@ -8,6 +8,8 @@ import { Lock, Mail, User, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { registerApi } from "@/lib/api/auth";
+import { ApiError } from "@/lib/api/types";
 
 const registerSchema = z.object({
   username: z.string().min(3, { message: "Nazwa użytkownika od 3 znaków" }),
@@ -24,16 +26,36 @@ export default function RegisterPage() {
   const router = useRouter();
   const { login, setToast } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
   });
 
-  const onSubmit = (data: RegisterFormValues) => {
-    // W pełni bezpieczna walidacja (Schema Zod chroni przed Injection). Zalogowanie po HTTPS:
-    login(data.username, "mocked-jwt-token-after-register");
-    setToast("Konto zostało pomyślnie utworzone! Zostałeś automatycznie zalogowany.");
-    router.push("/");
+  const onSubmit = async (data: RegisterFormValues) => {
+    try {
+      setErrorMsg("");
+      setIsSubmitting(true);
+      const [firstName, ...restNames] = data.username.trim().split(" ");
+      const session = await registerApi({
+        email: data.email,
+        password: data.password,
+        firstName,
+        lastName: restNames.join(" ") || undefined,
+      });
+      login(session);
+      setToast("Konto zostało pomyślnie utworzone! Zostałeś automatycznie zalogowany.");
+      router.push("/");
+    } catch (error) {
+      if (error instanceof ApiError) {
+        setErrorMsg(error.message);
+      } else {
+        setErrorMsg("Nie udało się utworzyć konta. Spróbuj ponownie.");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -48,6 +70,11 @@ export default function RegisterPage() {
           </p>
         </div>
 
+        {errorMsg && (
+          <div className="mb-6 p-4 rounded-lg bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800">
+            <p className="text-sm text-red-800 dark:text-red-300 font-medium">{errorMsg}</p>
+          </div>
+        )}
         <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Nazwa Użytkownika (Login)</label>
@@ -58,6 +85,7 @@ export default function RegisterPage() {
               <input
                 {...register("username")}
                 type="text"
+                disabled={isSubmitting}
                 className="block w-full pl-10 pr-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-slate-900 text-slate-900 dark:text-white sm:text-sm transition-colors"
                 placeholder="Janek123"
               />
@@ -74,6 +102,7 @@ export default function RegisterPage() {
               <input
                 {...register("email")}
                 type="email"
+                disabled={isSubmitting}
                 className="block w-full pl-10 pr-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-slate-900 text-slate-900 dark:text-white sm:text-sm transition-colors"
                 placeholder="jan@kowalski.pl"
               />
@@ -90,6 +119,7 @@ export default function RegisterPage() {
               <input
                 {...register("password")}
                 type={showPassword ? "text" : "password"}
+                disabled={isSubmitting}
                 className="block w-full pl-10 pr-10 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-slate-900 text-slate-900 dark:text-white sm:text-sm transition-colors"
                 placeholder="••••••••"
               />
@@ -97,6 +127,7 @@ export default function RegisterPage() {
                 type="button"
                 className="absolute inset-y-0 right-0 pr-3 flex items-center"
                 onClick={() => setShowPassword(!showPassword)}
+                disabled={isSubmitting}
               >
                 {showPassword ? (
                   <EyeOff className="h-5 w-5 text-slate-400 hover:text-slate-500 transition-colors" />
@@ -114,9 +145,10 @@ export default function RegisterPage() {
 
           <button
             type="submit"
+            disabled={isSubmitting}
             className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
           >
-            Zarejestruj Konto
+            {isSubmitting ? "Rejestracja..." : "Zarejestruj Konto"}
           </button>
         </form>
       </div>

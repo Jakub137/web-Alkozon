@@ -25,7 +25,7 @@ export function useAutoLogout() {
 
     const interval = setInterval(() => {
       if (Date.now() - lastActive.current > INACTIVITY_LIMIT_MS) {
-        logout("Wylogowano ze względów bezpieczeństwa (Brak aktywności).");
+        void logout("Wylogowano ze względów bezpieczeństwa (Brak aktywności).");
       }
     }, 5000); // sprawdzamy co 5 sekund
 

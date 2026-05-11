@@ -35,7 +35,7 @@ export default function LoginButton() {
           <span className="hidden sm:inline">Witaj, {user.username}</span>
         </div>
         <button 
-          onClick={() => logout("Pomyślnie wylogowano.")} 
+          onClick={() => void logout("Pomyślnie wylogowano.")} 
           className="text-sm font-medium text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 transition-colors flex items-center gap-1"
           title="Wyloguj"
         >

@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import LoginPage from '@/app/login/page';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
+import { loginApi } from '@/lib/api/auth';
 
 vi.mock('@/context/AuthContext', () => ({
   useAuth: vi.fn()
@@ -10,6 +11,10 @@ vi.mock('@/context/AuthContext', () => ({
 
 vi.mock('next/navigation', () => ({
   useRouter: vi.fn()
+}));
+
+vi.mock('@/lib/api/auth', () => ({
+  loginApi: vi.fn(),
 }));
 
 vi.mock('next/link', () => ({
@@ -27,6 +32,13 @@ describe('LoginPage Unit Tests', () => {
     localStorage.clear();
     (useAuth as any).mockReturnValue({ login: mockLogin });
     (useRouter as any).mockReturnValue({ push: mockPush });
+    (loginApi as any).mockResolvedValue({
+      accessToken: 'mocked-jwt-token',
+      refreshToken: 'mocked-refresh-token',
+      tokenType: 'Bearer',
+      expiresAt: Date.now() + 1000 * 60,
+      user: { username: 'TestUser', email: 'test@test.pl', role: 'CUSTOMER' },
+    });
   });
 
   it('powinien wyrenderować formularz logowania', () => {
@@ -67,7 +79,7 @@ describe('LoginPage Unit Tests', () => {
     expect(emailInput).toBeDisabled();
   });
 
-  it('powinien poprawnie zalogować po podaniu prawidłowych danych mockowanych', async () => {
+  it('powinien poprawnie zalogować po podaniu prawidłowych danych', async () => {
     render(<LoginPage />);
     
     const emailInput = screen.getByPlaceholderText('test@test.pl');
@@ -79,7 +91,8 @@ describe('LoginPage Unit Tests', () => {
     fireEvent.click(submitBtn);
 
     await waitFor(() => {
-      expect(mockLogin).toHaveBeenCalledWith('TestUser', 'mocked-jwt-token-from-brute-force-safe-login');
+      expect(loginApi).toHaveBeenCalledWith({ email: 'test@test.pl', password: 'Test1234!' });
+      expect(mockLogin).toHaveBeenCalled();
       expect(mockPush).toHaveBeenCalledWith('/');
     });
   });

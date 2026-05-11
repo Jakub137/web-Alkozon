@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import RegisterPage from '@/app/register/page';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
+import { registerApi } from '@/lib/api/auth';
 
 vi.mock('@/context/AuthContext', () => ({
   useAuth: vi.fn()
@@ -10,6 +11,10 @@ vi.mock('@/context/AuthContext', () => ({
 
 vi.mock('next/navigation', () => ({
   useRouter: vi.fn()
+}));
+
+vi.mock('@/lib/api/auth', () => ({
+  registerApi: vi.fn(),
 }));
 
 vi.mock('next/link', () => ({
@@ -27,6 +32,13 @@ describe('RegisterPage Unit Tests', () => {
     vi.clearAllMocks();
     (useAuth as any).mockReturnValue({ login: mockLogin, setToast: mockSetToast });
     (useRouter as any).mockReturnValue({ push: mockPush });
+    (registerApi as any).mockResolvedValue({
+      accessToken: 'mocked-jwt-token',
+      refreshToken: 'mocked-refresh-token',
+      tokenType: 'Bearer',
+      expiresAt: Date.now() + 1000 * 60,
+      user: { username: 'Tester', email: 'test@test.pl', role: 'CUSTOMER' },
+    });
   });
 
   it('powinien pokazać błędy walidacji dla pustego formularza', async () => {
@@ -52,7 +64,13 @@ describe('RegisterPage Unit Tests', () => {
     fireEvent.submit(screen.getByRole('button', { name: 'Zarejestruj Konto' }).closest('form')!);
 
     await waitFor(() => {
-      expect(mockLogin).toHaveBeenCalledWith('Tester', 'mocked-jwt-token-after-register');
+      expect(registerApi).toHaveBeenCalledWith({
+        email: 'test@test.pl',
+        password: 'SilneHaslo123!',
+        firstName: 'Tester',
+        lastName: undefined,
+      });
+      expect(mockLogin).toHaveBeenCalled();
       expect(mockSetToast).toHaveBeenCalled();
       expect(mockPush).toHaveBeenCalledWith('/');
     });

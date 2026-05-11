@@ -1,14 +1,17 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import type { AuthSession } from "@/lib/api/types";
+import { hydrateSession, logoutApi } from "@/lib/api/auth";
 
-type User = { username: string; email?: string } | null;
+type User = AuthSession["user"] | null;
 
 interface AuthContextType {
   token: string | null;
+  refreshToken: string | null;
   user: User;
-  login: (username: string, token: string) => void;
-  logout: (message?: string) => void;
+  login: (session: AuthSession) => void;
+  logout: (message?: string) => Promise<void>;
   toast: string | null;
   setToast: (msg: string | null) => void;
 }
@@ -17,34 +20,44 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
+  const [refreshToken, setRefreshToken] = useState<string | null>(null);
   const [user, setUser] = useState<User>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
-    // Load from local storage
-    const storedToken = localStorage.getItem("jwt_token");
-    const storedUser = localStorage.getItem("user");
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+    const rawSession = localStorage.getItem("alkozon_auth_session");
+    if (!rawSession) return;
+
+    const session = hydrateSession(rawSession);
+    if (session) {
+      setToken(session.accessToken);
+      setRefreshToken(session.refreshToken);
+      setUser(session.user);
     }
   }, []);
 
-  const login = (username: string, newToken: string) => {
-    setToken(newToken);
-    const u = { username };
-    setUser(u);
-    localStorage.setItem("jwt_token", newToken);
-    localStorage.setItem("user", JSON.stringify(u));
+  const login = (session: AuthSession) => {
+    setToken(session.accessToken);
+    setRefreshToken(session.refreshToken);
+    setUser(session.user);
+    localStorage.setItem("alkozon_auth_session", JSON.stringify(session));
   };
 
-  const logout = (message?: string) => {
+  const logout = async (message?: string) => {
+    if (refreshToken) {
+      try {
+        await logoutApi(refreshToken);
+      } catch {
+        // Silent fail: local logout should work even when API is unavailable.
+      }
+    }
+
     setToken(null);
+    setRefreshToken(null);
     setUser(null);
-    localStorage.removeItem("jwt_token");
-    localStorage.removeItem("user");
+    localStorage.removeItem("alkozon_auth_session");
     
     if (message) {
       setToast(message);
@@ -53,7 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ token, user, login, logout, toast, setToast }}>
+    <AuthContext.Provider value={{ token, refreshToken, user, login, logout, toast, setToast }}>
       {children}
       {/* Global Toast */}
       {isClient && toast && (
