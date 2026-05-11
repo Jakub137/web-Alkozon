@@ -199,6 +199,14 @@
       "payment_failed": "Płatność nieudana",
       "returned": "Zwrot"
     },
+    "backendStatuses": {
+      "SUBMITTED": "Złożone",
+      "IN_PRODUCTION": "W produkcji",
+      "IN_PACKING": "W pakowaniu",
+      "IN_DELIVERY": "W dostawie",
+      "DELIVERED": "Dostarczone",
+      "CANCELLED": "Anulowane"
+    },
     "progress": {
       "title": "Postęp zamówienia",
       "steps": {
@@ -218,6 +226,19 @@
       "cancelled": "To zamówienie zostało anulowane. Jeśli potrzebujesz pomocy, skontaktuj się z nami.",
       "payment_failed": "Nie udało się potwierdzić płatności. Spróbuj ponownie lub skontaktuj się z nami.",
       "returned": "Zamówienie zostało zwrócone. Skontaktuj się z nami, aby ustalić dalsze kroki."
+    },
+    "backendNextSteps": {
+      "SUBMITTED": "Zamówienie jest złożone i czeka na rozpoczęcie realizacji.",
+      "IN_PRODUCTION": "Zamówienie jest aktualnie przygotowywane przez zespół produkcyjny.",
+      "IN_PACKING": "Zamówienie jest pakowane i przygotowywane do przekazania kurierowi.",
+      "IN_DELIVERY": "Przesyłka jest w drodze do Ciebie.",
+      "DELIVERED": "Przesyłka została dostarczona. Dziękujemy za zamówienie!",
+      "CANCELLED": "To zamówienie zostało anulowane. W razie pytań skontaktuj się z nami."
+    },
+    "myOrders": {
+      "title": "Moje zamówienia",
+      "loading": "Ładowanie listy...",
+      "empty": "Nie masz jeszcze żadnych zamówień."
     },
     "timelineTitle": "Oś czasu zmian statusu",
     "timelineNotePrefix": "Notatka:",

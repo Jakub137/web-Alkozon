@@ -199,6 +199,14 @@
       "payment_failed": "Payment failed",
       "returned": "Returned"
     },
+    "backendStatuses": {
+      "SUBMITTED": "Submitted",
+      "IN_PRODUCTION": "In production",
+      "IN_PACKING": "In packing",
+      "IN_DELIVERY": "In delivery",
+      "DELIVERED": "Delivered",
+      "CANCELLED": "Cancelled"
+    },
     "progress": {
       "title": "Order progress",
       "steps": {
@@ -218,6 +226,19 @@
       "cancelled": "This order has been cancelled. If you need help, please contact us.",
       "payment_failed": "We could not confirm payment. Try again or contact us for support.",
       "returned": "This order has been returned. Contact us to arrange the next step."
+    },
+    "backendNextSteps": {
+      "SUBMITTED": "The order is submitted and waiting for processing to begin.",
+      "IN_PRODUCTION": "Your order is currently being prepared by the production team.",
+      "IN_PACKING": "Your order is being packed and prepared for handoff to courier.",
+      "IN_DELIVERY": "The shipment is on the way to you.",
+      "DELIVERED": "The shipment has been delivered. Thank you for your order!",
+      "CANCELLED": "This order has been cancelled. Contact us if you need assistance."
+    },
+    "myOrders": {
+      "title": "My orders",
+      "loading": "Loading list...",
+      "empty": "You do not have any orders yet."
     },
     "timelineTitle": "Status timeline",
     "timelineNotePrefix": "Note:",

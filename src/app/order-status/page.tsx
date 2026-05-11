@@ -3,12 +3,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 import { findOrderByNumberAndEmail } from "@/data/orders";
-import { OrderProgressStep, OrderRecord, OrderStatus } from "@/types/order";
+import { BackendOrderStatus, OrderProgressStep, OrderRecord, OrderStatus } from "@/types/order";
 import { useAuth } from "@/context/AuthContext";
-import { extractOrderId, getOrderById } from "@/lib/api/orders";
+import { extractOrderId, getMyOrders, getOrderById } from "@/lib/api/orders";
 import { ApiError } from "@/lib/api/types";
 
 const PROGRESS_STEPS: OrderProgressStep[] = ["received", "processing", "shipped", "delivered"];
@@ -43,6 +42,10 @@ function getStatusTone(status: OrderStatus): string {
   return "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300";
 }
 
+function getBackendStatusLabelKey(status?: BackendOrderStatus): BackendOrderStatus | null {
+  return status ?? null;
+}
+
 function formatDate(value: string, locale: string) {
   return new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(value));
 }
@@ -57,13 +60,15 @@ function formatDateTime(value: string, locale: string) {
 export default function OrderStatusPage() {
   const { dict, lang } = useLanguage();
   const { token, user } = useAuth();
-  const searchParams = useSearchParams();
   const [orderNumber, setOrderNumber] = useState("");
   const [email, setEmail] = useState("");
   const [searched, setSearched] = useState(false);
   const [order, setOrder] = useState<OrderRecord | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [myOrders, setMyOrders] = useState<OrderRecord[]>([]);
+  const [isMyOrdersLoading, setIsMyOrdersLoading] = useState(false);
+  const [myOrdersError, setMyOrdersError] = useState<string | null>(null);
 
   const currentLocale = lang === "pl" ? "pl-PL" : "en-US";
   const progressIndex = order ? getProgressIndex(order.status) : -1;
@@ -95,7 +100,7 @@ export default function OrderStatusPage() {
     if (token && normalizedOrderId) {
       try {
         setIsLoading(true);
-        const result = await getOrderById(token, normalizedOrderId, user?.email);
+        const result = await getOrderById(token, normalizedOrderId, user?.email ?? undefined);
         setOrder(result);
         setSearched(true);
         return;
@@ -114,8 +119,42 @@ export default function OrderStatusPage() {
   };
 
   useEffect(() => {
-    const paramValue = searchParams.get("orderId");
+    if (!token) return;
+    const authToken: string = token;
+    let cancelled = false;
+
+    async function loadMyOrders() {
+      try {
+        setIsMyOrdersLoading(true);
+        setMyOrdersError(null);
+        const result = await getMyOrders(authToken, user?.email ?? undefined);
+        if (!cancelled) {
+          setMyOrders(result);
+        }
+      } catch (error) {
+        if (cancelled) return;
+        if (error instanceof ApiError) {
+          setMyOrdersError(error.message);
+        } else {
+          setMyOrdersError("Nie udało się pobrać listy Twoich zamówień.");
+        }
+      } finally {
+        if (!cancelled) {
+          setIsMyOrdersLoading(false);
+        }
+      }
+    }
+
+    void loadMyOrders();
+    return () => {
+      cancelled = true;
+    };
+  }, [token, user?.email]);
+
+  useEffect(() => {
+    const paramValue = new URLSearchParams(window.location.search).get("orderId");
     if (!paramValue || !token) return;
+    const authToken: string = token;
 
     const normalizedOrderId = extractOrderId(paramValue);
     if (!normalizedOrderId) return;
@@ -124,9 +163,9 @@ export default function OrderStatusPage() {
     async function preloadOrder() {
       try {
         setIsLoading(true);
-        setOrderNumber(paramValue);
+        setOrderNumber(paramValue ?? "");
         setEmail(user?.email || "");
-        const result = await getOrderById(token, normalizedOrderId, user?.email);
+        const result = await getOrderById(authToken, normalizedOrderId, user?.email ?? undefined);
         if (!cancelled) {
           setOrder(result);
           setSearched(true);
@@ -147,7 +186,7 @@ export default function OrderStatusPage() {
     return () => {
       cancelled = true;
     };
-  }, [searchParams, token, user?.email]);
+  }, [token, user?.email]);
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grow">
@@ -207,6 +246,66 @@ export default function OrderStatusPage() {
           </section>
         )}
 
+        {token && (
+          <section className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 sm:p-6 shadow-sm dark:shadow-slate-900/50">
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+                {dict.orderStatusPage.myOrders?.title || "Moje zamówienia"}
+              </h2>
+              {isMyOrdersLoading && (
+                <span className="text-xs text-slate-500 dark:text-slate-400">
+                  {dict.orderStatusPage.myOrders?.loading || "Ładowanie..."}
+                </span>
+              )}
+            </div>
+
+            {myOrdersError && (
+              <p className="text-sm text-red-700 dark:text-red-300 mb-3">{myOrdersError}</p>
+            )}
+
+            {myOrders.length === 0 ? (
+              <p className="text-sm text-slate-600 dark:text-slate-300">
+                {dict.orderStatusPage.myOrders?.empty || "Nie masz jeszcze żadnych zamówień."}
+              </p>
+            ) : (
+              <div className="space-y-2">
+                {myOrders.map((entry) => {
+                  const apiLabelKey = getBackendStatusLabelKey(entry.apiStatus);
+                  const statusLabel = apiLabelKey
+                    ? dict.orderStatusPage.backendStatuses?.[apiLabelKey] || dict.orderStatusPage.statuses[entry.status]
+                    : dict.orderStatusPage.statuses[entry.status];
+
+                  return (
+                    <button
+                      key={entry.orderNumber}
+                      type="button"
+                      onClick={() => {
+                        setOrder(entry);
+                        setOrderNumber(entry.orderNumber);
+                        setEmail(entry.email || user?.email || "");
+                        setSearched(true);
+                      }}
+                      className="w-full text-left rounded-xl border border-slate-200 dark:border-slate-700 p-3 bg-slate-50 dark:bg-slate-900/30 hover:border-blue-500 transition-colors"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                          {entry.orderNumber}
+                        </span>
+                        <span className={`h-7 px-2.5 rounded-full text-xs font-semibold inline-flex items-center ${getStatusTone(entry.status)}`}>
+                          {statusLabel}
+                        </span>
+                      </div>
+                      <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                        {dict.orderStatusPage.details.placedAt}: {formatDate(entry.placedAt, currentLocale)}
+                      </p>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </section>
+        )}
+
         {searched && !order && (
           <section className="bg-white dark:bg-slate-800 border border-red-200 dark:border-red-900/40 rounded-2xl p-5 sm:p-6 shadow-sm dark:shadow-slate-900/50">
             <p className="text-sm text-red-700 dark:text-red-300">{dict.orderStatusPage.notFound}</p>
@@ -223,7 +322,9 @@ export default function OrderStatusPage() {
                 <span
                   className={`h-8 px-3 rounded-full text-xs font-semibold inline-flex items-center ${getStatusTone(order.status)}`}
                 >
-                  {dict.orderStatusPage.statuses[order.status]}
+                  {order.apiStatus
+                    ? dict.orderStatusPage.backendStatuses?.[order.apiStatus] || dict.orderStatusPage.statuses[order.status]
+                    : dict.orderStatusPage.statuses[order.status]}
                 </span>
               </div>
 
@@ -249,7 +350,9 @@ export default function OrderStatusPage() {
                     {dict.orderStatusPage.details.status}
                   </p>
                   <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                    {dict.orderStatusPage.statuses[order.status]}
+                    {order.apiStatus
+                      ? dict.orderStatusPage.backendStatuses?.[order.apiStatus] || dict.orderStatusPage.statuses[order.status]
+                      : dict.orderStatusPage.statuses[order.status]}
                   </p>
                 </div>
 
@@ -296,7 +399,9 @@ export default function OrderStatusPage() {
                 {dict.orderStatusPage.nextStepsTitle}
               </h3>
               <p className="text-sm text-slate-700 dark:text-slate-300">
-                {dict.orderStatusPage.nextSteps[order.status]}
+                {order.apiStatus
+                  ? dict.orderStatusPage.backendNextSteps?.[order.apiStatus] || dict.orderStatusPage.nextSteps[order.status]
+                  : dict.orderStatusPage.nextSteps[order.status]}
               </p>
 
               {order.status === "shipped" && order.tracking && (

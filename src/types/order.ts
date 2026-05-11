@@ -8,6 +8,14 @@ export type OrderStatus =
   | "payment_failed"
   | "returned";
 
+export type BackendOrderStatus =
+  | "SUBMITTED"
+  | "IN_PRODUCTION"
+  | "IN_PACKING"
+  | "IN_DELIVERY"
+  | "DELIVERED"
+  | "CANCELLED";
+
 export type OrderProgressStep = "received" | "processing" | "shipped" | "delivered";
 
 export type OrderTracking = {
@@ -36,6 +44,7 @@ export type OrderRecord = {
   placedAt: string;
   estimatedDelivery: string;
   status: OrderStatus;
+  apiStatus?: BackendOrderStatus;
   tracking?: OrderTracking;
   history?: OrderStatusHistoryItem[];
   items?: OrderItem[];

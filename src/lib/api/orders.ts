@@ -1,6 +1,6 @@
 import { apiRequest } from "./client";
 import type { Product } from "@/types/product";
-import type { OrderRecord, OrderStatus } from "@/types/order";
+import type { BackendOrderStatus, OrderRecord, OrderStatus } from "@/types/order";
 
 interface ApiOrderItem {
   productId: number;
@@ -12,7 +12,7 @@ interface ApiOrderItem {
 interface ApiOrderResponse {
   id: number;
   customerId: number;
-  status: "SUBMITTED" | "IN_PRODUCTION" | "IN_PACKING" | "IN_DELIVERY" | "DELIVERED" | "CANCELLED";
+  status: BackendOrderStatus;
   deliveryAddress: string;
   totalAmount: number;
   createdAt: string;
@@ -63,6 +63,7 @@ export function mapApiOrderToRecord(apiOrder: ApiOrderResponse, email = ""): Ord
     placedAt: apiOrder.createdAt,
     estimatedDelivery: estimateDelivery(apiOrder.createdAt, apiOrder.deliveredAt),
     status,
+    apiStatus: apiOrder.status,
     history: [
       { status: "received", changedAt: apiOrder.createdAt },
       ...(apiOrder.deliveredAt ? [{ status: "delivered" as const, changedAt: apiOrder.deliveredAt }] : []),
