@@ -4,6 +4,14 @@ import { AuthProvider, useAuth } from '@/context/AuthContext';
 
 vi.mock('@/lib/api/auth', () => ({
   logoutApi: vi.fn().mockResolvedValue(undefined),
+  guestApi: vi.fn().mockResolvedValue({
+    accessToken: "guest-token",
+    refreshToken: "guest-refresh",
+    tokenType: "Bearer",
+    expiresAt: 9999999999999,
+    user: { username: "guest", role: "GUEST" },
+  }),
+  refreshApi: vi.fn(),
   hydrateSession: (raw: string) => JSON.parse(raw),
 }));
 

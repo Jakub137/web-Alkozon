@@ -2,7 +2,8 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import type { AuthSession } from "@/lib/api/types";
-import { hydrateSession, logoutApi } from "@/lib/api/auth";
+import { guestApi, hydrateSession, logoutApi, refreshApi } from "@/lib/api/auth";
+import { ApiError } from "@/lib/api/types";
 
 type User = AuthSession["user"] | null;
 
@@ -12,6 +13,7 @@ interface AuthContextType {
   user: User;
   login: (session: AuthSession) => void;
   logout: (message?: string) => Promise<void>;
+  authorizedRequest: <T>(request: (token: string) => Promise<T>) => Promise<T>;
   toast: string | null;
   setToast: (msg: string | null) => void;
 }
@@ -28,14 +30,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     setIsClient(true);
     const rawSession = localStorage.getItem("alkozon_auth_session");
-    if (!rawSession) return;
-
-    const session = hydrateSession(rawSession);
-    if (session) {
-      setToken(session.accessToken);
-      setRefreshToken(session.refreshToken);
-      setUser(session.user);
+    if (rawSession) {
+      const session = hydrateSession(rawSession);
+      if (session) {
+        setToken(session.accessToken);
+        setRefreshToken(session.refreshToken);
+        setUser(session.user);
+        return;
+      }
     }
+
+    // Keep an anonymous backend session from the start.
+    void guestApi()
+      .then((session) => {
+        setToken(session.accessToken);
+        setRefreshToken(session.refreshToken);
+        setUser(session.user);
+        localStorage.setItem("alkozon_auth_session", JSON.stringify(session));
+      })
+      .catch(() => {
+        // Silent fail - app can still work with limited local behavior.
+      });
   }, []);
 
   const login = (session: AuthSession) => {
@@ -65,8 +80,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const authorizedRequest = async <T,>(request: (accessToken: string) => Promise<T>): Promise<T> => {
+    if (!token) {
+      throw new Error("Brak tokenu sesji.");
+    }
+
+    try {
+      return await request(token);
+    } catch (error) {
+      if (!(error instanceof ApiError) || error.status !== 401 || !refreshToken) {
+        throw error;
+      }
+
+      const refreshedSession = await refreshApi(refreshToken);
+      login(refreshedSession);
+      return request(refreshedSession.accessToken);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ token, refreshToken, user, login, logout, toast, setToast }}>
+    <AuthContext.Provider value={{ token, refreshToken, user, login, logout, authorizedRequest, toast, setToast }}>
       {children}
       {/* Global Toast */}
       {isClient && toast && (

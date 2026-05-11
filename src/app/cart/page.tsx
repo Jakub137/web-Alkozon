@@ -15,7 +15,7 @@ export default function CartPage() {
   const { dict } = useLanguage();
   const { cartItems, cartItemsCount, removeFromCart, clearCart } = useCart();
   const { ageStatus } = useAge();
-  const { token } = useAuth();
+  const { token, authorizedRequest } = useAuth();
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
@@ -51,10 +51,12 @@ export default function CartPage() {
 
     try {
       setIsSubmitting(true);
-      const order = await createOrder(token, {
-        items,
-        deliveryAddress: deliveryAddress.trim(),
-      });
+      const order = await authorizedRequest((accessToken) =>
+        createOrder(accessToken, {
+          items,
+          deliveryAddress: deliveryAddress.trim(),
+        })
+      );
       clearCart();
       router.push(`/order-status?orderId=${encodeURIComponent(order.orderNumber)}`);
     } catch (error) {

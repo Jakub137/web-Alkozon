@@ -57,7 +57,10 @@ describe('CartPage Unit Tests', () => {
       clearCart: vi.fn()
     });
     (useAge as any).mockReturnValue({ ageStatus: 'verified' });
-    (useAuth as any).mockReturnValue({ token: null });
+    (useAuth as any).mockReturnValue({
+      token: null,
+      authorizedRequest: (fn: any) => fn('mock-token'),
+    });
   });
 
   it('powinien wyświetlać komunikat o pustym koszyku', () => {

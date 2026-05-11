@@ -1,8 +1,15 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import AgeVerificationModal from "@/components/AgeVerificationModal";
 import { AgeProvider } from "@/context/AgeContext";
 import { LanguageProvider } from "@/context/LanguageContext";
+
+vi.mock("@/context/AuthContext", () => ({
+  useAuth: () => ({
+    token: null,
+    login: vi.fn(),
+  }),
+}));
 
 describe("Integration Tests - AgeVerificationModal", () => {
   beforeEach(() => {

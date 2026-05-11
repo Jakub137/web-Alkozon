@@ -3,11 +3,15 @@
 import React, { useEffect, useState } from "react";
 import { useAge } from "@/context/AgeContext";
 import { useLanguage } from "@/context/LanguageContext";
+import { useAuth } from "@/context/AuthContext";
+import { confirmAgeApi } from "@/lib/api/auth";
 
 export default function AgeVerificationModal() {
   const { ageStatus, setAgeStatus, isVerified } = useAge();
   const { dict } = useLanguage();
+  const { token, login } = useAuth();
   const [mounted, setMounted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -17,6 +21,25 @@ export default function AgeVerificationModal() {
   if (!mounted || !isVerified) return null;
 
   if (ageStatus !== "unknown") return null;
+
+  const handleAdultConfirmation = async () => {
+    if (!token) {
+      setAgeStatus("adult");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      const session = await confirmAgeApi(token);
+      login(session);
+      setAgeStatus("adult");
+    } catch {
+      // Fallback for temporary API outage.
+      setAgeStatus("adult");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md p-4">
@@ -30,7 +53,8 @@ export default function AgeVerificationModal() {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button
-            onClick={() => setAgeStatus("adult")}
+            onClick={() => void handleAdultConfirmation()}
+            disabled={isSubmitting}
             className="flex-1 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-xl transition-colors"
           >
             {dict.ageGate?.yes || "Tak, wchodzę"}

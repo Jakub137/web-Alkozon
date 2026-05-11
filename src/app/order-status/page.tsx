@@ -59,7 +59,7 @@ function formatDateTime(value: string, locale: string) {
 
 export default function OrderStatusPage() {
   const { dict, lang } = useLanguage();
-  const { token, user } = useAuth();
+  const { token, user, authorizedRequest } = useAuth();
   const [orderNumber, setOrderNumber] = useState("");
   const [email, setEmail] = useState("");
   const [searched, setSearched] = useState(false);
@@ -100,7 +100,9 @@ export default function OrderStatusPage() {
     if (token && normalizedOrderId) {
       try {
         setIsLoading(true);
-        const result = await getOrderById(token, normalizedOrderId, user?.email ?? undefined);
+        const result = await authorizedRequest((accessToken) =>
+          getOrderById(accessToken, normalizedOrderId, user?.email ?? undefined)
+        );
         setOrder(result);
         setSearched(true);
         return;
@@ -120,14 +122,15 @@ export default function OrderStatusPage() {
 
   useEffect(() => {
     if (!token) return;
-    const authToken: string = token;
     let cancelled = false;
 
     async function loadMyOrders() {
       try {
         setIsMyOrdersLoading(true);
         setMyOrdersError(null);
-        const result = await getMyOrders(authToken, user?.email ?? undefined);
+        const result = await authorizedRequest((accessToken) =>
+          getMyOrders(accessToken, user?.email ?? undefined)
+        );
         if (!cancelled) {
           setMyOrders(result);
         }
@@ -149,12 +152,11 @@ export default function OrderStatusPage() {
     return () => {
       cancelled = true;
     };
-  }, [token, user?.email]);
+  }, [token, user?.email, authorizedRequest]);
 
   useEffect(() => {
     const paramValue = new URLSearchParams(window.location.search).get("orderId");
     if (!paramValue || !token) return;
-    const authToken: string = token;
 
     const normalizedOrderId = extractOrderId(paramValue);
     if (!normalizedOrderId) return;
@@ -165,7 +167,9 @@ export default function OrderStatusPage() {
         setIsLoading(true);
         setOrderNumber(paramValue ?? "");
         setEmail(user?.email || "");
-        const result = await getOrderById(authToken, normalizedOrderId, user?.email ?? undefined);
+        const result = await authorizedRequest((accessToken) =>
+          getOrderById(accessToken, normalizedOrderId, user?.email ?? undefined)
+        );
         if (!cancelled) {
           setOrder(result);
           setSearched(true);
@@ -186,7 +190,7 @@ export default function OrderStatusPage() {
     return () => {
       cancelled = true;
     };
-  }, [token, user?.email]);
+  }, [token, user?.email, authorizedRequest]);
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grow">

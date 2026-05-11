@@ -72,7 +72,11 @@ describe('OrderStatusPage Unit Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     (useLanguage as any).mockReturnValue({ dict: mockDict, lang: 'pl' });
-    (useAuth as any).mockReturnValue({ token: null, user: null });
+    (useAuth as any).mockReturnValue({
+      token: null,
+      user: null,
+      authorizedRequest: (fn: any) => fn('mock-token'),
+    });
     (getOrderById as any).mockResolvedValue(null);
   });
 
