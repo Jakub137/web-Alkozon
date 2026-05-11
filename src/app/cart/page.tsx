@@ -1,16 +1,72 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/context/CartContext";
 import { useAge } from "@/context/AgeContext";
+import { useAuth } from "@/context/AuthContext";
+import { ApiError } from "@/lib/api/types";
+import { buildOrderItemsFromCart, createOrder } from "@/lib/api/orders";
 
 export default function CartPage() {
+  const router = useRouter();
   const { dict } = useLanguage();
-  const { cartItems, cartItemsCount, removeFromCart } = useCart();
+  const { cartItems, cartItemsCount, removeFromCart, clearCart } = useCart();
   const { ageStatus } = useAge();
+  const { token } = useAuth();
+  const [deliveryAddress, setDeliveryAddress] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
   const totalPrice = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  const hasCustomProducts = cartItems.some((item) => item.product.id.startsWith("custom-"));
+
+  const handleCreateOrder = async () => {
+    setCheckoutError(null);
+
+    if (!token) {
+      setCheckoutError("Musisz się zalogować, aby złożyć zamówienie.");
+      return;
+    }
+    if (ageStatus === "underage") {
+      setCheckoutError("Składanie zamówień jest zablokowane dla osób niepełnoletnich.");
+      return;
+    }
+    if (!deliveryAddress.trim()) {
+      setCheckoutError("Podaj adres dostawy.");
+      return;
+    }
+    if (hasCustomProducts) {
+      setCheckoutError("Zamówienia własne podłączymy do API w kolejnym kroku.");
+      return;
+    }
+
+    const items = buildOrderItemsFromCart(cartItems);
+    if (items.length === 0) {
+      setCheckoutError("Koszyk nie zawiera produktów, które można wysłać do API.");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      const order = await createOrder(token, {
+        items,
+        deliveryAddress: deliveryAddress.trim(),
+      });
+      clearCart();
+      router.push(`/order-status?orderId=${encodeURIComponent(order.orderNumber)}`);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        setCheckoutError(error.message);
+      } else {
+        setCheckoutError("Nie udało się złożyć zamówienia. Spróbuj ponownie.");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grow">
@@ -79,6 +135,29 @@ export default function CartPage() {
             <span className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 whitespace-nowrap">
               {totalPrice.toFixed(2)} zl
             </span>
+          </div>
+
+          <div className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm dark:shadow-slate-900/50 space-y-3">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+              Adres dostawy
+            </label>
+            <textarea
+              value={deliveryAddress}
+              onChange={(event) => setDeliveryAddress(event.target.value)}
+              className="w-full min-h-24 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+              placeholder="Podaj pełny adres dostawy"
+            />
+            {checkoutError && (
+              <p className="text-sm text-red-600 dark:text-red-400">{checkoutError}</p>
+            )}
+            <button
+              type="button"
+              onClick={() => void handleCreateOrder()}
+              disabled={isSubmitting || cartItems.length === 0}
+              className="w-full h-11 px-4 rounded-lg bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {isSubmitting ? "Składanie zamówienia..." : "Złóż zamówienie"}
+            </button>
           </div>
         </div>
       )}

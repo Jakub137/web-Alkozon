@@ -4,6 +4,7 @@ import CartPage from '@/app/cart/page';
 import { useLanguage } from '@/context/LanguageContext';
 import { useCart } from '@/context/CartContext';
 import { useAge } from '@/context/AgeContext';
+import { useAuth } from '@/context/AuthContext';
 
 vi.mock('@/context/LanguageContext', () => ({
   useLanguage: vi.fn()
@@ -13,6 +14,12 @@ vi.mock('@/context/CartContext', () => ({
 }));
 vi.mock('@/context/AgeContext', () => ({
   useAge: vi.fn()
+}));
+vi.mock('@/context/AuthContext', () => ({
+  useAuth: vi.fn()
+}));
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: vi.fn() }),
 }));
 vi.mock('next/link', () => ({
   default: ({ children, href }: { children: React.ReactNode, href: string }) => (
@@ -46,9 +53,11 @@ describe('CartPage Unit Tests', () => {
     (useCart as any).mockReturnValue({
       cartItems: [],
       cartItemsCount: 0,
-      removeFromCart: mockRemoveFromCart
+      removeFromCart: mockRemoveFromCart,
+      clearCart: vi.fn()
     });
     (useAge as any).mockReturnValue({ ageStatus: 'verified' });
+    (useAuth as any).mockReturnValue({ token: null });
   });
 
   it('powinien wyświetlać komunikat o pustym koszyku', () => {
@@ -63,7 +72,8 @@ describe('CartPage Unit Tests', () => {
         { product: { id: '1', name: 'Piwo', price: 10, capacity: '0.5L' }, quantity: 2 }
       ],
       cartItemsCount: 2,
-      removeFromCart: mockRemoveFromCart
+      removeFromCart: mockRemoveFromCart,
+      clearCart: vi.fn()
     });
 
     render(<CartPage />);
@@ -78,7 +88,8 @@ describe('CartPage Unit Tests', () => {
         { product: { id: '1', name: 'Piwo', price: 10, capacity: '0.5L' }, quantity: 1 }
       ],
       cartItemsCount: 1,
-      removeFromCart: mockRemoveFromCart
+      removeFromCart: mockRemoveFromCart,
+      clearCart: vi.fn()
     });
 
     render(<CartPage />);

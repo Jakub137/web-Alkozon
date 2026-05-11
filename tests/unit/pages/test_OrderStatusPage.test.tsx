@@ -3,17 +3,29 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import OrderStatusPage from '@/app/order-status/page';
 import { useLanguage } from '@/context/LanguageContext';
 import * as ordersData from '@/data/orders';
+import { useAuth } from '@/context/AuthContext';
+import { getOrderById } from '@/lib/api/orders';
 
 vi.mock('@/context/LanguageContext', () => ({
   useLanguage: vi.fn()
+}));
+vi.mock('@/context/AuthContext', () => ({
+  useAuth: vi.fn()
 }));
 vi.mock('next/link', () => ({
   default: ({ children, href }: { children: React.ReactNode, href: string }) => (
     <a href={href}>{children}</a>
   )
 }));
+vi.mock('next/navigation', () => ({
+  useSearchParams: () => new URLSearchParams(),
+}));
 vi.mock('@/data/orders', () => ({
   findOrderByNumberAndEmail: vi.fn()
+}));
+vi.mock('@/lib/api/orders', () => ({
+  getOrderById: vi.fn(),
+  extractOrderId: (value: string) => value,
 }));
 
 const mockDict = {
@@ -60,6 +72,8 @@ describe('OrderStatusPage Unit Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     (useLanguage as any).mockReturnValue({ dict: mockDict, lang: 'pl' });
+    (useAuth as any).mockReturnValue({ token: null, user: null });
+    (getOrderById as any).mockResolvedValue(null);
   });
 
   it('powinien zablokować formularz gdy pusty', () => {

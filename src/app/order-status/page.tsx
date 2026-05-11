@@ -2,10 +2,14 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 import { findOrderByNumberAndEmail } from "@/data/orders";
 import { OrderProgressStep, OrderRecord, OrderStatus } from "@/types/order";
+import { useAuth } from "@/context/AuthContext";
+import { extractOrderId, getOrderById } from "@/lib/api/orders";
+import { ApiError } from "@/lib/api/types";
 
 const PROGRESS_STEPS: OrderProgressStep[] = ["received", "processing", "shipped", "delivered"];
 
@@ -52,10 +56,14 @@ function formatDateTime(value: string, locale: string) {
 
 export default function OrderStatusPage() {
   const { dict, lang } = useLanguage();
+  const { token, user } = useAuth();
+  const searchParams = useSearchParams();
   const [orderNumber, setOrderNumber] = useState("");
   const [email, setEmail] = useState("");
   const [searched, setSearched] = useState(false);
   const [order, setOrder] = useState<OrderRecord | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const currentLocale = lang === "pl" ? "pl-PL" : "en-US";
   const progressIndex = order ? getProgressIndex(order.status) : -1;
@@ -79,12 +87,67 @@ export default function OrderStatusPage() {
     );
   }, [order]);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setErrorMsg(null);
+    const normalizedOrderId = extractOrderId(orderNumber);
+
+    if (token && normalizedOrderId) {
+      try {
+        setIsLoading(true);
+        const result = await getOrderById(token, normalizedOrderId, user?.email);
+        setOrder(result);
+        setSearched(true);
+        return;
+      } catch (error) {
+        if (error instanceof ApiError && error.status !== 404) {
+          setErrorMsg(error.message);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
     const result = findOrderByNumberAndEmail(orderNumber, email);
     setOrder(result);
     setSearched(true);
   };
+
+  useEffect(() => {
+    const paramValue = searchParams.get("orderId");
+    if (!paramValue || !token) return;
+
+    const normalizedOrderId = extractOrderId(paramValue);
+    if (!normalizedOrderId) return;
+
+    let cancelled = false;
+    async function preloadOrder() {
+      try {
+        setIsLoading(true);
+        setOrderNumber(paramValue);
+        setEmail(user?.email || "");
+        const result = await getOrderById(token, normalizedOrderId, user?.email);
+        if (!cancelled) {
+          setOrder(result);
+          setSearched(true);
+        }
+      } catch (error) {
+        if (cancelled) return;
+        if (error instanceof ApiError && error.status !== 404) {
+          setErrorMsg(error.message);
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    void preloadOrder();
+    return () => {
+      cancelled = true;
+    };
+  }, [searchParams, token, user?.email]);
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grow">
@@ -129,14 +192,20 @@ export default function OrderStatusPage() {
             <div className="sm:col-span-2 flex justify-end">
               <button
                 type="submit"
-                disabled={!canSubmit}
+                disabled={!canSubmit || isLoading}
                 className="h-11 min-w-[180px] px-4 rounded-lg bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
               >
-                {dict.orderStatusPage.form.submit}
+                {isLoading ? "Ładowanie..." : dict.orderStatusPage.form.submit}
               </button>
             </div>
           </form>
         </section>
+
+        {errorMsg && (
+          <section className="bg-white dark:bg-slate-800 border border-red-200 dark:border-red-900/40 rounded-2xl p-5 sm:p-6 shadow-sm dark:shadow-slate-900/50">
+            <p className="text-sm text-red-700 dark:text-red-300">{errorMsg}</p>
+          </section>
+        )}
 
         {searched && !order && (
           <section className="bg-white dark:bg-slate-800 border border-red-200 dark:border-red-900/40 rounded-2xl p-5 sm:p-6 shadow-sm dark:shadow-slate-900/50">

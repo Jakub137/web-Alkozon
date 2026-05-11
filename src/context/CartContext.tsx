@@ -20,6 +20,7 @@ interface CartContextType {
   customOrderItemsLimit: number;
   addToCart: (product: Product) => AddToCartResult;
   removeFromCart: (productId: string) => void;
+  clearCart: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -69,6 +70,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setCartItems((prev) => prev.filter((item) => item.product.id !== productId));
   };
 
+  const clearCart = () => {
+    setCartItems([]);
+  };
+
   return (
     <CartContext.Provider
       value={{
@@ -79,6 +84,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         customOrderItemsLimit: CUSTOM_ORDER_ITEMS_LIMIT,
         addToCart,
         removeFromCart,
+        clearCart,
       }}
     >
       {children}
