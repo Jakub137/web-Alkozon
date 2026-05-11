@@ -10,6 +10,42 @@ import { useAuth } from "@/context/AuthContext";
 import { ApiError } from "@/lib/api/types";
 import { buildOrderItemsFromCart, createOrder } from "@/lib/api/orders";
 
+type CheckoutCopy = {
+  deliveryAddress?: string;
+  deliveryAddressPlaceholder?: string;
+  submit?: string;
+  submitting?: string;
+  authRequired?: string;
+  ageBlocked?: string;
+  ageOrRoleBlocked?: string;
+  addressRequired?: string;
+  customNotSupported?: string;
+  invalidCart?: string;
+  rateLimited?: string;
+  serverError?: string;
+  unexpectedError?: string;
+};
+
+function mapCheckoutErrorMessage(checkoutCopy: CheckoutCopy, error: unknown): string {
+  if (!(error instanceof ApiError)) {
+    return checkoutCopy.unexpectedError || "Nie udało się złożyć zamówienia. Spróbuj ponownie.";
+  }
+
+  if (error.status === 401) {
+    return checkoutCopy.authRequired || "Musisz się zalogować, aby złożyć zamówienie.";
+  }
+  if (error.status === 403) {
+    return checkoutCopy.ageOrRoleBlocked || "Brak uprawnień do złożenia zamówienia.";
+  }
+  if (error.status === 429) {
+    return checkoutCopy.rateLimited || "Wykonano zbyt wiele prób. Spróbuj ponownie za chwilę.";
+  }
+  if (error.status >= 500) {
+    return checkoutCopy.serverError || "Błąd serwera. Spróbuj ponownie później.";
+  }
+  return error.message || checkoutCopy.unexpectedError || "Nie udało się złożyć zamówienia. Spróbuj ponownie.";
+}
+
 export default function CartPage() {
   const router = useRouter();
   const { dict } = useLanguage();
@@ -19,6 +55,7 @@ export default function CartPage() {
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const checkoutCopy = dict.shop.cart.checkout || {};
 
   const totalPrice = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   const hasCustomProducts = cartItems.some((item) => item.product.id.startsWith("custom-"));
@@ -27,25 +64,25 @@ export default function CartPage() {
     setCheckoutError(null);
 
     if (!token) {
-      setCheckoutError("Musisz się zalogować, aby złożyć zamówienie.");
+      setCheckoutError(checkoutCopy.authRequired || "Musisz się zalogować, aby złożyć zamówienie.");
       return;
     }
     if (ageStatus === "underage") {
-      setCheckoutError("Składanie zamówień jest zablokowane dla osób niepełnoletnich.");
+      setCheckoutError(checkoutCopy.ageBlocked || "Składanie zamówień jest zablokowane dla osób niepełnoletnich.");
       return;
     }
     if (!deliveryAddress.trim()) {
-      setCheckoutError("Podaj adres dostawy.");
+      setCheckoutError(checkoutCopy.addressRequired || "Podaj adres dostawy.");
       return;
     }
     if (hasCustomProducts) {
-      setCheckoutError("Zamówienia własne podłączymy do API w kolejnym kroku.");
+      setCheckoutError(checkoutCopy.customNotSupported || "Zamówienia własne podłączymy do API w kolejnym kroku.");
       return;
     }
 
     const items = buildOrderItemsFromCart(cartItems);
     if (items.length === 0) {
-      setCheckoutError("Koszyk nie zawiera produktów, które można wysłać do API.");
+      setCheckoutError(checkoutCopy.invalidCart || "Koszyk nie zawiera produktów, które można wysłać do API.");
       return;
     }
 
@@ -60,11 +97,7 @@ export default function CartPage() {
       clearCart();
       router.push(`/order-status?orderId=${encodeURIComponent(order.orderNumber)}`);
     } catch (error) {
-      if (error instanceof ApiError) {
-        setCheckoutError(error.message);
-      } else {
-        setCheckoutError("Nie udało się złożyć zamówienia. Spróbuj ponownie.");
-      }
+      setCheckoutError(mapCheckoutErrorMessage(checkoutCopy, error));
     } finally {
       setIsSubmitting(false);
     }
@@ -141,13 +174,13 @@ export default function CartPage() {
 
           <div className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm dark:shadow-slate-900/50 space-y-3">
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
-              Adres dostawy
+              {checkoutCopy.deliveryAddress || "Adres dostawy"}
             </label>
             <textarea
               value={deliveryAddress}
               onChange={(event) => setDeliveryAddress(event.target.value)}
               className="w-full min-h-24 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
-              placeholder="Podaj pełny adres dostawy"
+              placeholder={checkoutCopy.deliveryAddressPlaceholder || "Podaj pełny adres dostawy"}
             />
             {checkoutError && (
               <p className="text-sm text-red-600 dark:text-red-400">{checkoutError}</p>
@@ -158,7 +191,9 @@ export default function CartPage() {
               disabled={isSubmitting || cartItems.length === 0}
               className="w-full h-11 px-4 rounded-lg bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {isSubmitting ? "Składanie zamówienia..." : "Złóż zamówienie"}
+              {isSubmitting
+                ? checkoutCopy.submitting || "Składanie zamówienia..."
+                : checkoutCopy.submit || "Złóż zamówienie"}
             </button>
           </div>
         </div>

@@ -80,7 +80,22 @@
       "remove": "Usuń",
       "summary": "Podsumowanie",
       "backToShop": "Wróć do sklepu",
-      "total": "Suma"
+      "total": "Suma",
+      "checkout": {
+        "deliveryAddress": "Adres dostawy",
+        "deliveryAddressPlaceholder": "Podaj pełny adres dostawy",
+        "submit": "Złóż zamówienie",
+        "submitting": "Składanie zamówienia...",
+        "authRequired": "Musisz się zalogować, aby złożyć zamówienie.",
+        "ageBlocked": "Składanie zamówień jest zablokowane dla osób niepełnoletnich.",
+        "ageOrRoleBlocked": "Brak uprawnień do złożenia zamówienia. Potwierdź pełnoletność lub zaloguj się ponownie.",
+        "addressRequired": "Podaj adres dostawy.",
+        "customNotSupported": "Zamówienia własne podłączymy do API w kolejnym kroku.",
+        "invalidCart": "Koszyk nie zawiera produktów, które można wysłać do API.",
+        "rateLimited": "Wykonano zbyt wiele prób. Spróbuj ponownie za chwilę.",
+        "serverError": "Błąd serwera. Spróbuj ponownie później.",
+        "unexpectedError": "Nie udało się złożyć zamówienia. Spróbuj ponownie."
+      }
     },
     "noProducts": "Brak produktów do wyświetlenia"
   },

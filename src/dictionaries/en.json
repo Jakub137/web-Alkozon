@@ -80,7 +80,22 @@
       "remove": "Remove",
       "summary": "Summary",
       "backToShop": "Back to shop",
-      "total": "Total"
+      "total": "Total",
+      "checkout": {
+        "deliveryAddress": "Delivery address",
+        "deliveryAddressPlaceholder": "Enter the full delivery address",
+        "submit": "Place order",
+        "submitting": "Placing order...",
+        "authRequired": "You need to sign in to place an order.",
+        "ageBlocked": "Ordering alcohol is blocked for underage users.",
+        "ageOrRoleBlocked": "You are not allowed to place this order. Confirm age or sign in again.",
+        "addressRequired": "Please enter a delivery address.",
+        "customNotSupported": "Custom orders will be connected to the API in the next step.",
+        "invalidCart": "The cart does not contain products that can be sent to API.",
+        "rateLimited": "Too many attempts. Please try again shortly.",
+        "serverError": "Server error. Please try again later.",
+        "unexpectedError": "Could not place order. Please try again."
+      }
     },
     "noProducts": "No products to display"
   },

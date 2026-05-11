@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { findOrderByNumberAndEmail } from "@/data/orders";
@@ -509,10 +508,17 @@ export default function OrderStatusPage() {
                       className="rounded-xl border border-slate-200 dark:border-slate-700 p-3 bg-slate-50 dark:bg-slate-900/30 flex items-center gap-3"
                     >
                       <div className="relative h-14 w-14 rounded-lg overflow-hidden bg-slate-200 dark:bg-slate-700 shrink-0">
-                        {item.image ? (
-                          <Image src={item.image} alt={item.name} fill sizes="56px" className="object-cover" />
-                        ) : (
-                          <div className="h-full w-full flex items-center justify-center text-lg">🍾</div>
+                        <div className="absolute inset-0 flex items-center justify-center text-lg">🍾</div>
+                        {item.image && (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="relative h-full w-full object-cover"
+                            onError={(event) => {
+                              event.currentTarget.style.display = "none";
+                            }}
+                          />
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
