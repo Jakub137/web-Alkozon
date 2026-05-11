@@ -31,7 +31,7 @@ function normalizeCategory(category: string | null): ProductCategory {
 }
 
 function normalizeImageUrl(imageUrl: string | null): string {
-  if (!imageUrl) return "/placeholder-product.png";
+  if (!imageUrl) return "/placeholder-product.svg";
   if (imageUrl.startsWith("http")) return imageUrl;
   if (imageUrl.startsWith("/")) return imageUrl;
   return `/${imageUrl}`;
