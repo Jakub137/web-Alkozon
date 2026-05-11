@@ -53,7 +53,7 @@ export default function CartPage() {
   const { dict } = useLanguage();
   const { cartItems, cartItemsCount, removeFromCart, clearCart } = useCart();
   const { ageStatus } = useAge();
-  const { token, authorizedRequest } = useAuth();
+  const { token, user, authorizedRequest } = useAuth();
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
@@ -70,6 +70,12 @@ export default function CartPage() {
     }
     if (ageStatus === "underage") {
       setCheckoutError(checkoutCopy.ageBlocked || "Składanie zamówień jest zablokowane dla osób niepełnoletnich.");
+      return;
+    }
+    if (user?.role !== "CUSTOMER") {
+      setCheckoutError(
+        checkoutCopy.authRequired || "Zaloguj się na konto klienta i potwierdź pełnoletność, aby złożyć zamówienie."
+      );
       return;
     }
     if (!deliveryAddress.trim()) {

@@ -86,7 +86,7 @@
         "deliveryAddressPlaceholder": "Enter the full delivery address",
         "submit": "Place order",
         "submitting": "Placing order...",
-        "authRequired": "You need to sign in to place an order.",
+        "authRequired": "Sign in as a customer and confirm your age to place an order.",
         "ageBlocked": "Ordering alcohol is blocked for underage users.",
         "ageOrRoleBlocked": "You are not allowed to place this order. Confirm age or sign in again.",
         "addressRequired": "Please enter a delivery address.",
@@ -195,6 +195,9 @@
       "emailLabel": "Email",
       "emailPlaceholder": "e.g. anna@example.com",
       "submit": "Check status"
+    },
+    "access": {
+      "customerRequired": "To load account orders, sign in as a customer and confirm your age."
     },
     "notFound": "No order found for the provided number and email. Verify your data and try again.",
     "details": {

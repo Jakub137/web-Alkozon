@@ -86,7 +86,7 @@
         "deliveryAddressPlaceholder": "Podaj pełny adres dostawy",
         "submit": "Złóż zamówienie",
         "submitting": "Składanie zamówienia...",
-        "authRequired": "Musisz się zalogować, aby złożyć zamówienie.",
+        "authRequired": "Zaloguj się na konto klienta i potwierdź pełnoletność, aby złożyć zamówienie.",
         "ageBlocked": "Składanie zamówień jest zablokowane dla osób niepełnoletnich.",
         "ageOrRoleBlocked": "Brak uprawnień do złożenia zamówienia. Potwierdź pełnoletność lub zaloguj się ponownie.",
         "addressRequired": "Podaj adres dostawy.",
@@ -195,6 +195,9 @@
       "emailLabel": "E-mail",
       "emailPlaceholder": "Np. anna@example.com",
       "submit": "Sprawdź status"
+    },
+    "access": {
+      "customerRequired": "Aby pobierać zamówienia z konta, zaloguj się jako klient i potwierdź pełnoletność."
     },
     "notFound": "Nie znaleziono zamówienia dla podanego numeru i e-maila. Sprawdź dane i spróbuj ponownie.",
     "details": {
