@@ -11,7 +11,10 @@
     "lightMode": "Tryb jasny",
     "darkMode": "Tryb ciemny",
     "login": "Zaloguj się",
-    "returnHome": "Powrót"
+    "returnHome": "Powrót",
+    "shop": "Sklep",
+    "orderStatus": "Status zamówienia",
+    "myOrders": "Moje zamówienia"
   },
   "home": {
     "title": "Odkryj świat najlepszych alkoholi",
@@ -199,6 +202,7 @@
     "access": {
       "customerRequired": "Aby pobierać zamówienia z konta, zaloguj się jako klient i potwierdź pełnoletność."
     },
+    "linkMyOrders": "Przejdź do listy: Moje zamówienia",
     "notFound": "Nie znaleziono zamówienia dla podanego numeru i e-maila. Sprawdź dane i spróbuj ponownie.",
     "details": {
       "title": "Szczegóły zamówienia",
@@ -273,6 +277,13 @@
       "contact": "Kontakt"
     },
     "contactEmail": "kontakt@alkozon.pl"
+  },
+  "myOrdersPage": {
+    "title": "Moje zamówienia",
+    "subtitle": "Zamówienia powiązane z Twoim kontem klienta. Kliknij pozycję, aby zobaczyć szczegóły na stronie statusu.",
+    "linkOrderStatus": "Szukaj zamówienia po numerze i e-mailu",
+    "loadError": "Nie udało się pobrać listy zamówień.",
+    "empty": "Brak zamówień na koncie."
   },
   "customOrderPage": {
     "title": "Zamówienie własne",

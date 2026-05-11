@@ -6,6 +6,7 @@ import ThemeSwitcher from "@/components/ThemeSwitcher";
 import LoginButton from "@/components/LoginButton";
 import { Suspense } from "react";
 import BackHomeButton from "@/components/BackHomeButton";
+import HeaderNavLinks from "@/components/HeaderNavLinks";
 import { Providers } from "./providers";
 import AgeVerificationModal from "@/components/AgeVerificationModal";
 import NotificationContainer from "@/components/NotificationContainer";
@@ -57,8 +58,11 @@ export default function RootLayout({
               Alkozon
             </div>
             
-            {/* Środek - pusta, elastyczna przestrzeń */}
-            <div className="flex-1"></div>
+            <div className="flex-1 min-w-0 flex justify-center px-2">
+              <Suspense fallback={null}>
+                <HeaderNavLinks />
+              </Suspense>
+            </div>
 
             {/* Prawa strona */}
             <div className="w-auto flex gap-2 items-center justify-end">

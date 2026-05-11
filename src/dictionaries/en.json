@@ -11,7 +11,10 @@
     "lightMode": "Light Mode",
     "darkMode": "Dark Mode",
     "login": "Sign In",
-    "returnHome": "Return"
+    "returnHome": "Return",
+    "shop": "Shop",
+    "orderStatus": "Order status",
+    "myOrders": "My orders"
   },
   "home": {
     "title": "Discover the world of premium spirits",
@@ -199,6 +202,7 @@
     "access": {
       "customerRequired": "To load account orders, sign in as a customer and confirm your age."
     },
+    "linkMyOrders": "Go to: My orders",
     "notFound": "No order found for the provided number and email. Verify your data and try again.",
     "details": {
       "title": "Order details",
@@ -273,6 +277,13 @@
       "contact": "Contact"
     },
     "contactEmail": "contact@alkozon.com"
+  },
+  "myOrdersPage": {
+    "title": "My orders",
+    "subtitle": "Orders linked to your customer account. Click an entry to see details on the status page.",
+    "linkOrderStatus": "Look up an order by number and email",
+    "loadError": "Could not load your orders.",
+    "empty": "No orders on this account yet."
   },
   "customOrderPage": {
     "title": "Custom order",

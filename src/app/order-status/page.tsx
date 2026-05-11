@@ -4,10 +4,11 @@ import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { findOrderByNumberAndEmail } from "@/data/orders";
-import { BackendOrderStatus, OrderProgressStep, OrderRecord, OrderStatus } from "@/types/order";
+import { OrderProgressStep, OrderRecord, OrderStatus } from "@/types/order";
 import { useAuth } from "@/context/AuthContext";
-import { extractOrderId, getMyOrders, getOrderById, mapBackendOrderStatusToUi } from "@/lib/api/orders";
+import { extractOrderId, getOrderById, mapBackendOrderStatusToUi } from "@/lib/api/orders";
 import { ApiError } from "@/lib/api/types";
+import { formatOrderDate, formatOrderDateTime, getStatusTone } from "@/lib/orderStatusUi";
 import { subscribeOrderStatusUpdates } from "@/lib/realtime/orderUpdates";
 
 const PROGRESS_STEPS: OrderProgressStep[] = ["received", "processing", "shipped", "delivered"];
@@ -32,31 +33,6 @@ function getProgressIndex(status: OrderStatus): number {
   }
 }
 
-function getStatusTone(status: OrderStatus): string {
-  if (status === "cancelled" || status === "payment_failed" || status === "returned") {
-    return "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300";
-  }
-  if (status === "delivered") {
-    return "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300";
-  }
-  return "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300";
-}
-
-function getBackendStatusLabelKey(status?: BackendOrderStatus): BackendOrderStatus | null {
-  return status ?? null;
-}
-
-function formatDate(value: string, locale: string) {
-  return new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(value));
-}
-
-function formatDateTime(value: string, locale: string) {
-  return new Intl.DateTimeFormat(locale, {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(new Date(value));
-}
-
 export default function OrderStatusPage() {
   const { dict, lang } = useLanguage();
   const { token, user, authorizedRequest } = useAuth();
@@ -66,9 +42,6 @@ export default function OrderStatusPage() {
   const [order, setOrder] = useState<OrderRecord | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [myOrders, setMyOrders] = useState<OrderRecord[]>([]);
-  const [isMyOrdersLoading, setIsMyOrdersLoading] = useState(false);
-  const [myOrdersError, setMyOrdersError] = useState<string | null>(null);
 
   const currentLocale = lang === "pl" ? "pl-PL" : "en-US";
   const canUseCustomerEndpoints = Boolean(token) && user?.role === "CUSTOMER";
@@ -130,61 +103,12 @@ export default function OrderStatusPage() {
 
   useEffect(() => {
     if (!canUseCustomerEndpoints) return;
-    let cancelled = false;
-
-    async function loadMyOrders() {
-      try {
-        setIsMyOrdersLoading(true);
-        setMyOrdersError(null);
-        const result = await authorizedRequest((accessToken) =>
-          getMyOrders(accessToken, user?.email ?? undefined)
-        );
-        if (!cancelled) {
-          setMyOrders(result);
-        }
-      } catch (error) {
-        if (cancelled) return;
-        if (error instanceof ApiError) {
-          if (error.status === 401 || error.status === 403) {
-            setMyOrdersError(
-              dict.orderStatusPage.access?.customerRequired ||
-                "Aby pobierać zamówienia z konta, zaloguj się jako klient i potwierdź pełnoletność."
-            );
-          } else {
-            setMyOrdersError(error.message);
-          }
-        } else {
-          setMyOrdersError("Nie udało się pobrać listy Twoich zamówień.");
-        }
-      } finally {
-        if (!cancelled) {
-          setIsMyOrdersLoading(false);
-        }
-      }
-    }
-
-    void loadMyOrders();
-    return () => {
-      cancelled = true;
-    };
-  }, [canUseCustomerEndpoints, user?.email, authorizedRequest, dict.orderStatusPage.access?.customerRequired]);
-
-  useEffect(() => {
-    if (!canUseCustomerEndpoints) return;
     const accessToken = token;
     if (!accessToken) return;
 
     return subscribeOrderStatusUpdates(accessToken, (event) => {
       const nextUiStatus = mapBackendOrderStatusToUi(event.status);
       const targetOrderNumber = `ORD-${event.orderId}`;
-
-      setMyOrders((prev) =>
-        prev.map((entry) =>
-          entry.orderNumber === targetOrderNumber
-            ? { ...entry, status: nextUiStatus, apiStatus: event.status }
-            : entry
-        )
-      );
 
       setOrder((prev) => {
         if (!prev || prev.orderNumber !== targetOrderNumber) return prev;
@@ -307,62 +231,13 @@ export default function OrderStatusPage() {
         )}
 
         {canUseCustomerEndpoints && (
-          <section className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 sm:p-6 shadow-sm dark:shadow-slate-900/50">
-            <div className="flex items-center justify-between gap-3 mb-4">
-              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
-                {dict.orderStatusPage.myOrders?.title || "Moje zamówienia"}
-              </h2>
-              {isMyOrdersLoading && (
-                <span className="text-xs text-slate-500 dark:text-slate-400">
-                  {dict.orderStatusPage.myOrders?.loading || "Ładowanie..."}
-                </span>
-              )}
-            </div>
-
-            {myOrdersError && (
-              <p className="text-sm text-red-700 dark:text-red-300 mb-3">{myOrdersError}</p>
-            )}
-
-            {myOrders.length === 0 ? (
-              <p className="text-sm text-slate-600 dark:text-slate-300">
-                {dict.orderStatusPage.myOrders?.empty || "Nie masz jeszcze żadnych zamówień."}
-              </p>
-            ) : (
-              <div className="space-y-2">
-                {myOrders.map((entry) => {
-                  const apiLabelKey = getBackendStatusLabelKey(entry.apiStatus);
-                  const statusLabel = apiLabelKey
-                    ? dict.orderStatusPage.backendStatuses?.[apiLabelKey] || dict.orderStatusPage.statuses[entry.status]
-                    : dict.orderStatusPage.statuses[entry.status];
-
-                  return (
-                    <button
-                      key={entry.orderNumber}
-                      type="button"
-                      onClick={() => {
-                        setOrder(entry);
-                        setOrderNumber(entry.orderNumber);
-                        setEmail(entry.email || user?.email || "");
-                        setSearched(true);
-                      }}
-                      className="w-full text-left rounded-xl border border-slate-200 dark:border-slate-700 p-3 bg-slate-50 dark:bg-slate-900/30 hover:border-blue-500 transition-colors"
-                    >
-                      <div className="flex flex-wrap items-center justify-between gap-2">
-                        <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                          {entry.orderNumber}
-                        </span>
-                        <span className={`h-7 px-2.5 rounded-full text-xs font-semibold inline-flex items-center ${getStatusTone(entry.status)}`}>
-                          {statusLabel}
-                        </span>
-                      </div>
-                      <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                        {dict.orderStatusPage.details.placedAt}: {formatDate(entry.placedAt, currentLocale)}
-                      </p>
-                    </button>
-                  );
-                })}
-              </div>
-            )}
+          <section className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 sm:p-5 shadow-sm dark:shadow-slate-900/50 text-center">
+            <Link
+              href="/my-orders"
+              className="text-sm font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 underline"
+            >
+              {dict.orderStatusPage.linkMyOrders || dict.navbar.myOrders}
+            </Link>
           </section>
         )}
 
@@ -401,7 +276,7 @@ export default function OrderStatusPage() {
                     {dict.orderStatusPage.details.placedAt}
                   </p>
                   <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                    {formatDate(order.placedAt, currentLocale)}
+                    {formatOrderDate(order.placedAt, currentLocale)}
                   </p>
                 </div>
 
@@ -421,7 +296,7 @@ export default function OrderStatusPage() {
                     {dict.orderStatusPage.details.estimatedDelivery}
                   </p>
                   <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                    {formatDate(order.estimatedDelivery, currentLocale)}
+                    {formatOrderDate(order.estimatedDelivery, currentLocale)}
                   </p>
                 </div>
               </div>
@@ -512,7 +387,7 @@ export default function OrderStatusPage() {
                           {dict.orderStatusPage.statuses[item.status]}
                         </span>
                         <span className="text-xs text-slate-500 dark:text-slate-400">
-                          {formatDateTime(item.changedAt, currentLocale)}
+                          {formatOrderDateTime(item.changedAt, currentLocale)}
                         </span>
                       </div>
                       {item.note && (
