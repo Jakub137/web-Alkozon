@@ -9,6 +9,7 @@ import { useAge } from "@/context/AgeContext";
 import { useAuth } from "@/context/AuthContext";
 import { ApiError } from "@/lib/api/types";
 import { buildOrderItemsFromCart, createOrder } from "@/lib/api/orders";
+import { createCustomOrder } from "@/lib/api/customOrders";
 
 type CheckoutCopy = {
   deliveryAddress?: string;
@@ -21,6 +22,7 @@ type CheckoutCopy = {
   addressRequired?: string;
   customNotSupported?: string;
   invalidCart?: string;
+  customMissingPayload?: string;
   rateLimited?: string;
   serverError?: string;
   unexpectedError?: string;
@@ -55,10 +57,9 @@ export default function CartPage() {
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
-  const checkoutCopy = dict.shop.cart.checkout || {};
+  const checkoutCopy: CheckoutCopy = dict.shop.cart.checkout || {};
 
   const totalPrice = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
-  const hasCustomProducts = cartItems.some((item) => item.product.id.startsWith("custom-"));
 
   const handleCreateOrder = async () => {
     setCheckoutError(null);
@@ -75,27 +76,55 @@ export default function CartPage() {
       setCheckoutError(checkoutCopy.addressRequired || "Podaj adres dostawy.");
       return;
     }
-    if (hasCustomProducts) {
-      setCheckoutError(checkoutCopy.customNotSupported || "Zamówienia własne podłączymy do API w kolejnym kroku.");
-      return;
-    }
-
-    const items = buildOrderItemsFromCart(cartItems);
-    if (items.length === 0) {
+    const customItems = cartItems.filter((item) => item.product.id.startsWith("custom-"));
+    const regularItems = cartItems.filter((item) => !item.product.id.startsWith("custom-"));
+    const items = buildOrderItemsFromCart(regularItems);
+    if (items.length === 0 && customItems.length === 0) {
       setCheckoutError(checkoutCopy.invalidCart || "Koszyk nie zawiera produktów, które można wysłać do API.");
       return;
     }
 
     try {
       setIsSubmitting(true);
-      const order = await authorizedRequest((accessToken) =>
-        createOrder(accessToken, {
-          items,
-          deliveryAddress: deliveryAddress.trim(),
-        })
-      );
+      let createdOrderNumber: string | null = null;
+      if (items.length > 0) {
+        const order = await authorizedRequest((accessToken) =>
+          createOrder(accessToken, {
+            items,
+            deliveryAddress: deliveryAddress.trim(),
+          })
+        );
+        createdOrderNumber = order.orderNumber;
+      }
+
+      if (customItems.length > 0) {
+        await authorizedRequest(async (accessToken) => {
+          for (const item of customItems) {
+            if (!item.product.customOrderDetails?.description) {
+              throw new Error(
+                checkoutCopy.customMissingPayload || "Brakuje danych zamówienia własnego. Dodaj je ponownie."
+              );
+            }
+
+            for (let i = 0; i < item.quantity; i += 1) {
+              await createCustomOrder(accessToken, {
+                description: item.product.customOrderDetails.description,
+                preferences: {
+                  ...item.product.customOrderDetails.preferences,
+                  deliveryAddress: deliveryAddress.trim(),
+                },
+              });
+            }
+          }
+        });
+      }
+
       clearCart();
-      router.push(`/order-status?orderId=${encodeURIComponent(order.orderNumber)}`);
+      if (createdOrderNumber) {
+        router.push(`/order-status?orderId=${encodeURIComponent(createdOrderNumber)}`);
+      } else {
+        router.push("/order-status");
+      }
     } catch (error) {
       setCheckoutError(mapCheckoutErrorMessage(checkoutCopy, error));
     } finally {

@@ -9,4 +9,8 @@ export interface Product {
   category: ProductCategory;
   alcoholContent?: number;
   description?: string;
+  customOrderDetails?: {
+    description: string;
+    preferences: Record<string, unknown>;
+  };
 }

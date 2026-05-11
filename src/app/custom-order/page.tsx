@@ -158,6 +158,18 @@ export default function CustomOrderPage() {
       image: "/products/custom-order.jpg",
       category: selectedBase,
       alcoholContent: Number(abv.toFixed(1)),
+      customOrderDetails: {
+        description: generatedName,
+        preferences: {
+          base: selectedBase,
+          capacity,
+          abv: Number(abv.toFixed(1)),
+          flavors: selectedFlavors,
+          intensity,
+          note: note.trim(),
+          estimatedPrice: pricing.finalPrice,
+        },
+      },
     };
 
     const result = addToCart(customProduct);
