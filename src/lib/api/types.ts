@@ -29,6 +29,11 @@ export interface TokenResponse {
   refreshToken: string;
   tokenType: string;
   expiresInSeconds: number;
+  userId?: number;
+  email?: string;
+  role?: UserRole;
+  firstName?: string | null;
+  lastName?: string | null;
 }
 
 export interface LoginRequest {
@@ -49,8 +54,27 @@ export interface AuthSession {
   tokenType: string;
   expiresAt: number;
   user: {
+    id?: number;
     username: string;
     email?: string;
     role?: UserRole;
+    firstName?: string;
+    lastName?: string;
+    phone?: string | null;
+    courier?: boolean;
+    active?: boolean;
+    ageConfirmedAt?: string | null;
   };
+}
+
+export interface UserMeResponse {
+  id: number;
+  email: string;
+  role: UserRole;
+  firstName: string | null;
+  lastName: string | null;
+  phone: string | null;
+  courier: boolean;
+  active: boolean;
+  ageConfirmedAt: string | null;
 }

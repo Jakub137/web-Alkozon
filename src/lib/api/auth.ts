@@ -4,6 +4,7 @@ import type {
   LoginRequest,
   RegisterRequest,
   TokenResponse,
+  UserMeResponse,
   UserRole,
 } from "./types";
 
@@ -21,11 +22,42 @@ function parseJwtPayload(token: string): Record<string, unknown> {
   }
 }
 
+function normalizeName(value?: string | null): string | undefined {
+  if (!value) return undefined;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
+}
+
+function buildUsername(params: {
+  firstName?: string | null;
+  lastName?: string | null;
+  email?: string;
+  fallbackFromJwt?: string;
+}): string {
+  const firstName = normalizeName(params.firstName);
+  const lastName = normalizeName(params.lastName);
+  const fullName = [firstName, lastName].filter(Boolean).join(" ");
+  if (fullName) return fullName;
+  if (params.email) return params.email.split("@")[0];
+  if (params.fallbackFromJwt) return params.fallbackFromJwt;
+  return "Użytkownik";
+}
+
 function sessionFromTokens(tokens: TokenResponse): AuthSession {
   const payload = parseJwtPayload(tokens.accessToken);
-  const email = typeof payload.email === "string" ? payload.email : undefined;
-  const username = email ? email.split("@")[0] : "Użytkownik";
-  const role = typeof payload.role === "string" ? (payload.role as UserRole) : undefined;
+  const jwtEmail = typeof payload.email === "string" ? payload.email : undefined;
+  const email = tokens.email ?? jwtEmail;
+  const roleFromToken = tokens.role;
+  const roleFromJwt = typeof payload.role === "string" ? (payload.role as UserRole) : undefined;
+  const role = roleFromToken ?? roleFromJwt;
+  const firstName = normalizeName(tokens.firstName);
+  const lastName = normalizeName(tokens.lastName);
+  const username = buildUsername({
+    firstName,
+    lastName,
+    email,
+    fallbackFromJwt: jwtEmail ? jwtEmail.split("@")[0] : undefined,
+  });
 
   return {
     accessToken: tokens.accessToken,
@@ -33,9 +65,35 @@ function sessionFromTokens(tokens: TokenResponse): AuthSession {
     tokenType: tokens.tokenType,
     expiresAt: Date.now() + tokens.expiresInSeconds * 1000,
     user: {
+      id: typeof tokens.userId === "number" ? tokens.userId : undefined,
       username,
       email,
       role,
+      firstName,
+      lastName,
+    },
+  };
+}
+
+export function mergeProfileIntoSession(session: AuthSession, profile: UserMeResponse): AuthSession {
+  return {
+    ...session,
+    user: {
+      ...session.user,
+      id: profile.id,
+      email: profile.email,
+      role: profile.role,
+      firstName: normalizeName(profile.firstName),
+      lastName: normalizeName(profile.lastName),
+      username: buildUsername({
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        email: profile.email,
+      }),
+      phone: profile.phone,
+      courier: profile.courier,
+      active: profile.active,
+      ageConfirmedAt: profile.ageConfirmedAt,
     },
   };
 }
@@ -83,6 +141,12 @@ export async function logoutApi(refreshToken: string): Promise<void> {
   await apiRequest<void>("/api/auth/logout", {
     method: "POST",
     body: { refreshToken },
+  });
+}
+
+export async function getCurrentUserApi(accessToken: string): Promise<UserMeResponse> {
+  return apiRequest<UserMeResponse>("/api/users/me", {
+    token: accessToken,
   });
 }
 

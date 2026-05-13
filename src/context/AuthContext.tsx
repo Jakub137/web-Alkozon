@@ -1,8 +1,16 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, { createContext, useCallback, useContext, useState, useEffect, ReactNode } from "react";
 import type { AuthSession } from "@/lib/api/types";
-import { guestApi, hydrateSession, logoutApi, refreshApi } from "@/lib/api/auth";
+import {
+  getCurrentUserApi,
+  guestApi,
+  hydrateSession,
+  logoutApi,
+  mergeProfileIntoSession,
+  refreshApi,
+} from "@/lib/api/auth";
+import { registerFcmDeviceApi } from "@/lib/api/devices";
 import { ApiError } from "@/lib/api/types";
 
 type User = AuthSession["user"] | null;
@@ -14,11 +22,13 @@ interface AuthContextType {
   login: (session: AuthSession) => void;
   logout: (message?: string) => Promise<void>;
   authorizedRequest: <T>(request: (token: string) => Promise<T>) => Promise<T>;
+  registerWebPushToken: (fcmToken: string) => Promise<void>;
   toast: string | null;
   setToast: (msg: string | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const FCM_TOKEN_STORAGE_KEY = "alkozon_fcm_web_token";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
@@ -26,16 +36,68 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false);
+  const [storedFcmToken, setStoredFcmToken] = useState<string | null>(null);
+
+  const applySession = useCallback((session: AuthSession) => {
+    setToken(session.accessToken);
+    setRefreshToken(session.refreshToken);
+    setUser(session.user);
+    localStorage.setItem("alkozon_auth_session", JSON.stringify(session));
+  }, []);
+
+  const syncProfile = useCallback(async (baseSession: AuthSession): Promise<AuthSession> => {
+    try {
+      const profile = await getCurrentUserApi(baseSession.accessToken);
+      const nextSession = mergeProfileIntoSession(baseSession, profile);
+      applySession(nextSession);
+      return nextSession;
+    } catch {
+      return baseSession;
+    }
+  }, [applySession]);
+
+  const registerFcmToken = useCallback(
+    async (accessToken: string, role: AuthSession["user"]["role"], fcmToken: string) => {
+      if (!fcmToken.trim()) return;
+      if (!role || role === "GUEST") return;
+      try {
+        await registerFcmDeviceApi(accessToken, { token: fcmToken.trim(), platform: "WEB" });
+      } catch {
+        // Retry is handled naturally on next login / refresh / token update.
+      }
+    },
+    []
+  );
+
+  const registerWebPushToken = useCallback(
+    async (fcmToken: string) => {
+      const normalized = fcmToken.trim();
+      if (!normalized) return;
+      localStorage.setItem(FCM_TOKEN_STORAGE_KEY, normalized);
+      setStoredFcmToken(normalized);
+
+      if (!token || !user?.role) return;
+      await registerFcmToken(token, user.role, normalized);
+    },
+    [registerFcmToken, token, user]
+  );
 
   useEffect(() => {
     setIsClient(true);
+    const existingFcmToken = localStorage.getItem(FCM_TOKEN_STORAGE_KEY);
+    if (existingFcmToken?.trim()) {
+      setStoredFcmToken(existingFcmToken.trim());
+    }
+
     const rawSession = localStorage.getItem("alkozon_auth_session");
     if (rawSession) {
       const session = hydrateSession(rawSession);
       if (session) {
-        setToken(session.accessToken);
-        setRefreshToken(session.refreshToken);
-        setUser(session.user);
+        applySession(session);
+        if (existingFcmToken?.trim()) {
+          void registerFcmToken(session.accessToken, session.user.role, existingFcmToken);
+        }
+        void syncProfile(session);
         return;
       }
     }
@@ -43,21 +105,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Keep an anonymous backend session from the start.
     void guestApi()
       .then((session) => {
-        setToken(session.accessToken);
-        setRefreshToken(session.refreshToken);
-        setUser(session.user);
-        localStorage.setItem("alkozon_auth_session", JSON.stringify(session));
+        applySession(session);
+        if (existingFcmToken?.trim()) {
+          void registerFcmToken(session.accessToken, session.user.role, existingFcmToken);
+        }
+        void syncProfile(session);
       })
       .catch(() => {
         // Silent fail - app can still work with limited local behavior.
       });
-  }, []);
+  }, [applySession, registerFcmToken, syncProfile]);
 
   const login = (session: AuthSession) => {
-    setToken(session.accessToken);
-    setRefreshToken(session.refreshToken);
-    setUser(session.user);
-    localStorage.setItem("alkozon_auth_session", JSON.stringify(session));
+    applySession(session);
+    if (storedFcmToken) {
+      void registerFcmToken(session.accessToken, session.user.role, storedFcmToken);
+    }
+    void syncProfile(session);
   };
 
   const logout = async (message?: string) => {
@@ -93,13 +157,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       const refreshedSession = await refreshApi(refreshToken);
-      login(refreshedSession);
-      return request(refreshedSession.accessToken);
+      if (storedFcmToken) {
+        await registerFcmToken(refreshedSession.accessToken, refreshedSession.user.role, storedFcmToken);
+      }
+      const sessionWithFreshProfile = await syncProfile(refreshedSession);
+      return request(sessionWithFreshProfile.accessToken);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ token, refreshToken, user, login, logout, authorizedRequest, toast, setToast }}>
+    <AuthContext.Provider
+      value={{ token, refreshToken, user, login, logout, authorizedRequest, registerWebPushToken, toast, setToast }}
+    >
       {children}
       {/* Global Toast */}
       {isClient && toast && (

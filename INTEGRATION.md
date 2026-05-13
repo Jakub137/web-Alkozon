@@ -37,6 +37,8 @@ Aplikacja domyślnie: `http://localhost:3000`.
 - **Złożenie zamówienia** (produkty z katalogu + zamówienia własne wysyłane jako custom orders) wymaga zalogowania użytkownika z rolą **`CUSTOMER`** oraz potwierdzenia pełnoletności w modalu wieku.
 - **Lista „Moje zamówienia”** (`/my-orders`) i podgląd szczegółów z API po zalogowaniu — tak samo tylko dla `CUSTOMER`.
 - **Status po numerze i e-mailu** (`/order-status`) — wyszukiwanie po danych demonstracyjnych z mocków; zalogowany klient może dodatkowo odświeżać szczegóły z API po numerze zamówienia.
+- **Profil użytkownika** — po logowaniu/rejestracji/odświeżeniu front synchronizuje dane konta przez `GET /api/users/me` (rola, imię, nazwisko, email itp.).
+- **Token urządzenia (FCM / WEB)** — front ma przygotowany endpoint `POST /api/devices/fcm` (platforma `WEB`) i rejestruje zapisany token po loginie / odświeżeniu sesji. Integracja z Firebase po stronie web może użyć `registerWebPushToken(...)` z `AuthContext`.
 
 ## Testy (skrót)
 
