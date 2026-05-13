@@ -14,6 +14,6 @@ test.describe('Auth Flow', () => {
 
     await expect(page).toHaveURL('/login');
     const loginError = page.getByTestId('login-error-banner');
-    await expect(loginError).toBeVisible({ timeout: 20000 });
+    await expect(loginError).toBeVisible({ timeout: 12_000 });
   });
 });
