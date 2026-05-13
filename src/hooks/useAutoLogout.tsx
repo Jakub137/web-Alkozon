@@ -10,8 +10,9 @@ export function useAutoLogout() {
   const lastActive = useRef<number>(0);
 
   useEffect(() => {
-    if (!user) return; // Only track if logged in
-    
+    // Sesja gościa (JWT GUEST) — bez agresywnego wylogowania przy bezczynności.
+    if (!user?.role || user.role === "GUEST") return;
+
     lastActive.current = Date.now();
 
     const trackActivity = () => {

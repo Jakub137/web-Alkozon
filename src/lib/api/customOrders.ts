@@ -13,7 +13,7 @@ export async function createCustomOrder(
   token: string,
   payload: CreateCustomOrderRequest
 ): Promise<ApiCustomOrderResponse> {
-  return apiRequest<ApiCustomOrderResponse>("/custom-orders", {
+  return apiRequest<ApiCustomOrderResponse>("/api/custom-orders", {
     method: "POST",
     token,
     body: payload,

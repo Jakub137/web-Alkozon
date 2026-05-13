@@ -7,10 +7,10 @@ describe('Unit Tests - useAutoLogout Hook', () => {
   beforeEach(() => {
     vi.useFakeTimers();
     vi.spyOn(AuthContextModule, 'useAuth').mockReturnValue({
-      user: { email: 'test@alkozon.pl' } as any,
+      user: { email: 'test@alkozon.pl', role: 'CUSTOMER' } as any,
       logout: vi.fn(),
       login: vi.fn(),
-      isAuthenticated: true
+      isAuthenticated: true,
     } as any);
   });
 
@@ -35,13 +35,27 @@ describe('Unit Tests - useAutoLogout Hook', () => {
     expect(mockLogout).not.toHaveBeenCalled();
   });
 
+  it('nie wylogowuje przy roli GUEST (sesja gościa)', () => {
+    const mockLogout = vi.fn();
+    vi.spyOn(AuthContextModule, 'useAuth').mockReturnValue({
+      user: { email: 'guest@local', role: 'GUEST' } as any,
+      logout: mockLogout,
+      login: vi.fn(),
+      isAuthenticated: true,
+    } as any);
+
+    renderHook(() => useAutoLogout());
+    vi.advanceTimersByTime(35000);
+    expect(mockLogout).not.toHaveBeenCalled();
+  });
+
   it('wylogowuje użytkownika po przekroczeniu czasu bezczynności', () => {
     const mockLogout = vi.fn();
     vi.spyOn(AuthContextModule, 'useAuth').mockReturnValue({
-      user: { email: 'test@alkozon.pl' } as any,
+      user: { email: 'test@alkozon.pl', role: 'CUSTOMER' } as any,
       logout: mockLogout,
       login: vi.fn(),
-      isAuthenticated: true
+      isAuthenticated: true,
     } as any);
 
     renderHook(() => useAutoLogout());
@@ -54,10 +68,10 @@ describe('Unit Tests - useAutoLogout Hook', () => {
   it('resetuje licznik po aktywności użytkownika (mousemove)', () => {
     const mockLogout = vi.fn();
     vi.spyOn(AuthContextModule, 'useAuth').mockReturnValue({
-      user: { email: 'test@alkozon.pl' } as any,
+      user: { email: 'test@alkozon.pl', role: 'CUSTOMER' } as any,
       logout: mockLogout,
       login: vi.fn(),
-      isAuthenticated: true
+      isAuthenticated: true,
     } as any);
 
     renderHook(() => useAutoLogout());

@@ -10,14 +10,22 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { registerApi } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/types";
+import { SAFE_TEXT_REGEX, STRONG_PASSWORD_REGEX } from "@/lib/validation/backendPatterns";
 
 const registerSchema = z.object({
-  username: z.string().min(3, { message: "Nazwa użytkownika od 3 znaków" }),
+  username: z
+    .string()
+    .min(3, { message: "Nazwa użytkownika od 3 znaków" })
+    .regex(SAFE_TEXT_REGEX, {
+      message: "Niedozwolone znaki (np. cudzysłowy, nawiasy klamrowe) — zgodnie z walidacją API",
+    }),
   email: z.string().email({ message: "Niepoprawny format adresu email" }),
-  password: z.string()
-    .min(8, { message: "Hasło musi mieć co najmniej 8 znaków" })
-    .regex(/[A-Z]/, { message: "Brak wielkiej litery na potrzeby bezpieczeństwa poszwa" })
-    .regex(/[^A-Za-z0-9]/, { message: "Hasło musi zawierać znak specjalny" }),
+  password: z
+    .string()
+    .regex(STRONG_PASSWORD_REGEX, {
+      message:
+        "Hasło: 8–128 znaków, mała i wielka litera, cyfra oraz znak specjalny z zestawu @$!%*?&",
+    }),
 });
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
@@ -139,7 +147,7 @@ export default function RegisterPage() {
             {errors.password && <p className="mt-1.5 text-sm text-red-500 font-medium animate-in fade-in">{errors.password.message}</p>}
             
             <p className="mt-3 text-xs text-slate-500 dark:text-slate-400 font-medium bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-2 rounded-md">
-              Dzięki parserowi Zod chronimy API, narzucając trudne hasło (min. 8 znaków, duża litera, znak specjalny).
+              Walidacja jak w API (bezpieczny tekst w nazwie, hasło z małą i wielką literą, cyfrą oraz znakiem @$!%*?&).
             </p>
           </div>
 

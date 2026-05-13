@@ -106,7 +106,9 @@
     "title": "FAQ",
     "subtitle": "Najczęściej zadawane pytania dotyczące zamówień, dostawy i produktów.",
     "searchPlaceholder": "Szukaj pytania...",
+    "matchSummary": "Wyświetlamy {{shown}} z {{total}} pytań.",
     "noResults": "Brak pytań pasujących do wyszukiwania.",
+    "noResultsHint": "Spróbuj innej frazy albo wybierz inną kategorię.",
     "categories": {
       "all": "Wszystkie",
       "orders": "Zamówienia",

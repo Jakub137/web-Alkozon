@@ -106,7 +106,9 @@
     "title": "FAQ",
     "subtitle": "Frequently asked questions about orders, delivery and products.",
     "searchPlaceholder": "Search questions...",
+    "matchSummary": "Showing {{shown}} of {{total}} questions.",
     "noResults": "No questions match your search.",
+    "noResultsHint": "Try a different phrase or pick another category.",
     "categories": {
       "all": "All",
       "orders": "Orders",

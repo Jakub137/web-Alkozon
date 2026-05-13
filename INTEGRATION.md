@@ -5,6 +5,14 @@
 - Node.js (wersja zgodna z projektem, np. 20+)
 - Działający backend REST pod adresem ustawionym w zmiennych środowiskowych
 
+## Backend `api-alcozon` (lokalnie)
+
+- Domyślny port: **8080** (`application.yml`).
+- Prefiks ścieżek: **`/api`** — kontrolery w pakiecie `modules` są mapowane np. na `/api/auth/login`, `/api/products`, `/api/orders`, `/api/custom-orders`.
+- CORS: w `application.yml` jest już whitelist m.in. dla `http://localhost:3000` (Next.js).
+- Dokumentacja: **Swagger UI** pod `http://localhost:8080/docs`, OpenAPI pod `/api-docs`.
+- WebSocket (STOMP): typowo `ws://localhost:8080/ws` — ustaw `NEXT_PUBLIC_WS_URL` jeśli inferencja z `NEXT_PUBLIC_API_URL` nie pasuje.
+
 ## Zmienne środowiskowe
 
 Skopiuj `.env.example` do `.env.local` i uzupełnij:

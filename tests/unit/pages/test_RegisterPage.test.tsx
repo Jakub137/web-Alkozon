@@ -50,7 +50,11 @@ describe('RegisterPage Unit Tests', () => {
     await waitFor(() => {
       expect(screen.getByText('Nazwa użytkownika od 3 znaków')).toBeInTheDocument();
       expect(screen.getByText('Niepoprawny format adresu email')).toBeInTheDocument();
-      expect(screen.getByText('Hasło musi mieć co najmniej 8 znaków')).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          'Hasło: 8–128 znaków, mała i wielka litera, cyfra oraz znak specjalny z zestawu @$!%*?&'
+        )
+      ).toBeInTheDocument();
     });
   });
 
