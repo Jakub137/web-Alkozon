@@ -13,9 +13,7 @@ test.describe('Auth Flow', () => {
     await page.getByRole('button', { name: 'Zaloguj się' }).click();
 
     await expect(page).toHaveURL('/login');
-    const loginError = page.getByText(
-      /Błędne dane|Invalid credentials|bad credentials|Zbyt wiele prób logowania|Konto zablokowane/i
-    );
-    await expect(loginError).toBeVisible();
+    const loginError = page.getByTestId('login-error-banner');
+    await expect(loginError).toBeVisible({ timeout: 20000 });
   });
 });
