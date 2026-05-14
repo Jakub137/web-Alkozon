@@ -7,6 +7,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { AgeProvider } from "@/context/AgeContext";
 import { NotificationProvider } from "@/context/NotificationContext";
 import { AutoLogoutListener } from "@/hooks/useAutoLogout";
+import WebPushBootstrap from "@/components/WebPushBootstrap";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -18,6 +19,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
               <CartProvider>
                 {children}
                 <AutoLogoutListener />
+                <WebPushBootstrap />
               </CartProvider>
             </NotificationProvider>
           </AgeProvider>

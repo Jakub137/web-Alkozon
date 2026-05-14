@@ -2,6 +2,11 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Auth Flow', () => {
   test('powinien pokazać błąd logowania dla nieprawidłowych danych', async ({ page }) => {
+    await page.addInitScript(() => {
+      window.localStorage.setItem('alkozon_age_status', 'adult');
+      window.localStorage.setItem('login_attempts', '0');
+    });
+
     await page.route('**/api/auth/guest', async (route) => {
       await route.fulfill({
         status: 200,
@@ -29,10 +34,6 @@ test.describe('Auth Flow', () => {
     });
 
     await page.goto('/login');
-
-    const ageBtn = page.getByRole('button', { name: 'Tak, mam ukończone 18 lat' });
-    await ageBtn.waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
-    if (await ageBtn.isVisible()) await ageBtn.click();
 
     await page.getByPlaceholder('test@test.pl').fill('nie-ma-takiego@example.com');
     await page.getByPlaceholder('••••••••').fill('WrongPassword123!');

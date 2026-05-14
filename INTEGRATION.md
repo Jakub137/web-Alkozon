@@ -21,6 +21,14 @@ Skopiuj `.env.example` do `.env.local` i uzupełnij:
 |--------|------|
 | `NEXT_PUBLIC_API_URL` | Bazowy URL API (bez końcowego `/`), np. `https://api-alcozon.onrender.com` |
 | `NEXT_PUBLIC_WS_URL` | Opcjonalnie: pełny URL WebSocketa do powiadomień o statusie zamówienia. Jeśli puste, front próbuje wywnioskować adres z `NEXT_PUBLIC_API_URL` |
+| `NEXT_PUBLIC_ENABLE_WEB_PUSH` | `true`/`false` — włącza bootstrap Web Push (domyślnie `false`) |
+| `NEXT_PUBLIC_FIREBASE_API_KEY` | Konfiguracja Firebase Web App |
+| `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN` | Konfiguracja Firebase Web App |
+| `NEXT_PUBLIC_FIREBASE_PROJECT_ID` | Konfiguracja Firebase Web App |
+| `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET` | Konfiguracja Firebase Web App |
+| `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | Konfiguracja Firebase Web App |
+| `NEXT_PUBLIC_FIREBASE_APP_ID` | Konfiguracja Firebase Web App |
+| `NEXT_PUBLIC_FIREBASE_VAPID_KEY` | Klucz Web Push (Firebase Cloud Messaging) |
 
 ## Uruchomienie lokalne
 
@@ -39,6 +47,7 @@ Aplikacja domyślnie: `http://localhost:3000`.
 - **Status po numerze i e-mailu** (`/order-status`) — wyszukiwanie po danych demonstracyjnych z mocków; zalogowany klient może dodatkowo odświeżać szczegóły z API po numerze zamówienia.
 - **Profil użytkownika** — po logowaniu/rejestracji/odświeżeniu front synchronizuje dane konta przez `GET /api/users/me` (rola, imię, nazwisko, email itp.).
 - **Token urządzenia (FCM / WEB)** — front ma przygotowany endpoint `POST /api/devices/fcm` (platforma `WEB`) i rejestruje zapisany token po loginie / odświeżeniu sesji. Integracja z Firebase po stronie web może użyć `registerWebPushToken(...)` z `AuthContext`.
+- **Web Push bootstrap** — komponent `WebPushBootstrap` uruchamia pobranie tokena FCM dla zalogowanego użytkownika (nie `GUEST`) i przesyła token do API. Działa tylko gdy `NEXT_PUBLIC_ENABLE_WEB_PUSH=true` oraz konfiguracja Firebase jest kompletna.
 
 ## Testy (skrót)
 
