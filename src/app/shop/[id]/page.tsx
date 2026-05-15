@@ -14,6 +14,7 @@ export default function ShopProductPage({
 }) {
   const { dict } = useLanguage();
   const [product, setProduct] = useState<Awaited<ReturnType<typeof getProductById>> | null>(null);
+  const [imageSrc, setImageSrc] = useState("/placeholder-product.svg");
   const [isLoading, setIsLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -29,6 +30,7 @@ export default function ShopProductPage({
         const data = await getProductById(params.id);
         if (!cancelled) {
           setProduct(data);
+          setImageSrc(data.image || "/placeholder-product.svg");
         }
       } catch (error) {
         if (cancelled) return;
@@ -100,11 +102,12 @@ export default function ShopProductPage({
           <div className="w-full lg:w-80">
             <div className="relative w-full h-72 bg-slate-200 dark:bg-slate-900 rounded-xl flex items-center justify-center p-6">
               <Image
-                src={product.image}
+                src={imageSrc}
                 alt={product.name}
                 fill
                 sizes="(max-width: 1024px) 100vw, 320px"
                 className="object-contain p-6"
+                onError={() => setImageSrc("/placeholder-product.svg")}
               />
             </div>
           </div>

@@ -44,6 +44,7 @@ Aplikacja domyślnie: `http://localhost:3000`.
 
 - **Koszyk** działa lokalnie (bez logowania).
 - **Złożenie zamówienia** (produkty z katalogu + zamówienia własne wysyłane jako custom orders) wymaga zalogowania użytkownika z rolą **`CUSTOMER`** oraz potwierdzenia pełnoletności w modalu wieku.
+- **Ikony produktów** — opisy i dane przychodzą z API, ale obrazy są mapowane lokalnie z frontu (`public/products/...`) według kategorii i pojemności `volumeMl` (np. 330/500/700/750/1000 ml) z fallbackiem do placeholdera.
 - **Lista „Moje zamówienia”** (`/my-orders`) i podgląd szczegółów z API po zalogowaniu — tak samo tylko dla `CUSTOMER`.
 - **Status po numerze i e-mailu** (`/order-status`) — publiczny track przez `GET /api/orders/track?orderId=...&email=...` (bez JWT). Zalogowany klient ma pełne szczegóły przez endpointy konta.
 - **Profil użytkownika** — po logowaniu/rejestracji/odświeżeniu front synchronizuje dane konta przez `GET /api/users/me` (rola, imię, nazwisko, email itp.).

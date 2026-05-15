@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
 import { Product } from "@/types/product";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAge } from "@/context/AgeContext";
@@ -15,6 +16,7 @@ interface ProductCardProps {
 export default function ProductCard({ product, onAddToCart, isAddDisabled = false }: ProductCardProps) {
   const { dict } = useLanguage();
   const { ageStatus } = useAge();
+  const [imageSrc, setImageSrc] = useState(product.image);
 
   const isDisabled = isAddDisabled || ageStatus === "underage";
 
@@ -22,11 +24,12 @@ export default function ProductCard({ product, onAddToCart, isAddDisabled = fals
     <div className="w-full sm:w-[200px] h-[400px] sm:flex-none flex flex-col min-w-0 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm dark:shadow-slate-900/50 hover:shadow-md dark:hover:shadow-slate-900/70 hover:border-blue-400 dark:hover:border-blue-500 transition-all group overflow-hidden">
       <div className="relative w-full h-64 bg-slate-100 dark:bg-slate-900 flex items-center justify-center p-4">
         <Image
-          src={product.image}
+          src={imageSrc}
           alt={product.name}
           fill
           sizes="(max-width: 640px) 100vw, 200px"
           className="object-contain p-4"
+          onError={() => setImageSrc("/placeholder-product.svg")}
         />
       </div>
       
