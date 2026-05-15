@@ -234,6 +234,11 @@ function toCapacity(volumeMl: number | null): string {
 function mapApiProduct(apiProduct: ApiProduct): Product {
   const category = normalizeCategory(apiProduct.category);
   const imageFromName = resolveLocalImageByName(category, apiProduct.name);
+  const localImage = imageFromName || resolveLocalImageByVolume(category, apiProduct.volumeMl);
+  const backendImage = apiProduct.imageUrl
+    ? normalizeImageUrl(apiProduct.imageUrl, category, apiProduct.volumeMl)
+    : undefined;
+
   return {
     id: String(apiProduct.id),
     name: apiProduct.name,
@@ -241,9 +246,8 @@ function mapApiProduct(apiProduct: ApiProduct): Product {
     price: Number(apiProduct.price),
     capacity: toCapacity(apiProduct.volumeMl),
     alcoholContent: apiProduct.abv ?? undefined,
-    image: apiProduct.imageUrl
-      ? normalizeImageUrl(apiProduct.imageUrl, category, apiProduct.volumeMl)
-      : imageFromName || resolveLocalImageByVolume(category, apiProduct.volumeMl),
+    // Requirement: product icons are stored and controlled on frontend.
+    image: localImage || backendImage || "/placeholder-product.svg",
     description: apiProduct.description || undefined,
   };
 }
