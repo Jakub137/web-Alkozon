@@ -1,10 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import OrderStatusPage from '@/app/order-status/page';
 import { useLanguage } from '@/context/LanguageContext';
-import * as ordersData from '@/data/orders';
 import { useAuth } from '@/context/AuthContext';
-import { getOrderById } from '@/lib/api/orders';
+import { getOrderById, trackOrderPublic } from '@/lib/api/orders';
 
 vi.mock('@/context/LanguageContext', () => ({
   useLanguage: vi.fn()
@@ -20,11 +19,9 @@ vi.mock('next/link', () => ({
 vi.mock('next/navigation', () => ({
   useSearchParams: () => new URLSearchParams(),
 }));
-vi.mock('@/data/orders', () => ({
-  findOrderByNumberAndEmail: vi.fn()
-}));
 vi.mock('@/lib/api/orders', () => ({
   getOrderById: vi.fn(),
+  trackOrderPublic: vi.fn(),
   extractOrderId: (value: string) => value,
 }));
 
@@ -78,6 +75,7 @@ describe('OrderStatusPage Unit Tests', () => {
       authorizedRequest: (fn: any) => fn('mock-token'),
     });
     (getOrderById as any).mockResolvedValue(null);
+    (trackOrderPublic as any).mockResolvedValue(null);
   });
 
   it('powinien zablokować formularz gdy pusty', () => {
@@ -86,20 +84,22 @@ describe('OrderStatusPage Unit Tests', () => {
     expect(submitBtn).toBeDisabled();
   });
 
-  it('powinien wyświetlić brak zamówienia jeśli funkcja zwróci null', () => {
-    (ordersData.findOrderByNumberAndEmail as any).mockReturnValue(null);
+  it('powinien wyświetlić brak zamówienia jeśli track API zwróci null', async () => {
+    (trackOrderPublic as any).mockResolvedValue(null);
     render(<OrderStatusPage />);
     
     fireEvent.change(screen.getByPlaceholderText('Nr zamówienia'), { target: { value: '123' } });
     fireEvent.change(screen.getByPlaceholderText('Email'), { target: { value: 'a@a.pl' } });
     
     fireEvent.submit(screen.getByRole('button', { name: 'Sprawdź' }).closest('form')!);
-    
-    expect(screen.getByText('Nie znaleziono')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByText('Nie znaleziono')).toBeInTheDocument();
+    });
   });
 
-  it('powinien wyświetlić status po znalezieniu zamówienia', () => {
-    (ordersData.findOrderByNumberAndEmail as any).mockReturnValue({
+  it('powinien wyświetlić status po znalezieniu zamówienia przez track API', async () => {
+    (trackOrderPublic as any).mockResolvedValue({
       orderNumber: '123',
       status: 'processing',
       placedAt: '2025-01-01',
@@ -114,8 +114,10 @@ describe('OrderStatusPage Unit Tests', () => {
     fireEvent.change(screen.getByPlaceholderText('Email'), { target: { value: 'a@a.pl' } });
     
     fireEvent.submit(screen.getByRole('button', { name: 'Sprawdź' }).closest('form')!);
-    
-    expect(screen.getAllByText('W trakcie').length).toBeGreaterThan(0);
-    expect(screen.getByText('Szczegóły')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getAllByText('W trakcie').length).toBeGreaterThan(0);
+      expect(screen.getByText('Szczegóły')).toBeInTheDocument();
+    });
   });
 });

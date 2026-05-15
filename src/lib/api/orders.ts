@@ -20,6 +20,13 @@ interface ApiOrderResponse {
   items: ApiOrderItem[];
 }
 
+interface ApiOrderTrackResponse {
+  orderId: number;
+  status: BackendOrderStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export function mapBackendOrderStatusToUi(status: BackendOrderStatus): OrderStatus {
   switch (status) {
     case "SUBMITTED":
@@ -78,6 +85,27 @@ export function mapApiOrderToRecord(apiOrder: ApiOrderResponse, email = ""): Ord
   };
 }
 
+function mapTrackOrderToRecord(track: ApiOrderTrackResponse, email: string): OrderRecord {
+  const status = mapBackendOrderStatusToUi(track.status);
+  const estimatedDelivery =
+    status === "delivered"
+      ? track.updatedAt
+      : new Date(new Date(track.createdAt).getTime() + 3 * 24 * 60 * 60 * 1000).toISOString();
+
+  return {
+    orderNumber: `ORD-${track.orderId}`,
+    email,
+    placedAt: track.createdAt,
+    estimatedDelivery,
+    status,
+    apiStatus: track.status,
+    history: [
+      { status: "received", changedAt: track.createdAt },
+      ...(status === "delivered" ? [{ status: "delivered" as const, changedAt: track.updatedAt }] : []),
+    ],
+  };
+}
+
 export async function getOrderById(token: string, orderId: string, email?: string): Promise<OrderRecord> {
   const result = await apiRequest<ApiOrderResponse>(`/api/orders/${orderId}`, { token });
   return mapApiOrderToRecord(result, email);
@@ -86,6 +114,15 @@ export async function getOrderById(token: string, orderId: string, email?: strin
 export async function getMyOrders(token: string, email?: string): Promise<OrderRecord[]> {
   const result = await apiRequest<ApiOrderResponse[]>("/api/orders/my", { token });
   return result.map((order) => mapApiOrderToRecord(order, email));
+}
+
+export async function trackOrderPublic(orderId: string, email: string): Promise<OrderRecord> {
+  const params = new URLSearchParams({
+    orderId: orderId.trim(),
+    email: email.trim(),
+  });
+  const result = await apiRequest<ApiOrderTrackResponse>(`/api/orders/track?${params.toString()}`);
+  return mapTrackOrderToRecord(result, email.trim());
 }
 
 export async function createOrder(

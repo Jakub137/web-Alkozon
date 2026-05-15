@@ -3,10 +3,9 @@
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
-import { findOrderByNumberAndEmail } from "@/data/orders";
 import { OrderProgressStep, OrderRecord, OrderStatus } from "@/types/order";
 import { useAuth } from "@/context/AuthContext";
-import { extractOrderId, getOrderById, mapBackendOrderStatusToUi } from "@/lib/api/orders";
+import { extractOrderId, getOrderById, mapBackendOrderStatusToUi, trackOrderPublic } from "@/lib/api/orders";
 import { ApiError } from "@/lib/api/types";
 import { formatOrderDate, formatOrderDateTime, getStatusTone } from "@/lib/orderStatusUi";
 import { subscribeOrderStatusUpdates } from "@/lib/realtime/orderUpdates";
@@ -46,6 +45,9 @@ export default function OrderStatusPage() {
   const currentLocale = lang === "pl" ? "pl-PL" : "en-US";
   const canUseCustomerEndpoints = Boolean(token) && user?.role === "CUSTOMER";
   const progressIndex = order ? getProgressIndex(order.status) : -1;
+  const accountFeaturesMessage =
+    dict.orderStatusPage.access?.customerRequired ||
+    "Zaloguj się jako klient i potwierdź pełnoletność, aby pobierać pełne szczegóły zamówienia z konta.";
 
   const canSubmit = useMemo(
     () => orderNumber.trim().length > 0 && email.trim().length > 0,
@@ -69,36 +71,56 @@ export default function OrderStatusPage() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrorMsg(null);
+    setSearched(false);
     const normalizedOrderId = extractOrderId(orderNumber);
+    if (!normalizedOrderId) {
+      setOrder(null);
+      setSearched(true);
+      return;
+    }
 
-    if (canUseCustomerEndpoints && normalizedOrderId) {
-      try {
-        setIsLoading(true);
+    try {
+      setIsLoading(true);
+      if (canUseCustomerEndpoints) {
         const result = await authorizedRequest((accessToken) =>
           getOrderById(accessToken, normalizedOrderId, user?.email ?? undefined)
         );
         setOrder(result);
         setSearched(true);
         return;
-      } catch (error) {
-        if (error instanceof ApiError && error.status !== 404) {
-          if (error.status === 401 || error.status === 403) {
-            setErrorMsg(
-              dict.orderStatusPage.access?.customerRequired ||
-                "Aby pobierać zamówienia z konta, zaloguj się jako klient i potwierdź pełnoletność."
-            );
-          } else {
-            setErrorMsg(error.message);
-          }
+      }
+    } catch (error) {
+      // For CUSTOMER fallback to public tracking only when order is not found.
+      if (!(error instanceof ApiError) || error.status !== 404) {
+        if (error instanceof ApiError && (error.status === 401 || error.status === 403)) {
+          setErrorMsg(accountFeaturesMessage);
+        } else if (error instanceof ApiError) {
+          setErrorMsg(error.message);
+        } else {
+          setErrorMsg("Nie udało się pobrać statusu zamówienia.");
         }
-      } finally {
-        setIsLoading(false);
+        setOrder(null);
+        setSearched(true);
+        return;
       }
     }
 
-    const result = findOrderByNumberAndEmail(orderNumber, email);
-    setOrder(result);
-    setSearched(true);
+    try {
+      const tracked = await trackOrderPublic(normalizedOrderId, email);
+      setOrder(tracked);
+      setSearched(true);
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 404) {
+        setOrder(null);
+        setSearched(true);
+      } else if (error instanceof ApiError) {
+        setErrorMsg(error.message);
+      } else {
+        setErrorMsg("Nie udało się pobrać statusu zamówienia.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -145,10 +167,7 @@ export default function OrderStatusPage() {
         if (cancelled) return;
         if (error instanceof ApiError && error.status !== 404) {
           if (error.status === 401 || error.status === 403) {
-            setErrorMsg(
-              dict.orderStatusPage.access?.customerRequired ||
-                "Aby pobierać zamówienia z konta, zaloguj się jako klient i potwierdź pełnoletność."
-            );
+            setErrorMsg(accountFeaturesMessage);
           } else {
             setErrorMsg(error.message);
           }
@@ -164,7 +183,7 @@ export default function OrderStatusPage() {
     return () => {
       cancelled = true;
     };
-  }, [canUseCustomerEndpoints, user?.email, authorizedRequest, dict.orderStatusPage.access?.customerRequired]);
+  }, [accountFeaturesMessage, canUseCustomerEndpoints, user?.email, authorizedRequest]);
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grow">
@@ -181,8 +200,7 @@ export default function OrderStatusPage() {
         <section className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 sm:p-6 shadow-sm dark:shadow-slate-900/50">
           {!canUseCustomerEndpoints && (
             <div className="mb-4 rounded-xl border border-amber-200 dark:border-amber-900/40 bg-amber-50 dark:bg-amber-900/20 px-4 py-3 text-sm text-amber-800 dark:text-amber-300">
-              {dict.orderStatusPage.access?.customerRequired ||
-                "Aby pobierać zamówienia z konta, zaloguj się jako klient i potwierdź pełnoletność."}
+              {accountFeaturesMessage}
             </div>
           )}
           <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">

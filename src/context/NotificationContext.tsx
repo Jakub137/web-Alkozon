@@ -20,6 +20,7 @@ const NotificationContext = createContext<NotificationContextType | undefined>(u
 
 export function NotificationProvider({ children }: { children: React.ReactNode }) {
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
+  const enableMockWs = process.env.NEXT_PUBLIC_ENABLE_NOTIFICATION_MOCK_WS === "true";
 
   const removeNotification = useCallback((id: string) => {
     setNotifications((prev) => prev.filter((n) => n.id !== id));
@@ -35,11 +36,10 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
     }, 3500);
   }, [removeNotification]);
 
-  // SYMULATOR WEBSOCKETÓW
-  // W przyszłości w tym miejscu pojawi się kod łączący z serwerem Java (STOMP), np.:
-  // const stompClient = new StompJs.Client({ brokerURL: 'ws://localhost:8080/ws' });
-  // stompClient.onConnect = () => { stompClient.subscribe('/topic/orders', (msg) => addNotification(msg.body)) };
+  // Optional mock feed for development demos.
   useEffect(() => {
+    if (!enableMockWs) return;
+
     const mockMessages = [
       "Zmieniono status zamówienia ALK-2026-0002 na: W realizacji",
       "Nowa promocja na sekcję Wina!",
@@ -56,7 +56,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
     }, 15000); // Wyzwalamy co 15 sekund dla celów demonstracyjnych
 
     return () => clearInterval(interval);
-  }, [addNotification]);
+  }, [addNotification, enableMockWs]);
 
   return (
     <NotificationContext.Provider value={{ notifications, addNotification, removeNotification }}>

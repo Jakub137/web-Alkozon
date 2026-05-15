@@ -29,6 +29,7 @@ Skopiuj `.env.example` do `.env.local` i uzupełnij:
 | `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | Konfiguracja Firebase Web App |
 | `NEXT_PUBLIC_FIREBASE_APP_ID` | Konfiguracja Firebase Web App |
 | `NEXT_PUBLIC_FIREBASE_VAPID_KEY` | Klucz Web Push (Firebase Cloud Messaging) |
+| `NEXT_PUBLIC_ENABLE_NOTIFICATION_MOCK_WS` | Opcjonalne mock powiadomień w UI (`true` tylko do demo; domyślnie `false`) |
 
 ## Uruchomienie lokalne
 
@@ -44,10 +45,11 @@ Aplikacja domyślnie: `http://localhost:3000`.
 - **Koszyk** działa lokalnie (bez logowania).
 - **Złożenie zamówienia** (produkty z katalogu + zamówienia własne wysyłane jako custom orders) wymaga zalogowania użytkownika z rolą **`CUSTOMER`** oraz potwierdzenia pełnoletności w modalu wieku.
 - **Lista „Moje zamówienia”** (`/my-orders`) i podgląd szczegółów z API po zalogowaniu — tak samo tylko dla `CUSTOMER`.
-- **Status po numerze i e-mailu** (`/order-status`) — wyszukiwanie po danych demonstracyjnych z mocków; zalogowany klient może dodatkowo odświeżać szczegóły z API po numerze zamówienia.
+- **Status po numerze i e-mailu** (`/order-status`) — publiczny track przez `GET /api/orders/track?orderId=...&email=...` (bez JWT). Zalogowany klient ma pełne szczegóły przez endpointy konta.
 - **Profil użytkownika** — po logowaniu/rejestracji/odświeżeniu front synchronizuje dane konta przez `GET /api/users/me` (rola, imię, nazwisko, email itp.).
 - **Token urządzenia (FCM / WEB)** — front ma przygotowany endpoint `POST /api/devices/fcm` (platforma `WEB`) i rejestruje zapisany token po loginie / odświeżeniu sesji. Integracja z Firebase po stronie web może użyć `registerWebPushToken(...)` z `AuthContext`.
 - **Web Push bootstrap** — komponent `WebPushBootstrap` uruchamia pobranie tokena FCM dla zalogowanego użytkownika (nie `GUEST`) i przesyła token do API. Działa tylko gdy `NEXT_PUBLIC_ENABLE_WEB_PUSH=true` oraz konfiguracja Firebase jest kompletna.
+- **Globalny feed powiadomień** — mock `[MOCK WS]` jest wyłączony domyślnie; można go włączyć tylko zmienną `NEXT_PUBLIC_ENABLE_NOTIFICATION_MOCK_WS=true` do celów demo.
 
 ## Testy (skrót)
 
