@@ -122,49 +122,97 @@
         "id": "order-1",
         "category": "orders",
         "question": "Jak złożyć zamówienie?",
-        "answer": "Wejdź do sklepu, dodaj produkty do koszyka i kliknij przycisk Podsumowanie."
+        "answer": "Wejdź do sekcji Sklep, dodaj produkty do koszyka i przejdź do podsumowania. Aby sfinalizować zamówienie, musisz być zalogowany jako CUSTOMER i mieć potwierdzoną pełnoletność."
       },
       {
         "id": "order-2",
         "category": "orders",
         "question": "Czy mogę anulować zamówienie?",
-        "answer": "Tak, jeśli zamówienie nie zostało jeszcze przekazane do realizacji."
+        "answer": "Tak, ale tylko na wczesnym etapie realizacji. Jeśli zamówienie jest już w produkcji, pakowaniu albo dostawie, anulowanie może być niedostępne."
+      },
+      {
+        "id": "order-3",
+        "category": "orders",
+        "question": "Czy mogę złożyć zamówienie jako gość?",
+        "answer": "Koszyk działa jako gość, ale finalne złożenie zamówienia wymaga konta klienta i potwierdzenia wieku 18+."
+      },
+      {
+        "id": "order-4",
+        "category": "orders",
+        "question": "Czy różne pojemności (np. 500 ml i 700 ml) to osobne produkty?",
+        "answer": "Tak, warianty pojemności są traktowane jako osobne produkty. Dlatego mogą mieć różne ceny i stany magazynowe."
       },
       {
         "id": "payment-1",
         "category": "payments",
         "question": "Jakie metody płatności są dostępne?",
-        "answer": "W wersji projektowej traktujemy płatności jako etap do podpięcia po stronie API."
+        "answer": "W obecnej wersji projektowej temat płatności jest uproszczony. Front jest przygotowany pod integrację docelowego modułu płatności po stronie API."
+      },
+      {
+        "id": "payment-2",
+        "category": "payments",
+        "question": "Dlaczego nie widzę osobnej strony płatności?",
+        "answer": "To etap przejściowy projektu studenckiego. Najpierw dopięliśmy logikę koszyka, zamówień, statusów i zabezpieczeń, a pełna bramka płatności będzie rozwijana dalej."
       },
       {
         "id": "delivery-1",
         "category": "delivery",
         "question": "Ile trwa dostawa?",
-        "answer": "Standardowa dostawa zajmuje od 1 do 3 dni roboczych."
+        "answer": "Standardowo od 1 do 3 dni roboczych. Dokładny czas zależy od regionu i obciążenia kurierów."
       },
       {
         "id": "delivery-2",
         "category": "delivery",
         "question": "Czy mogę śledzić paczkę?",
-        "answer": "Docelowo tak - status zamówienia będzie dostępny po wdrożeniu backendu."
+        "answer": "Tak. Na stronie Status zamówienia możesz sprawdzić etap realizacji po numerze zamówienia i e-mailu. Zalogowany klient ma też pełniejszy podgląd przez Moje zamówienia."
+      },
+      {
+        "id": "delivery-3",
+        "category": "delivery",
+        "question": "Czy dostawa jest dostępna poza Polskę?",
+        "answer": "Na ten moment zakładamy dostawy krajowe. Wersja międzynarodowa może zostać dodana w kolejnych etapach projektu."
       },
       {
         "id": "product-1",
         "category": "products",
         "question": "Czy produkty mają pełne opisy?",
-        "answer": "Na razie używamy danych mockowych. Pełne opisy będą pobierane z API."
+        "answer": "Tak, opisy produktów pobieramy z API. Dzięki temu treści można aktualizować po stronie backendu bez zmian w kodzie frontendu."
       },
       {
         "id": "product-2",
         "category": "products",
         "question": "Czy ceny są aktualne?",
-        "answer": "W obecnej wersji to ceny demonstracyjne używane do testów interfejsu."
+        "answer": "Ceny widoczne w katalogu pochodzą z API. W środowiskach testowych mogą to być dane demonstracyjne, ale mechanizm jest taki sam jak w wersji produkcyjnej."
+      },
+      {
+        "id": "product-3",
+        "category": "products",
+        "question": "Skąd pochodzą zdjęcia produktów?",
+        "answer": "W tym projekcie ikony produktów są utrzymywane po stronie frontendu. Opisy i dane liczbowe są po stronie API."
       },
       {
         "id": "account-1",
         "category": "account",
         "question": "Czy muszę mieć konto, żeby dodać produkty do koszyka?",
         "answer": "Nie. Koszyk działa lokalnie i nie wymaga logowania."
+      },
+      {
+        "id": "account-2",
+        "category": "account",
+        "question": "Po co jest potwierdzenie wieku 18+?",
+        "answer": "To wymóg dla sprzedaży alkoholu. Osoby niepełnoletnie mogą przeglądać stronę, ale nie mogą złożyć zamówienia."
+      },
+      {
+        "id": "account-3",
+        "category": "account",
+        "question": "Dlaczego system mnie wylogował?",
+        "answer": "Dla bezpieczeństwa sesja może zostać zakończona po dłuższej bezczynności lub po wygaśnięciu tokena. Wtedy zaloguj się ponownie."
+      },
+      {
+        "id": "account-4",
+        "category": "account",
+        "question": "Czy mogę używać strony po angielsku i w trybie ciemnym?",
+        "answer": "Tak, możesz przełączyć język PL/EN oraz tryb jasny/ciemny z górnego paska nawigacji."
       }
     ]
   },

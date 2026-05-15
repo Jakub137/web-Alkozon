@@ -122,49 +122,97 @@
         "id": "order-1",
         "category": "orders",
         "question": "How do I place an order?",
-        "answer": "Go to the shop, add products to the cart, and click the Summary button."
+        "answer": "Open the Shop, add products to your cart, and proceed to checkout summary. To place the order, you need a CUSTOMER account and confirmed 18+ age."
       },
       {
         "id": "order-2",
         "category": "orders",
         "question": "Can I cancel my order?",
-        "answer": "Yes, if the order has not been sent to fulfillment yet."
+        "answer": "Yes, but only at an early stage. If the order is already in production, packing, or delivery, cancellation may no longer be available."
+      },
+      {
+        "id": "order-3",
+        "category": "orders",
+        "question": "Can I place an order as a guest?",
+        "answer": "You can browse and use the cart as a guest, but final order placement requires a customer account and age confirmation."
+      },
+      {
+        "id": "order-4",
+        "category": "orders",
+        "question": "Are different capacities (e.g. 500 ml and 700 ml) separate products?",
+        "answer": "Yes. Capacity variants are treated as separate products, so they can have different prices and stock."
       },
       {
         "id": "payment-1",
         "category": "payments",
         "question": "Which payment methods are available?",
-        "answer": "In this project version, payments are treated as a later API integration step."
+        "answer": "In the current project stage, payment flow is simplified. The frontend is prepared for full payment integration on the API side."
+      },
+      {
+        "id": "payment-2",
+        "category": "payments",
+        "question": "Why is there no dedicated payment screen yet?",
+        "answer": "This is a student project phase. We prioritized cart, order lifecycle, tracking, and security first, then payment gateway integration."
       },
       {
         "id": "delivery-1",
         "category": "delivery",
         "question": "How long does delivery take?",
-        "answer": "Standard delivery usually takes from 1 to 3 business days."
+        "answer": "Standard delivery usually takes 1 to 3 business days, depending on region and courier workload."
       },
       {
         "id": "delivery-2",
         "category": "delivery",
         "question": "Can I track my package?",
-        "answer": "Eventually yes - order tracking will be available after backend implementation."
+        "answer": "Yes. Use the Order Status page with order number and email. Logged-in customers also get richer details in My Orders."
+      },
+      {
+        "id": "delivery-3",
+        "category": "delivery",
+        "question": "Do you ship outside Poland?",
+        "answer": "At the moment, this project assumes domestic delivery. International shipping can be added in later iterations."
       },
       {
         "id": "product-1",
         "category": "products",
         "question": "Do products have full descriptions?",
-        "answer": "For now we use mock data. Full descriptions will come from the API."
+        "answer": "Yes. Product descriptions are loaded from the API, so content can be updated on the backend without frontend code changes."
       },
       {
         "id": "product-2",
         "category": "products",
         "question": "Are the prices final?",
-        "answer": "In the current version, prices are demo values used for interface testing."
+        "answer": "Prices shown in the catalog come from the API. In test environments they may be demo values, but the mechanism is production-like."
+      },
+      {
+        "id": "product-3",
+        "category": "products",
+        "question": "Where do product images come from?",
+        "answer": "In this project, product icons are maintained on the frontend, while descriptions and numeric product data come from the API."
       },
       {
         "id": "account-1",
         "category": "account",
         "question": "Do I need an account to add products to the cart?",
-        "answer": "No. The cart currently works locally and does not require login."
+        "answer": "No. The cart works locally and does not require login."
+      },
+      {
+        "id": "account-2",
+        "category": "account",
+        "question": "Why do I need to confirm age 18+?",
+        "answer": "This is required for alcohol sales. Underage users can browse the page, but cannot place orders."
+      },
+      {
+        "id": "account-3",
+        "category": "account",
+        "question": "Why was I logged out automatically?",
+        "answer": "For security reasons, the session may end after inactivity or token expiration. In that case, sign in again."
+      },
+      {
+        "id": "account-4",
+        "category": "account",
+        "question": "Can I use the site in English and dark mode?",
+        "answer": "Yes. You can switch language (PL/EN) and light/dark mode from the top navigation bar."
       }
     ]
   },
