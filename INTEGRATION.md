@@ -61,3 +61,10 @@ npm run test:e2e
 ```
 
 E2E zakładają uruchomiony serwer deweloperski (zgodnie z konfiguracją Playwright w repo).
+
+## Produkcja - checklista wdrożeniowa
+
+- Ustaw na hostingu frontu (np. Vercel) te same zmienne co lokalnie: `NEXT_PUBLIC_API_URL`, opcjonalnie `NEXT_PUBLIC_WS_URL`, opcjonalnie `NEXT_PUBLIC_ENABLE_WEB_PUSH` + `NEXT_PUBLIC_FIREBASE_*`.
+- Przekaż backendowi **dokładne originy** frontu (production + preview), aby dopisać je do CORS (`APP_CORS_ALLOWED_ORIGINS` / konfiguracja serwera).
+- Dla STOMP na produkcji zweryfikuj połączenie `wss://.../ws` po zalogowaniu klienta; przy problemach sprawdź nagłówki JWT i CORS.
+- Dla web push upewnij się, że backend ma ustawione `FIREBASE_SERVICE_ACCOUNT_JSON` i że przeglądarka zaakceptowała permission.

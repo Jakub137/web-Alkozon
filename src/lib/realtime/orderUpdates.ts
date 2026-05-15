@@ -57,6 +57,18 @@ export function subscribeOrderStatusUpdates(
       }
     });
   };
+  client.onStompError = (frame) => {
+    // Non-fatal: auto-reconnect is enabled and pages can continue in REST mode.
+    console.warn("[STOMP] Broker error", frame.headers["message"] || "Unknown error");
+  };
+  client.onWebSocketError = (event) => {
+    console.warn("[STOMP] WebSocket error", event);
+  };
+  client.onWebSocketClose = (event) => {
+    if (event.code !== 1000) {
+      console.warn("[STOMP] WebSocket closed unexpectedly", event.code, event.reason || "");
+    }
+  };
 
   client.activate();
   return () => {
