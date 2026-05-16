@@ -45,10 +45,9 @@ export default function RootLayout({
           <NotificationContainer />
           {/* Pasek Nawigacji */}
           <header className="w-full bg-white dark:bg-slate-800 shadow-sm py-4 px-4 md:px-6 h-20 transition-colors">
-            
-            <div className="mx-auto w-full max-w-[1400px] h-full grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3">
+            <div className="relative w-full h-full flex items-center">
               {/* Lewa strona - Logo i nazwa */}
-              <div className="min-w-0 text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight flex items-center gap-3">
+              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight flex items-center gap-3 shrink-0">
                 <Image
                   src="/logo.png"
                   alt="Alkozon Logo"
@@ -58,15 +57,16 @@ export default function RootLayout({
                 />
                 <span className="hidden md:inline">Alkozon</span>
               </div>
-              
-              <div className="min-w-0 flex justify-center px-2">
+
+              {/* Środek - zawsze wycentrowany niezależnie od długości prawej sekcji */}
+              <div className="absolute left-1/2 -translate-x-1/2 min-w-0 px-2">
                 <Suspense fallback={null}>
                   <HeaderNavLinks />
                 </Suspense>
               </div>
 
               {/* Prawa strona */}
-              <div className="min-w-0 flex gap-2 items-center justify-end">
+              <div className="ml-auto min-w-0 flex gap-2 items-center justify-end">
                 <Suspense fallback={null}>
                   <BackHomeButton />
                 </Suspense>
