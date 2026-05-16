@@ -4,6 +4,8 @@ import "./globals.css";
 import LanguageSwitcher from "../components/LanguageSwitcher";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
 import LoginButton from "@/components/LoginButton";
+import MobileHeaderMenu from "@/components/MobileHeaderMenu";
+import MobileBackButtonSlot from "@/components/MobileBackButtonSlot";
 import { Suspense } from "react";
 import BackHomeButton from "@/components/BackHomeButton";
 import HeaderNavLinks from "@/components/HeaderNavLinks";
@@ -67,15 +69,24 @@ export default function RootLayout({
 
               {/* Prawa strona */}
               <div className="ml-auto min-w-0 flex gap-2 items-center justify-end">
-                <Suspense fallback={null}>
-                  <BackHomeButton />
-                </Suspense>
-                <LanguageSwitcher />           
-                <ThemeSwitcher />
-                <LoginButton />
+                <div className="hidden lg:flex gap-2 items-center justify-end">
+                  <Suspense fallback={null}>
+                    <BackHomeButton />
+                  </Suspense>
+                  <LanguageSwitcher />           
+                  <ThemeSwitcher />
+                  <LoginButton />
+                </div>
+
+                <div className="flex lg:hidden gap-2 items-center justify-end">
+                  <LoginButton compact />
+                  <MobileHeaderMenu />
+                </div>
               </div>
             </div>
           </header>
+
+          <MobileBackButtonSlot />
 
           {/* Główna treść strony */}
           <main className="grow flex flex-col">

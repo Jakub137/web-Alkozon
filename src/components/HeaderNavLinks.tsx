@@ -7,7 +7,7 @@ export default function HeaderNavLinks() {
   const { dict } = useLanguage();
 
   return (
-    <nav className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm font-medium text-slate-600 dark:text-slate-300">
+    <nav className="hidden lg:flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm font-medium text-slate-600 dark:text-slate-300">
       <Link href="/shop" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
         {dict.navbar.shop}
       </Link>

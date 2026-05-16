@@ -7,7 +7,11 @@ import Link from "next/link";
 import { LogOut, User } from "lucide-react";
 import { useEffect, useState } from "react";
 
-export default function LoginButton() {
+type LoginButtonProps = {
+  compact?: boolean;
+};
+
+export default function LoginButton({ compact = false }: LoginButtonProps) {
   const { dict } = useLanguage();
   const { theme } = useTheme();
   const { user, logout } = useAuth();
@@ -24,13 +28,43 @@ export default function LoginButton() {
   }`;
 
   if (!mounted) {
-    return <div className="w-28 h-9 bg-slate-200 dark:bg-slate-800 animate-pulse rounded-lg"></div>;
+    return (
+      <div
+        className={
+          compact
+            ? "w-10 h-10 bg-slate-200 dark:bg-slate-800 animate-pulse rounded-full"
+            : "w-28 h-9 bg-slate-200 dark:bg-slate-800 animate-pulse rounded-lg"
+        }
+      />
+    );
   }
 
   const shortUserName =
     user?.username && user.username.length > 5 ? `${user.username.slice(0, 5)}...` : user?.username;
 
   if (user) {
+    if (compact) {
+      return (
+        <div className="flex items-center gap-1">
+          <div
+            className="h-10 w-10 inline-flex items-center justify-center rounded-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200"
+            title={`Witaj, ${user.username}`}
+            aria-label={`Witaj, ${user.username}`}
+          >
+            <User className="w-4 h-4" />
+          </div>
+          <button
+            onClick={() => void logout("Pomyślnie wylogowano.")}
+            className="h-9 w-9 inline-flex items-center justify-center rounded-full text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 transition-colors"
+            title="Wyloguj"
+            aria-label="Wyloguj"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
+        </div>
+      );
+    }
+
     return (
       <div className="flex items-center gap-2 min-w-0">
         <div className="text-sm font-medium text-slate-700 dark:text-slate-200 flex items-center gap-2 min-w-0">
@@ -56,9 +90,15 @@ export default function LoginButton() {
   return (
     <Link 
       href="/login"
-      className={buttonClass}
+      title={dict.navbar.login}
+      aria-label={dict.navbar.login}
+      className={
+        compact
+          ? "h-10 w-10 inline-flex items-center justify-center rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+          : buttonClass
+      }
     >
-      {dict.navbar.login}
+      {compact ? <User className="w-4 h-4" /> : dict.navbar.login}
     </Link>
   );
 }

@@ -145,6 +145,7 @@ describe('ShopPage Unit Tests', () => {
 
     render(<ShopPage />);
     await screen.findByText('Wódka czysta');
+    fireEvent.click(screen.getByRole('button', { name: 'Twój Koszyk' }));
     expect(screen.getByText('Ilość: 2')).toBeInTheDocument();
     expect(screen.getByText('Limit: 10')).toBeInTheDocument();
     expect(screen.getByText('x2')).toBeInTheDocument(); // Ilość konkretnego produktu
@@ -161,6 +162,7 @@ describe('ShopPage Unit Tests', () => {
 
     render(<ShopPage />);
     await screen.findByText('Wódka czysta');
+    fireEvent.click(screen.getByRole('button', { name: 'Twój Koszyk' }));
     expect(screen.getByText('Osiągnięto limit')).toBeInTheDocument();
 
     const addBtn = screen.getByTestId('add-to-cart-1');

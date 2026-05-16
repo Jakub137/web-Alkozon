@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { ProductCategory } from "@/types/product";
 import ProductCard from "@/components/ProductCard";
@@ -42,6 +43,7 @@ export default function ShopPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [isMobileCartOpen, setIsMobileCartOpen] = useState(false);
 
   const selectedCategoriesKey = useMemo(
     () => selectedCategories.slice().sort().join(","),
@@ -316,69 +318,92 @@ export default function ShopPage() {
         </div>
       </div>
 
-      <div className="fixed bottom-4 left-4 sm:bottom-6 sm:right-6 z-40 w-72 max-w-[calc(100vw-2rem)]">
-        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl dark:shadow-slate-900/60 p-4">
-          <div className="flex items-start gap-3 mb-3">
-            <div className="relative shrink-0">
-              <span className="text-3xl leading-none">🛒</span>
-              <span className="absolute -top-2 -left-2 min-w-5 h-5 px-1 rounded-full bg-blue-600 text-white text-[11px] font-bold flex items-center justify-center">
-                {cartItemsCount}
-              </span>
+      <button
+        type="button"
+        aria-label={dict.shop.cart.title}
+        onClick={() => setIsMobileCartOpen((open) => !open)}
+        className="fixed bottom-4 left-4 sm:bottom-6 z-50 h-14 w-14 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xl dark:shadow-slate-900/60 flex items-center justify-center animate-bounce"
+      >
+        <span className="text-3xl leading-none">🛒</span>
+        <span className="absolute -top-1 -right-1 min-w-6 h-6 px-1 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center">
+          {cartItemsCount}
+        </span>
+      </button>
+
+      {isMobileCartOpen && (
+        <div className="fixed bottom-20 left-4 sm:bottom-24 z-50 w-72 max-w-[calc(100vw-2rem)] animate-in fade-in slide-in-from-bottom-2 duration-200">
+          <div className="relative bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl dark:shadow-slate-900/60 p-4">
+            <button
+              type="button"
+              onClick={() => setIsMobileCartOpen(false)}
+              aria-label="Zamknij koszyk"
+              className="absolute top-3 right-3 h-8 w-8 inline-flex items-center justify-center rounded-full border border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-300 hover:text-red-600 hover:border-red-400 dark:hover:text-red-400 transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+            <div className="flex items-start gap-3 mb-3">
+              <div className="relative shrink-0">
+                <span className="text-3xl leading-none">🛒</span>
+                <span className="absolute -top-2 -left-2 min-w-5 h-5 px-1 rounded-full bg-blue-600 text-white text-[11px] font-bold flex items-center justify-center">
+                  {cartItemsCount}
+                </span>
+              </div>
+
+              <div className="min-w-0">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                  {dict.shop.cart.title}
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  {dict.shop.cart.items}: {cartItemsCount}
+                </p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  {dict.shop.cart.limit}: {cartItemsLimit}
+                </p>
+              </div>
             </div>
 
-            <div className="min-w-0">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-                {dict.shop.cart.title}
-              </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                {dict.shop.cart.items}: {cartItemsCount}
+            {isCartLimitReached && (
+              <p className="mb-3 text-xs text-red-600 dark:text-red-400">
+                {dict.shop.cart.limitReached}
               </p>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                {dict.shop.cart.limit}: {cartItemsLimit}
-              </p>
-            </div>
+            )}
+
+            {cartItems.length === 0 ? (
+              <p className="text-sm text-slate-500 dark:text-slate-400">{dict.shop.cart.empty}</p>
+            ) : (
+              <ul className="max-h-44 overflow-y-auto space-y-2 pr-1">
+                {cartItems.map((item) => (
+                  <li
+                    key={item.product.id}
+                    className="text-sm text-slate-700 dark:text-slate-200 flex items-center justify-between gap-3"
+                  >
+                    <span className="truncate">{item.product.name}</span>
+                    <div className="shrink-0 flex items-center gap-2">
+                      <span className="text-xs text-slate-500 dark:text-slate-400">x{item.quantity}</span>
+                      <button
+                        type="button"
+                        onClick={() => removeFromCart(item.product.id)}
+                        className="h-7 px-2 rounded-md border border-slate-300 dark:border-slate-600 text-xs text-slate-700 dark:text-slate-200 hover:border-red-500 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                        aria-label={dict.shop.cart.remove}
+                      >
+                        {dict.shop.cart.remove}
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            <Link
+              href="/cart?from=shop"
+              className="mt-3 w-full h-10 px-3 inline-flex items-center justify-center rounded-lg bg-green-600 hover:bg-green-600 dark:bg-green-500 dark:hover:bg-green-700 text-white text-sm font-medium transition-colors"
+            >
+              {dict.shop.cart.summary}
+            </Link>
           </div>
-
-          {isCartLimitReached && (
-            <p className="mb-3 text-xs text-red-600 dark:text-red-400">
-              {dict.shop.cart.limitReached}
-            </p>
-          )}
-
-          {cartItems.length === 0 ? (
-            <p className="text-sm text-slate-500 dark:text-slate-400">{dict.shop.cart.empty}</p>
-          ) : (
-            <ul className="max-h-44 overflow-y-auto space-y-2 pr-1">
-              {cartItems.map((item) => (
-                <li
-                  key={item.product.id}
-                  className="text-sm text-slate-700 dark:text-slate-200 flex items-center justify-between gap-3"
-                >
-                  <span className="truncate">{item.product.name}</span>
-                  <div className="shrink-0 flex items-center gap-2">
-                    <span className="text-xs text-slate-500 dark:text-slate-400">x{item.quantity}</span>
-                    <button
-                      type="button"
-                      onClick={() => removeFromCart(item.product.id)}
-                      className="h-7 px-2 rounded-md border border-slate-300 dark:border-slate-600 text-xs text-slate-700 dark:text-slate-200 hover:border-red-500 hover:text-red-600 dark:hover:text-red-400 transition-colors"
-                      aria-label={dict.shop.cart.remove}
-                    >
-                      {dict.shop.cart.remove}
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-
-          <Link
-            href="/cart?from=shop"
-            className="mt-3 w-full h-10 px-3 inline-flex items-center justify-center rounded-lg bg-green-600 hover:bg-green-600 dark:bg-green-500 dark:hover:bg-green-700 text-white text-sm font-medium transition-colors"
-          >
-            {dict.shop.cart.summary}
-          </Link>
         </div>
-      </div>
+      )}
+
     </div>
   );
 }

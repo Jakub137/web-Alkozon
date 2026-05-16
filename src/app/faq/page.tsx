@@ -53,7 +53,7 @@ export default function FaqPage() {
       : `${filteredItems.length} / ${totalCount}`;
 
   return (
-    <div className="grow bg-gradient-to-b from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+    <div className="grow bg-white dark:bg-slate-900">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
         <header className="mb-10 text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-600/10 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400 mb-5 ring-1 ring-blue-600/20 dark:ring-blue-400/25">
@@ -85,8 +85,8 @@ export default function FaqPage() {
           <p className="mt-2 text-center text-xs sm:text-sm text-slate-500 dark:text-slate-400">{summaryText}</p>
         </div>
 
-        <div className="w-full max-w-3xl mx-auto mb-8 -mx-1 px-1">
-          <div className="flex flex-wrap sm:flex-nowrap sm:justify-center gap-2 overflow-x-auto pb-1">
+        <div className="w-full max-w-3xl mx-auto mb-8">
+          <div className="-mx-4 flex flex-nowrap gap-2 overflow-x-auto px-4 pb-2 sm:mx-0 sm:flex-wrap sm:justify-center sm:overflow-visible sm:px-0 sm:pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {categoryKeys.map((key) => {
               const active = key === activeCategory;
               return (
