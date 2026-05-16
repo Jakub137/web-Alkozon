@@ -60,8 +60,9 @@ describe('LoginButton Unit Tests', () => {
     });
 
     render(<LoginButton />);
-    
-    expect(screen.getByText('Witaj, testuser')).toBeInTheDocument();
+
+    expect(screen.getByText('Witaj, testu...')).toBeInTheDocument();
+    expect(screen.getByTitle('Witaj, testuser')).toBeInTheDocument();
     
     const logoutBtn = screen.getByTitle('Wyloguj');
     expect(logoutBtn).toBeInTheDocument();

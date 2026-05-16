@@ -4,13 +4,9 @@ import { AuthProvider, useAuth } from '@/context/AuthContext';
 
 vi.mock('@/lib/api/auth', () => ({
   logoutApi: vi.fn().mockResolvedValue(undefined),
-  guestApi: vi.fn().mockResolvedValue({
-    accessToken: "guest-token",
-    refreshToken: "guest-refresh",
-    tokenType: "Bearer",
-    expiresAt: 9999999999999,
-    user: { username: "guest", role: "GUEST" },
-  }),
+  // Keep guest session unresolved in these unit tests to avoid async state updates
+  // unrelated to the tested behavior.
+  guestApi: vi.fn(() => new Promise(() => {})),
   refreshApi: vi.fn(),
   hydrateSession: (raw: string) => JSON.parse(raw),
 }));
