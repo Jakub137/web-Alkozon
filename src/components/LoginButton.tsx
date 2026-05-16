@@ -27,12 +27,20 @@ export default function LoginButton() {
     return <div className="w-28 h-9 bg-slate-200 dark:bg-slate-800 animate-pulse rounded-lg"></div>;
   }
 
+  const shortUserName =
+    user?.username && user.username.length > 5 ? `${user.username.slice(0, 5)}...` : user?.username;
+
   if (user) {
     return (
-      <div className="flex items-center gap-4">
-        <div className="text-sm font-medium text-slate-700 dark:text-slate-200 flex items-center gap-2">
+      <div className="flex items-center gap-2 min-w-0">
+        <div className="text-sm font-medium text-slate-700 dark:text-slate-200 flex items-center gap-2 min-w-0">
           <User className="w-4 h-4" />
-          <span className="hidden sm:inline">Witaj, {user.username}</span>
+          <span
+            className="hidden sm:inline max-w-[9rem] md:max-w-[12rem] truncate"
+            title={`Witaj, ${user.username}`}
+          >
+            Witaj, {shortUserName}
+          </span>
         </div>
         <button 
           onClick={() => void logout("Pomyślnie wylogowano.")} 

@@ -44,34 +44,36 @@ export default function RootLayout({
           <AgeVerificationModal />
           <NotificationContainer />
           {/* Pasek Nawigacji */}
-          <header className="w-full bg-white dark:bg-slate-800 shadow-sm py-4 px-6 flex justify-between items-center h-20 transition-colors">
+          <header className="w-full bg-white dark:bg-slate-800 shadow-sm py-4 px-4 md:px-6 h-20 transition-colors">
             
-            {/* Lewa strona - Logo i nazwa */}
-            <div className="w-48 text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight flex items-center gap-3">
-              <Image
-                src="/logo.png"
-                alt="Alkozon Logo"
-                width={56}
-                height={56}
-                className="w-14 h-14 rounded-2xl object-cover shrink-0"
-              />
-              Alkozon
-            </div>
-            
-            <div className="flex-1 min-w-0 flex justify-center px-2">
-              <Suspense fallback={null}>
-                <HeaderNavLinks />
-              </Suspense>
-            </div>
+            <div className="mx-auto w-full max-w-[1400px] h-full grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3">
+              {/* Lewa strona - Logo i nazwa */}
+              <div className="min-w-0 text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight flex items-center gap-3">
+                <Image
+                  src="/logo.png"
+                  alt="Alkozon Logo"
+                  width={56}
+                  height={56}
+                  className="w-10 h-10 md:w-14 md:h-14 rounded-2xl object-cover shrink-0"
+                />
+                <span className="hidden md:inline">Alkozon</span>
+              </div>
+              
+              <div className="min-w-0 flex justify-center px-2">
+                <Suspense fallback={null}>
+                  <HeaderNavLinks />
+                </Suspense>
+              </div>
 
-            {/* Prawa strona */}
-            <div className="w-auto flex gap-2 items-center justify-end">
-              <Suspense fallback={null}>
-                <BackHomeButton />
-              </Suspense>
-              <LanguageSwitcher />           
-              <ThemeSwitcher />
-              <LoginButton />
+              {/* Prawa strona */}
+              <div className="min-w-0 flex gap-2 items-center justify-end">
+                <Suspense fallback={null}>
+                  <BackHomeButton />
+                </Suspense>
+                <LanguageSwitcher />           
+                <ThemeSwitcher />
+                <LoginButton />
+              </div>
             </div>
           </header>
 

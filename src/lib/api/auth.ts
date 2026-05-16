@@ -52,12 +52,15 @@ function sessionFromTokens(tokens: TokenResponse): AuthSession {
   const role = roleFromToken ?? roleFromJwt;
   const firstName = normalizeName(tokens.firstName);
   const lastName = normalizeName(tokens.lastName);
-  const username = buildUsername({
-    firstName,
-    lastName,
-    email,
-    fallbackFromJwt: jwtEmail ? jwtEmail.split("@")[0] : undefined,
-  });
+  const username =
+    role === "GUEST"
+      ? "Gość"
+      : buildUsername({
+          firstName,
+          lastName,
+          email,
+          fallbackFromJwt: jwtEmail ? jwtEmail.split("@")[0] : undefined,
+        });
 
   return {
     accessToken: tokens.accessToken,
@@ -76,20 +79,24 @@ function sessionFromTokens(tokens: TokenResponse): AuthSession {
 }
 
 export function mergeProfileIntoSession(session: AuthSession, profile: UserMeResponse): AuthSession {
+  const role = profile.role;
   return {
     ...session,
     user: {
       ...session.user,
       id: profile.id,
       email: profile.email,
-      role: profile.role,
+      role,
       firstName: normalizeName(profile.firstName),
       lastName: normalizeName(profile.lastName),
-      username: buildUsername({
-        firstName: profile.firstName,
-        lastName: profile.lastName,
-        email: profile.email,
-      }),
+      username:
+        role === "GUEST"
+          ? "Gość"
+          : buildUsername({
+              firstName: profile.firstName,
+              lastName: profile.lastName,
+              email: profile.email,
+            }),
       phone: profile.phone,
       courier: profile.courier,
       active: profile.active,
