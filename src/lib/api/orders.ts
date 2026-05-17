@@ -141,6 +141,7 @@ export async function trackOrderPublic(orderId: string, email: string): Promise<
 export async function createOrder(
   token: string,
   payload: {
+    orderNumber: string;
     clientOrderNumber: string;
     items: Array<{ productId: number; quantity: number }>;
     delivery: CreateOrderDelivery;

@@ -81,12 +81,48 @@ type SubmittedOrderSummary = {
 const CASH_ON_DELIVERY = "Płatność przy odbiorze";
 const DEFAULT_DELIVERY_COUNTRY = "Polska";
 const MAX_ORDER_NUMBER_ATTEMPTS = 8;
+const ORDER_NUMBER_STORAGE_KEY = "alkozon_used_order_numbers";
+const ORDER_NUMBER_STORAGE_LIMIT = 200;
 const POSTAL_CODE_REGEX = /^\d{2}-\d{3}$/;
 
-function generateOrderNumber(): string {
+function readUsedOrderNumbers(): string[] {
+  try {
+    const raw = localStorage.getItem(ORDER_NUMBER_STORAGE_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed.filter((value): value is string => typeof value === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
+function rememberUsedOrderNumber(orderNumber: string) {
+  const normalized = orderNumber.trim();
+  if (!/^\d{6}$/.test(normalized)) return;
+
+  const next = [normalized, ...readUsedOrderNumbers().filter((value) => value !== normalized)].slice(
+    0,
+    ORDER_NUMBER_STORAGE_LIMIT
+  );
+  localStorage.setItem(ORDER_NUMBER_STORAGE_KEY, JSON.stringify(next));
+}
+
+function generateRawOrderNumber(): string {
   const values = new Uint32Array(1);
   crypto.getRandomValues(values);
   return String(100000 + (values[0] % 900000));
+}
+
+function generateOrderNumber(): string {
+  const usedNumbers = new Set(readUsedOrderNumbers());
+
+  for (let attempt = 0; attempt < 30; attempt += 1) {
+    const candidate = generateRawOrderNumber();
+    if (!usedNumbers.has(candidate)) {
+      return candidate;
+    }
+  }
+
+  return generateRawOrderNumber();
 }
 
 function displayOrderNumber(orderNumber: string): string {
@@ -95,12 +131,21 @@ function displayOrderNumber(orderNumber: string): string {
 
 function isOrderNumberConflict(error: unknown): boolean {
   if (!(error instanceof ApiError)) return false;
-  const message = `${error.message} ${error.payload?.message ?? ""}`.toLowerCase();
+  const fieldErrors = error.payload?.fieldErrors?.map((entry) => `${entry.field} ${entry.message}`).join(" ") ?? "";
+  const message = `${error.message} ${error.payload?.message ?? ""} ${fieldErrors}`.toLowerCase();
   return (
     error.status === 409 ||
     message.includes("numer zamówienia") ||
+    message.includes("zamówienia jest już użyty") ||
+    message.includes("użyty") ||
+    message.includes("zajęty") ||
+    message.includes("istnieje") ||
     message.includes("order number") ||
-    message.includes("clientordernumber")
+    message.includes("clientordernumber") ||
+    message.includes("ordernumber") ||
+    message.includes("already") ||
+    message.includes("exists") ||
+    message.includes("duplicate")
   );
 }
 
@@ -229,6 +274,7 @@ export default function CartPage() {
           try {
             await authorizedRequest((accessToken) =>
               createOrder(accessToken, {
+                orderNumber: clientOrderNumber,
                 clientOrderNumber,
                 items,
                 delivery,
@@ -241,12 +287,14 @@ export default function CartPage() {
             if (!isOrderNumberConflict(error)) {
               throw error;
             }
+            rememberUsedOrderNumber(clientOrderNumber);
           }
         }
 
         if (lastCreateOrderError) {
           throw lastCreateOrderError;
         }
+        rememberUsedOrderNumber(clientOrderNumber);
         createdOrderNumber = clientOrderNumber;
       }
 
@@ -264,6 +312,7 @@ export default function CartPage() {
                 description: item.product.customOrderDetails.description,
                 preferences: {
                   ...item.product.customOrderDetails.preferences,
+                  orderNumber: clientOrderNumber,
                   clientOrderNumber,
                   delivery,
                   paymentMethod,
@@ -275,6 +324,9 @@ export default function CartPage() {
             }
           }
         });
+      }
+      if (createdOrderNumber) {
+        rememberUsedOrderNumber(displayOrderNumber(createdOrderNumber));
       }
 
       const summaryItems = cartItems.map((item) => ({
