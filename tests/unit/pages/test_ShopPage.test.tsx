@@ -130,7 +130,7 @@ describe('ShopPage Unit Tests', () => {
     (useLanguage as any).mockReturnValue({ dict: mockDict });
     (useAge as any).mockReturnValue({ ageStatus: 'adult' });
     (useAuth as any).mockReturnValue({
-      user: { role: 'CUSTOMER' },
+      user: { role: 'CUSTOMER', ageConfirmedAt: '2026-05-17T17:48:00Z' },
       setToast: vi.fn()
     });
     (useCart as any).mockReturnValue({

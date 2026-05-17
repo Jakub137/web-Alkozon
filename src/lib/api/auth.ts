@@ -74,6 +74,7 @@ function sessionFromTokens(tokens: TokenResponse): AuthSession {
       role,
       firstName,
       lastName,
+      ageConfirmedAt: tokens.ageConfirmedAt ?? null,
     },
   };
 }

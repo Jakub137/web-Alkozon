@@ -13,6 +13,7 @@ test.describe('Cart Flow', () => {
             id: 'customer-1',
             username: 'E2E',
             role: 'CUSTOMER',
+            ageConfirmedAt: '2026-05-17T17:48:00Z',
           },
         })
       );

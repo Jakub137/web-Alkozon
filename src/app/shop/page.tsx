@@ -36,7 +36,7 @@ export default function ShopPage() {
   const { user, setToast } = useAuth();
   const categoryOptions: ProductCategory[] = ["vodka", "whisky", "wine", "beer", "liqueur", "rum"];
   const isCartLimitReached = cartItemsCount >= cartItemsLimit;
-  const canOrder = user?.role === "CUSTOMER";
+  const canOrder = user?.role === "CUSTOMER" && Boolean(user.ageConfirmedAt);
 
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebouncedValue(query, 300);

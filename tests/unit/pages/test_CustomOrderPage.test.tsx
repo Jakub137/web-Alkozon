@@ -58,7 +58,9 @@ describe('CustomOrderPage Unit Tests', () => {
       addToCart: mockAddToCart
     });
     (useAge as any).mockReturnValue({ ageStatus: 'verified' });
-    (useAuth as any).mockReturnValue({ user: { role: 'CUSTOMER' } });
+    (useAuth as any).mockReturnValue({
+      user: { role: 'CUSTOMER', ageConfirmedAt: '2026-05-17T17:48:00Z' },
+    });
   });
 
   it('powinien pozwalać na przejście przez kroki kreatora', () => {

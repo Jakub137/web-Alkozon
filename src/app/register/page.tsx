@@ -8,7 +8,8 @@ import { Lock, Mail, User, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import { registerApi } from "@/lib/api/auth";
+import { useAge } from "@/context/AgeContext";
+import { confirmAgeApi, registerApi } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/types";
 import { SAFE_TEXT_REGEX, STRONG_PASSWORD_REGEX } from "@/lib/validation/backendPatterns";
 
@@ -26,6 +27,11 @@ const registerSchema = z.object({
       message:
         "Hasło: 8–128 znaków, mała i wielka litera, cyfra oraz znak specjalny z zestawu @$!%*?&",
     }),
+  ageConfirmed: z
+    .boolean()
+    .refine((value) => value, {
+      message: "Musisz potwierdzić pełnoletność, aby założyć konto klienta.",
+    }),
 });
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
@@ -33,12 +39,16 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 export default function RegisterPage() {
   const router = useRouter();
   const { login, setToast } = useAuth();
+  const { setAgeStatus } = useAge();
   const [showPassword, setShowPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
+    defaultValues: {
+      ageConfirmed: false,
+    },
   });
 
   const onSubmit = async (data: RegisterFormValues) => {
@@ -51,8 +61,11 @@ export default function RegisterPage() {
         password: data.password,
         firstName,
         lastName: restNames.join(" ") || undefined,
+        ageConfirmed: data.ageConfirmed,
       });
-      login(session);
+      const confirmedSession = await confirmAgeApi(session.accessToken).catch(() => session);
+      login(confirmedSession);
+      setAgeStatus("adult");
       setToast("Konto zostało pomyślnie utworzone! Zostałeś automatycznie zalogowany.");
       router.push("/");
     } catch (error) {
@@ -149,6 +162,25 @@ export default function RegisterPage() {
             <p className="mt-3 text-xs text-slate-500 dark:text-slate-400 font-medium bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-2 rounded-md">
               Walidacja jak w API (bezpieczny tekst w nazwie, hasło z małą i wielką literą, cyfrą oraz znakiem @$!%*?&).
             </p>
+          </div>
+
+          <div>
+            <label className="flex items-start gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-3 text-sm text-slate-700 dark:text-slate-300">
+              <input
+                {...register("ageConfirmed")}
+                type="checkbox"
+                disabled={isSubmitting}
+                className="mt-0.5 h-4 w-4 rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500"
+              />
+              <span>
+                Potwierdzam, że mam ukończone 18 lat i mogę założyć konto klienta.
+              </span>
+            </label>
+            {errors.ageConfirmed && (
+              <p className="mt-1.5 text-sm text-red-500 font-medium animate-in fade-in">
+                {errors.ageConfirmed.message}
+              </p>
+            )}
           </div>
 
           <button

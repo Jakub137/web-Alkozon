@@ -132,7 +132,7 @@ export default function CustomOrderPage() {
   const noteWordCount = countWords(note);
   const isTotalCartLimitReached = cartItemsCount >= cartItemsLimit;
   const isCustomOrderLimitReached = customOrderItemsCount >= customOrderItemsLimit;
-  const canOrder = user?.role === "CUSTOMER";
+  const canOrder = user?.role === "CUSTOMER" && Boolean(user.ageConfirmedAt);
   const authRequiredMessage =
     dict.shop.cart.checkout?.authRequired ||
     "Aby złożyć zamówienie, zaloguj się lub załóż konto.";

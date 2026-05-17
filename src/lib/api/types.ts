@@ -34,6 +34,7 @@ export interface TokenResponse {
   role?: UserRole;
   firstName?: string | null;
   lastName?: string | null;
+  ageConfirmedAt?: string | null;
 }
 
 export interface LoginRequest {
@@ -46,6 +47,7 @@ export interface RegisterRequest {
   password: string;
   firstName?: string;
   lastName?: string;
+  ageConfirmed?: boolean;
 }
 
 export interface AuthSession {

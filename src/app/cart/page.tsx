@@ -157,7 +157,7 @@ export default function CartPage() {
       setCheckoutError(checkoutCopy.authRequired || "Musisz się zalogować, aby złożyć zamówienie.");
       return false;
     }
-    if (user?.role !== "CUSTOMER") {
+    if (user?.role !== "CUSTOMER" || !user.ageConfirmedAt) {
       setCheckoutError(
         checkoutCopy.authRequired || "Zaloguj się na konto klienta i potwierdź pełnoletność, aby złożyć zamówienie."
       );
