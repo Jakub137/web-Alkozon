@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/context/CartContext";
 import { useAge } from "@/context/AgeContext";
@@ -67,6 +67,7 @@ type DeliveryForm = {
 
 type SubmittedOrderSummary = {
   orderNumber: string;
+  trackingOrderNumber: string;
   status: string;
   customerName: string;
   address: string;
@@ -154,6 +155,9 @@ function mapCheckoutErrorMessage(checkoutCopy: CheckoutCopy, error: unknown): st
     return checkoutCopy.unexpectedError || "Nie udało się złożyć zamówienia. Spróbuj ponownie.";
   }
 
+  if (isOrderNumberConflict(error)) {
+    return "Numer zamówienia był już zajęty. Spróbowaliśmy wygenerować nowy numer - jeśli problem wraca, sprawdź Moje zamówienia lub spróbuj ponownie za chwilę.";
+  }
   if (error.status === 401) {
     return checkoutCopy.authRequired || "Musisz się zalogować, aby złożyć zamówienie.";
   }
@@ -184,6 +188,7 @@ export default function CartPage() {
     courierNotes: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const submitLockRef = useRef(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [submittedOrder, setSubmittedOrder] = useState<SubmittedOrderSummary | null>(null);
   const checkoutCopy: CheckoutCopy = dict.shop.cart.checkout || {};
@@ -226,7 +231,13 @@ export default function CartPage() {
   };
 
   const handleCreateOrder = async () => {
-    if (!validateCheckoutAccess()) return;
+    if (submitLockRef.current) return;
+    submitLockRef.current = true;
+
+    if (!validateCheckoutAccess()) {
+      submitLockRef.current = false;
+      return;
+    }
 
     const requiredValues = [
       deliveryForm.firstName,
@@ -238,11 +249,13 @@ export default function CartPage() {
 
     if (requiredValues.some((value) => !value.trim())) {
       setCheckoutError(checkoutCopy.requiredFields || "Uzupełnij wszystkie wymagane pola formularza.");
+      submitLockRef.current = false;
       return;
     }
 
     if (!POSTAL_CODE_REGEX.test(deliveryForm.postalCode.trim())) {
       setCheckoutError(checkoutCopy.invalidPostalCode || "Podaj kod pocztowy w formacie 00-000.");
+      submitLockRef.current = false;
       return;
     }
 
@@ -260,19 +273,21 @@ export default function CartPage() {
     const items = buildOrderItemsFromCart(regularItems);
     if (items.length === 0 && customItems.length === 0) {
       setCheckoutError(checkoutCopy.invalidCart || "Koszyk nie zawiera produktów, które można wysłać do API.");
+      submitLockRef.current = false;
       return;
     }
 
     try {
       setIsSubmitting(true);
       let createdOrderNumber: string | null = null;
+      let trackingOrderNumber: string | null = null;
       let clientOrderNumber = generateOrderNumber();
       if (items.length > 0) {
         let lastCreateOrderError: unknown = null;
         for (let attempt = 0; attempt < MAX_ORDER_NUMBER_ATTEMPTS; attempt += 1) {
           clientOrderNumber = generateOrderNumber();
           try {
-            await authorizedRequest((accessToken) =>
+            const order = await authorizedRequest((accessToken) =>
               createOrder(accessToken, {
                 orderNumber: clientOrderNumber,
                 clientOrderNumber,
@@ -280,6 +295,7 @@ export default function CartPage() {
                 delivery,
               })
             );
+            trackingOrderNumber = order.orderNumber;
             lastCreateOrderError = null;
             break;
           } catch (error) {
@@ -296,6 +312,7 @@ export default function CartPage() {
         }
         rememberUsedOrderNumber(clientOrderNumber);
         createdOrderNumber = clientOrderNumber;
+        trackingOrderNumber = trackingOrderNumber || clientOrderNumber;
       }
 
       if (customItems.length > 0) {
@@ -338,6 +355,7 @@ export default function CartPage() {
 
       setSubmittedOrder({
         orderNumber: createdOrderNumber || "UNKNOWN",
+        trackingOrderNumber: trackingOrderNumber || createdOrderNumber || "UNKNOWN",
         status: checkoutCopy.statusSubmitted || "Złożone",
         customerName: `${deliveryForm.firstName.trim()} ${deliveryForm.lastName.trim()}`,
         address: deliveryForm.address.trim(),
@@ -353,6 +371,7 @@ export default function CartPage() {
       setCheckoutError(mapCheckoutErrorMessage(checkoutCopy, error));
     } finally {
       setIsSubmitting(false);
+      submitLockRef.current = false;
     }
   };
 
@@ -423,7 +442,7 @@ export default function CartPage() {
 
           <div className="mt-6 flex flex-col sm:flex-row gap-3">
             <Link
-              href={`/order-status?orderId=${encodeURIComponent(submittedOrder.orderNumber)}`}
+              href={`/order-status?orderId=${encodeURIComponent(submittedOrder.trackingOrderNumber)}`}
               className="flex-1 h-11 px-4 inline-flex items-center justify-center rounded-lg bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-medium transition-colors"
             >
               {checkoutCopy.trackOrder || "Sprawdź status zamówienia"}

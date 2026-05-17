@@ -137,7 +137,7 @@ export default function MyOrdersPage() {
                   >
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                        {entry.orderNumber}
+                        {entry.clientOrderNumber || entry.orderNumber}
                       </span>
                       <span
                         className={`h-7 px-2.5 rounded-full text-xs font-semibold inline-flex items-center ${getStatusTone(entry.status)}`}

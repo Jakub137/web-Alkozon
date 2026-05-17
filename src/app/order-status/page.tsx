@@ -286,7 +286,9 @@ export default function OrderStatusPage() {
                   <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">
                     {dict.orderStatusPage.details.orderNumber}
                   </p>
-                  <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{order.orderNumber}</p>
+                  <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                    {order.clientOrderNumber || order.orderNumber}
+                  </p>
                 </div>
 
                 <div className="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-900/30">

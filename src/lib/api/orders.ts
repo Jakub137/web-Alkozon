@@ -11,6 +11,8 @@ interface ApiOrderItem {
 
 interface ApiOrderResponse {
   id: number;
+  orderNumber?: string | null;
+  clientOrderNumber?: string | null;
   customerId: number;
   status: BackendOrderStatus;
   deliveryAddress: string;
@@ -77,6 +79,7 @@ export function mapApiOrderToRecord(apiOrder: ApiOrderResponse, email = ""): Ord
   const status = mapBackendOrderStatusToUi(apiOrder.status);
   return {
     orderNumber: `ORD-${apiOrder.id}`,
+    clientOrderNumber: apiOrder.clientOrderNumber ?? apiOrder.orderNumber ?? undefined,
     email,
     placedAt: apiOrder.createdAt,
     estimatedDelivery: estimateDelivery(apiOrder.createdAt, apiOrder.deliveredAt),

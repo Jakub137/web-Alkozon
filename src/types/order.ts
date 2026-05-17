@@ -50,6 +50,7 @@ export type DeliveryDetails = {
 
 export type OrderRecord = {
   orderNumber: string;
+  clientOrderNumber?: string;
   email: string;
   placedAt: string;
   estimatedDelivery: string;
