@@ -81,7 +81,7 @@ type SubmittedOrderSummary = {
 
 const CASH_ON_DELIVERY = "Płatność przy odbiorze";
 const DEFAULT_DELIVERY_COUNTRY = "Polska";
-const MAX_ORDER_NUMBER_ATTEMPTS = 3;
+const MAX_ORDER_NUMBER_ATTEMPTS = 8;
 const ORDER_NUMBER_STORAGE_KEY = "alkozon_used_order_numbers";
 const ORDER_NUMBER_STORAGE_LIMIT = 200;
 const POSTAL_CODE_REGEX = /^\d{2}-\d{3}$/;
@@ -98,7 +98,7 @@ function readUsedOrderNumbers(): string[] {
 
 function rememberUsedOrderNumber(orderNumber: string) {
   const normalized = orderNumber.trim();
-  if (!normalized) return;
+  if (!/^\d{6}$/.test(normalized)) return;
 
   const next = [normalized, ...readUsedOrderNumbers().filter((value) => value !== normalized)].slice(
     0,
@@ -108,11 +108,9 @@ function rememberUsedOrderNumber(orderNumber: string) {
 }
 
 function generateRawOrderNumber(): string {
-  const values = new Uint32Array(2);
+  const values = new Uint32Array(1);
   crypto.getRandomValues(values);
-  return `WEB-${Date.now().toString(36).toUpperCase()}-${values[0].toString(36).toUpperCase()}${values[1]
-    .toString(36)
-    .toUpperCase()}`;
+  return String(100000 + (values[0] % 900000));
 }
 
 function generateOrderNumber(): string {
@@ -138,16 +136,11 @@ function isOrderNumberConflict(error: unknown): boolean {
   const message = `${error.message} ${error.payload?.message ?? ""} ${fieldErrors}`.toLowerCase();
   return (
     error.status === 409 ||
-    message.includes("numer zamówienia") ||
     message.includes("zamówienia jest już użyty") ||
-    message.includes("użyty") ||
     message.includes("zajęty") ||
-    message.includes("istnieje") ||
-    message.includes("order number") ||
-    message.includes("clientordernumber") ||
-    message.includes("ordernumber") ||
-    message.includes("already") ||
-    message.includes("exists") ||
+    message.includes("już istnieje") ||
+    message.includes("already used") ||
+    message.includes("already exists") ||
     message.includes("duplicate")
   );
 }
