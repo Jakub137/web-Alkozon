@@ -45,7 +45,7 @@ describe('Unit Tests - useAutoLogout Hook', () => {
     } as any);
 
     renderHook(() => useAutoLogout());
-    vi.advanceTimersByTime(35000);
+    vi.advanceTimersByTime(15 * 60 * 1000 + 5000);
     expect(mockLogout).not.toHaveBeenCalled();
   });
 
@@ -60,8 +60,7 @@ describe('Unit Tests - useAutoLogout Hook', () => {
 
     renderHook(() => useAutoLogout());
 
-    // Wylogowuje po 30 sekundach (30000ms)
-    vi.advanceTimersByTime(35000);
+    vi.advanceTimersByTime(15 * 60 * 1000 + 5000);
     expect(mockLogout).toHaveBeenCalledOnce();
   });
 
@@ -76,14 +75,12 @@ describe('Unit Tests - useAutoLogout Hook', () => {
 
     renderHook(() => useAutoLogout());
 
-    // Po 20 sekundach symulujemy ruch myszką
-    vi.advanceTimersByTime(20000);
+    vi.advanceTimersByTime(10 * 60 * 1000);
     act(() => {
       window.dispatchEvent(new MouseEvent('mousemove'));
     });
 
-    // Przesuwamy o kolejne 20 sekund. (Łącznie 40 sekund, ale licznik się wyzerował, więc nie osiągnęliśmy 30s).
-    vi.advanceTimersByTime(20000);
+    vi.advanceTimersByTime(10 * 60 * 1000);
     expect(mockLogout).not.toHaveBeenCalled();
   });
 });

@@ -81,7 +81,7 @@ type SubmittedOrderSummary = {
 
 const CASH_ON_DELIVERY = "Płatność przy odbiorze";
 const DEFAULT_DELIVERY_COUNTRY = "Polska";
-const MAX_ORDER_NUMBER_ATTEMPTS = 8;
+const MAX_ORDER_NUMBER_ATTEMPTS = 3;
 const ORDER_NUMBER_STORAGE_KEY = "alkozon_used_order_numbers";
 const ORDER_NUMBER_STORAGE_LIMIT = 200;
 const POSTAL_CODE_REGEX = /^\d{2}-\d{3}$/;
@@ -98,7 +98,7 @@ function readUsedOrderNumbers(): string[] {
 
 function rememberUsedOrderNumber(orderNumber: string) {
   const normalized = orderNumber.trim();
-  if (!/^\d{6}$/.test(normalized)) return;
+  if (!normalized) return;
 
   const next = [normalized, ...readUsedOrderNumbers().filter((value) => value !== normalized)].slice(
     0,
@@ -108,9 +108,11 @@ function rememberUsedOrderNumber(orderNumber: string) {
 }
 
 function generateRawOrderNumber(): string {
-  const values = new Uint32Array(1);
+  const values = new Uint32Array(2);
   crypto.getRandomValues(values);
-  return String(100000 + (values[0] % 900000));
+  return `WEB-${Date.now().toString(36).toUpperCase()}-${values[0].toString(36).toUpperCase()}${values[1]
+    .toString(36)
+    .toUpperCase()}`;
 }
 
 function generateOrderNumber(): string {
@@ -289,7 +291,6 @@ export default function CartPage() {
           try {
             const order = await authorizedRequest((accessToken) =>
               createOrder(accessToken, {
-                orderNumber: clientOrderNumber,
                 clientOrderNumber,
                 items,
                 delivery,
@@ -329,7 +330,6 @@ export default function CartPage() {
                 description: item.product.customOrderDetails.description,
                 preferences: {
                   ...item.product.customOrderDetails.preferences,
-                  orderNumber: clientOrderNumber,
                   clientOrderNumber,
                   delivery,
                   paymentMethod,

@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
 
-const INACTIVITY_LIMIT_MS = 30 * 1000; // 30 seconds
+const INACTIVITY_LIMIT_MS = 15 * 60 * 1000; // 15 minutes
 
 export function useAutoLogout() {
   const { user, logout } = useAuth();
@@ -28,7 +28,7 @@ export function useAutoLogout() {
       if (Date.now() - lastActive.current > INACTIVITY_LIMIT_MS) {
         void logout("Wylogowano ze względów bezpieczeństwa (Brak aktywności).");
       }
-    }, 5000); // sprawdzamy co 5 sekund
+    }, 5000);
 
     return () => {
       window.removeEventListener("mousemove", trackActivity);
