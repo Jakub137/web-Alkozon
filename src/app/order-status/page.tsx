@@ -43,7 +43,7 @@ export default function OrderStatusPage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const currentLocale = lang === "pl" ? "pl-PL" : "en-US";
-  const canUseCustomerEndpoints = Boolean(token) && user?.role === "CUSTOMER";
+  const canUseCustomerEndpoints = Boolean(token) && user?.role === "CUSTOMER" && Boolean(user.ageConfirmedAt);
   const progressIndex = order ? getProgressIndex(order.status) : -1;
   const accountFeaturesMessage =
     dict.orderStatusPage.access?.customerRequired ||

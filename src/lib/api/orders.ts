@@ -1,6 +1,6 @@
 import { apiRequest } from "./client";
 import type { Product } from "@/types/product";
-import type { BackendOrderStatus, OrderRecord, OrderStatus } from "@/types/order";
+import type { BackendOrderStatus, DeliveryDetails, OrderRecord, OrderStatus } from "@/types/order";
 
 interface ApiOrderItem {
   productId: number;
@@ -14,11 +14,22 @@ interface ApiOrderResponse {
   customerId: number;
   status: BackendOrderStatus;
   deliveryAddress: string;
+  deliveryDetails?: DeliveryDetails | null;
   totalAmount: number;
   createdAt: string;
   deliveredAt: string | null;
   items: ApiOrderItem[];
 }
+
+export type CreateOrderDelivery = {
+  recipientName: string;
+  streetAddress: string;
+  city: string;
+  postalCode: string;
+  country: string;
+  deliveryNotes?: string;
+  paymentMethod: string;
+};
 
 interface ApiOrderTrackResponse {
   orderId: number;
@@ -71,6 +82,8 @@ export function mapApiOrderToRecord(apiOrder: ApiOrderResponse, email = ""): Ord
     estimatedDelivery: estimateDelivery(apiOrder.createdAt, apiOrder.deliveredAt),
     status,
     apiStatus: apiOrder.status,
+    deliveryAddress: apiOrder.deliveryAddress,
+    deliveryDetails: apiOrder.deliveryDetails ?? null,
     history: [
       { status: "received", changedAt: apiOrder.createdAt },
       ...(apiOrder.deliveredAt ? [{ status: "delivered" as const, changedAt: apiOrder.deliveredAt }] : []),
@@ -127,7 +140,11 @@ export async function trackOrderPublic(orderId: string, email: string): Promise<
 
 export async function createOrder(
   token: string,
-  payload: { items: Array<{ productId: number; quantity: number }>; deliveryAddress: string }
+  payload: {
+    clientOrderNumber: string;
+    items: Array<{ productId: number; quantity: number }>;
+    delivery: CreateOrderDelivery;
+  }
 ): Promise<OrderRecord> {
   const result = await apiRequest<ApiOrderResponse>("/api/orders", {
     method: "POST",

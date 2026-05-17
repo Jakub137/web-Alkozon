@@ -20,7 +20,7 @@ export default function MyOrdersPage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const currentLocale = lang === "pl" ? "pl-PL" : "en-US";
-  const canUseCustomerEndpoints = Boolean(token) && user?.role === "CUSTOMER";
+  const canUseCustomerEndpoints = Boolean(token) && user?.role === "CUSTOMER" && Boolean(user.ageConfirmedAt);
 
   useEffect(() => {
     if (!canUseCustomerEndpoints) return;

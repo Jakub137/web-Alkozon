@@ -79,7 +79,18 @@ type SubmittedOrderSummary = {
 };
 
 const CASH_ON_DELIVERY = "Płatność przy odbiorze";
+const DEFAULT_DELIVERY_COUNTRY = "Polska";
 const POSTAL_CODE_REGEX = /^\d{2}-\d{3}$/;
+
+function generateOrderNumber(): string {
+  const values = new Uint32Array(1);
+  crypto.getRandomValues(values);
+  return String(100000 + (values[0] % 900000));
+}
+
+function displayOrderNumber(orderNumber: string): string {
+  return orderNumber.replace(/^ORD-/i, "");
+}
 
 function mapCheckoutErrorMessage(checkoutCopy: CheckoutCopy, error: unknown): string {
   if (!(error instanceof ApiError)) {
@@ -99,25 +110,6 @@ function mapCheckoutErrorMessage(checkoutCopy: CheckoutCopy, error: unknown): st
     return checkoutCopy.serverError || "Błąd serwera. Spróbuj ponownie później.";
   }
   return error.message || checkoutCopy.unexpectedError || "Nie udało się złożyć zamówienia. Spróbuj ponownie.";
-}
-
-function generateOrderNumber(): string {
-  const values = new Uint32Array(1);
-  crypto.getRandomValues(values);
-  return String(100000 + (values[0] % 900000));
-}
-
-function formatDeliveryAddress(form: DeliveryForm, orderNumber: string, paymentMethod: string): string {
-  const notes = form.courierNotes.trim() || "Brak";
-  return [
-    `Numer zamówienia: ${orderNumber}`,
-    `Imię i nazwisko: ${form.firstName.trim()} ${form.lastName.trim()}`,
-    `Adres: ${form.address.trim()}`,
-    `Miasto: ${form.city.trim()}`,
-    `Kod pocztowy: ${form.postalCode.trim()}`,
-    `Uwagi dla dostawcy: ${notes}`,
-    `Metoda płatności: ${paymentMethod}`,
-  ].join("\n");
 }
 
 export default function CartPage() {
@@ -197,8 +189,16 @@ export default function CartPage() {
       return;
     }
 
-    const orderNumber = generateOrderNumber();
-    const formattedDeliveryAddress = formatDeliveryAddress(deliveryForm, orderNumber, paymentMethod);
+    const clientOrderNumber = generateOrderNumber();
+    const delivery = {
+      recipientName: `${deliveryForm.firstName.trim()} ${deliveryForm.lastName.trim()}`,
+      streetAddress: deliveryForm.address.trim(),
+      city: deliveryForm.city.trim(),
+      postalCode: deliveryForm.postalCode.trim(),
+      country: DEFAULT_DELIVERY_COUNTRY,
+      deliveryNotes: deliveryForm.courierNotes.trim(),
+      paymentMethod,
+    };
     const customItems = cartItems.filter((item) => item.product.id.startsWith("custom-"));
     const regularItems = cartItems.filter((item) => !item.product.id.startsWith("custom-"));
     const items = buildOrderItemsFromCart(regularItems);
@@ -209,13 +209,16 @@ export default function CartPage() {
 
     try {
       setIsSubmitting(true);
+      let createdOrderNumber: string | null = null;
       if (items.length > 0) {
         await authorizedRequest((accessToken) =>
           createOrder(accessToken, {
+            clientOrderNumber,
             items,
-            deliveryAddress: formattedDeliveryAddress,
+            delivery,
           })
         );
+        createdOrderNumber = clientOrderNumber;
       }
 
       if (customItems.length > 0) {
@@ -228,15 +231,18 @@ export default function CartPage() {
             }
 
             for (let i = 0; i < item.quantity; i += 1) {
-              await createCustomOrder(accessToken, {
+              const customOrder = await createCustomOrder(accessToken, {
                 description: item.product.customOrderDetails.description,
                 preferences: {
                   ...item.product.customOrderDetails.preferences,
-                  clientOrderNumber: orderNumber,
-                  deliveryAddress: formattedDeliveryAddress,
+                  clientOrderNumber,
+                  delivery,
                   paymentMethod,
                 },
               });
+              if (!createdOrderNumber) {
+                createdOrderNumber = clientOrderNumber || `CUSTOM-${customOrder.id}`;
+              }
             }
           }
         });
@@ -250,7 +256,7 @@ export default function CartPage() {
       }));
 
       setSubmittedOrder({
-        orderNumber,
+        orderNumber: createdOrderNumber || "UNKNOWN",
         status: checkoutCopy.statusSubmitted || "Złożone",
         customerName: `${deliveryForm.firstName.trim()} ${deliveryForm.lastName.trim()}`,
         address: deliveryForm.address.trim(),
@@ -278,7 +284,7 @@ export default function CartPage() {
               {checkoutCopy.summaryTitle || "Zamówienie zostało złożone"}
             </p>
             <h1 className="text-3xl font-extrabold text-slate-900 dark:text-slate-100">
-              #{submittedOrder.orderNumber}
+              #{displayOrderNumber(submittedOrder.orderNumber)}
             </h1>
             <p className="mt-2 text-slate-600 dark:text-slate-300">
               {checkoutCopy.status || "Status"}: {submittedOrder.status}

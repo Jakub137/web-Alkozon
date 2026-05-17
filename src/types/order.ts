@@ -38,6 +38,16 @@ export type OrderItem = {
   image?: string;
 };
 
+export type DeliveryDetails = {
+  recipientName: string;
+  streetAddress: string;
+  city: string;
+  postalCode: string;
+  country: string;
+  deliveryNotes?: string | null;
+  paymentMethod: string;
+};
+
 export type OrderRecord = {
   orderNumber: string;
   email: string;
@@ -48,4 +58,6 @@ export type OrderRecord = {
   tracking?: OrderTracking;
   history?: OrderStatusHistoryItem[];
   items?: OrderItem[];
+  deliveryAddress?: string;
+  deliveryDetails?: DeliveryDetails | null;
 };
