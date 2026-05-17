@@ -2,6 +2,22 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Cart Flow', () => {
   test('powinien dodać zamówienie własne do koszyka i je usunąć', async ({ page }) => {
+    await page.addInitScript(() => {
+      window.localStorage.setItem('alkozon_age_status', 'adult');
+      window.localStorage.setItem(
+        'alkozon_auth_session',
+        JSON.stringify({
+          accessToken: 'customer-token',
+          refreshToken: 'customer-refresh',
+          user: {
+            id: 'customer-1',
+            username: 'E2E',
+            role: 'CUSTOMER',
+          },
+        })
+      );
+    });
+
     await page.goto('/custom-order');
 
     const ageBtn = page.getByRole('button', { name: 'Tak, mam ukończone 18 lat' });

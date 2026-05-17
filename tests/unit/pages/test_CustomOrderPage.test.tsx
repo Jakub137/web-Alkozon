@@ -4,6 +4,7 @@ import CustomOrderPage from '@/app/custom-order/page';
 import { useLanguage } from '@/context/LanguageContext';
 import { useCart } from '@/context/CartContext';
 import { useAge } from '@/context/AgeContext';
+import { useAuth } from '@/context/AuthContext';
 
 vi.mock('@/context/LanguageContext', () => ({
   useLanguage: vi.fn()
@@ -14,6 +15,9 @@ vi.mock('@/context/CartContext', () => ({
 vi.mock('@/context/AgeContext', () => ({
   useAge: vi.fn()
 }));
+vi.mock('@/context/AuthContext', () => ({
+  useAuth: vi.fn()
+}));
 vi.mock('next/link', () => ({
   default: ({ children, href }: { children: React.ReactNode, href: string }) => (
     <a href={href}>{children}</a>
@@ -21,7 +25,10 @@ vi.mock('next/link', () => ({
 }));
 
 const mockDict = {
-  shop: { categories: { vodka: 'Wódka', whisky: 'Whisky', wine: 'Wino', liqueur: 'Likier' } },
+  shop: {
+    categories: { vodka: 'Wódka', whisky: 'Whisky', wine: 'Wino', liqueur: 'Likier' },
+    cart: { checkout: { authRequired: 'Zaloguj się' } }
+  },
   customOrderPage: {
     title: 'Twój Trunek',
     subtitle: 'Opis',
@@ -51,6 +58,7 @@ describe('CustomOrderPage Unit Tests', () => {
       addToCart: mockAddToCart
     });
     (useAge as any).mockReturnValue({ ageStatus: 'verified' });
+    (useAuth as any).mockReturnValue({ user: { role: 'CUSTOMER' } });
   });
 
   it('powinien pozwalać na przejście przez kroki kreatora', () => {

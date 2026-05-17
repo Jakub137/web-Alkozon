@@ -20,7 +20,7 @@ test.describe('Age Gate Restrictions', () => {
 
     await page.goto('/cart');
     await expect(page.getByText('Ograniczenie wiekowe')).toBeVisible();
-    await expect(page.getByText('Opcja składania zamówień na produkty alkoholowe jest dla Ciebie wyłączona')).toBeVisible();
+    await expect(page.getByText('Ta część strony zawiera ofertę produktów alkoholowych')).toBeVisible();
   });
 
   test('powinien zapamiętać status wieku po odświeżeniu strony', async ({ page }) => {

@@ -6,6 +6,7 @@ import { Product, ProductCategory } from "@/types/product";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/context/CartContext";
 import { useAge } from "@/context/AgeContext";
+import { useAuth } from "@/context/AuthContext";
 
 type CustomBase = Exclude<ProductCategory, "beer" | "rum">;
 type CapacityOption = "0.5L" | "0.7L" | "1.0L";
@@ -72,6 +73,7 @@ export default function CustomOrderPage() {
   const { dict } = useLanguage();
   const { addToCart, cartItemsCount, cartItemsLimit, customOrderItemsCount, customOrderItemsLimit } = useCart();
   const { ageStatus } = useAge();
+  const { user } = useAuth();
 
   const [step, setStep] = useState(1);
   const [selectedBase, setSelectedBase] = useState<CustomBase>("whisky");
@@ -130,6 +132,10 @@ export default function CustomOrderPage() {
   const noteWordCount = countWords(note);
   const isTotalCartLimitReached = cartItemsCount >= cartItemsLimit;
   const isCustomOrderLimitReached = customOrderItemsCount >= customOrderItemsLimit;
+  const canOrder = user?.role === "CUSTOMER";
+  const authRequiredMessage =
+    dict.shop.cart.checkout?.authRequired ||
+    "Aby złożyć zamówienie, zaloguj się lub załóż konto.";
 
   const showToast = (message: string, type: "success" | "limit") => {
     setToastMessage(message);
@@ -148,6 +154,11 @@ export default function CustomOrderPage() {
 
   const handleAddToCart = () => {
     if (!canSubmit || addedMessageVisible) return;
+    if (ageStatus === "underage") return;
+    if (!canOrder) {
+      showToast(authRequiredMessage, "limit");
+      return;
+    }
 
     const generatedName = customName.trim();
     const customProduct: Product = {
@@ -445,10 +456,13 @@ export default function CustomOrderPage() {
               {ageStatus === "underage" && (
                 <p>{dict.ageGate?.restrictedMessage || "Opcja składania zamówień na produkty alkoholowe jest dla Ciebie wyłączona."}</p>
               )}
-              {isTotalCartLimitReached && ageStatus !== "underage" && (
+              {!canOrder && ageStatus !== "underage" && (
+                <p>{authRequiredMessage}</p>
+              )}
+              {isTotalCartLimitReached && ageStatus !== "underage" && canOrder && (
                 <p>{dict.customOrderPage.messages.limitTotalReached}</p>
               )}
-              {isCustomOrderLimitReached && ageStatus !== "underage" && (
+              {isCustomOrderLimitReached && ageStatus !== "underage" && canOrder && (
                 <p>{dict.customOrderPage.messages.limitCustomReached}</p>
               )}
             </div>

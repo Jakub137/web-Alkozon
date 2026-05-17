@@ -4,6 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useAge } from "@/context/AgeContext";
+import UnderageRestrictedPage from "@/components/UnderageRestrictedPage";
 import { getProductById } from "@/lib/api/products";
 import { ApiError } from "@/lib/api/types";
 
@@ -13,6 +15,7 @@ export default function ShopProductPage({
   params: { id: string };
 }) {
   const { dict } = useLanguage();
+  const { ageStatus } = useAge();
   const [product, setProduct] = useState<Awaited<ReturnType<typeof getProductById>> | null>(null);
   const [imageSrc, setImageSrc] = useState("/placeholder-product.svg");
   const [isLoading, setIsLoading] = useState(true);
@@ -23,6 +26,12 @@ export default function ShopProductPage({
     let cancelled = false;
 
     async function loadProduct() {
+      if (ageStatus === "underage") {
+        setProduct(null);
+        setIsLoading(false);
+        return;
+      }
+
       try {
         setIsLoading(true);
         setNotFound(false);
@@ -51,7 +60,11 @@ export default function ShopProductPage({
     return () => {
       cancelled = true;
     };
-  }, [params.id]);
+  }, [ageStatus, params.id]);
+
+  if (ageStatus === "underage") {
+    return <UnderageRestrictedPage />;
+  }
 
   if (isLoading) {
     return (

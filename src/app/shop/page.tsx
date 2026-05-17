@@ -7,7 +7,10 @@ import { ProductCategory } from "@/types/product";
 import ProductCard from "@/components/ProductCard";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/context/CartContext";
+import { useAge } from "@/context/AgeContext";
+import { useAuth } from "@/context/AuthContext";
 import { CategoryIcon } from "@/components/CategoryIcon";
+import UnderageRestrictedPage from "@/components/UnderageRestrictedPage";
 import { getProducts } from "@/lib/api/products";
 import { ApiError } from "@/lib/api/types";
 
@@ -29,8 +32,11 @@ function useDebouncedValue<T>(value: T, delayMs: number) {
 export default function ShopPage() {
   const { dict } = useLanguage();
   const { cartItems, cartItemsCount, cartItemsLimit, addToCart, removeFromCart } = useCart();
+  const { ageStatus } = useAge();
+  const { user, setToast } = useAuth();
   const categoryOptions: ProductCategory[] = ["vodka", "whisky", "wine", "beer", "liqueur", "rum"];
   const isCartLimitReached = cartItemsCount >= cartItemsLimit;
+  const canOrder = user?.role === "CUSTOMER";
 
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebouncedValue(query, 300);
@@ -60,6 +66,13 @@ export default function ShopPage() {
     let cancelled = false;
 
     async function loadProducts() {
+      if (ageStatus === "underage") {
+        setProducts([]);
+        setTotalPages(1);
+        setIsLoading(false);
+        return;
+      }
+
       try {
         setIsLoading(true);
         setErrorMsg(null);
@@ -98,7 +111,20 @@ export default function ShopPage() {
     return () => {
       cancelled = true;
     };
-  }, [currentPage, debouncedQuery, selectedCategories, sortKey, priceMin, priceMax]);
+  }, [ageStatus, currentPage, debouncedQuery, selectedCategories, sortKey, priceMin, priceMax]);
+
+  const handleAddToCart = (product: (typeof products)[number]) => {
+    if (!canOrder) {
+      setToast(
+        dict.shop.cart.checkout?.authRequired ||
+          "Aby złożyć zamówienie, zaloguj się lub załóż konto."
+      );
+      window.setTimeout(() => setToast(null), 5000);
+      return;
+    }
+
+    addToCart(product);
+  };
 
   const visiblePages = useMemo(() => {
     const maxButtons = 5;
@@ -120,6 +146,10 @@ export default function ShopPage() {
       prev.includes(cat) ? [] : [cat]
     );
   };
+
+  if (ageStatus === "underage") {
+    return <UnderageRestrictedPage />;
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grow flex flex-col">
@@ -265,7 +295,7 @@ export default function ShopPage() {
                   <ProductCard
                     key={product.id}
                     product={product}
-                    onAddToCart={addToCart}
+                    onAddToCart={handleAddToCart}
                     isAddDisabled={isCartLimitReached}
                   />
                 ))}

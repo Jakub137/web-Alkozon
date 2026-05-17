@@ -3,6 +3,8 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import ShopPage from '@/app/shop/page';
 import { useLanguage } from '@/context/LanguageContext';
 import { useCart } from '@/context/CartContext';
+import { useAge } from '@/context/AgeContext';
+import { useAuth } from '@/context/AuthContext';
 import { getProducts } from '@/lib/api/products';
 
 // Mock contextów
@@ -12,6 +14,14 @@ vi.mock('@/context/LanguageContext', () => ({
 
 vi.mock('@/context/CartContext', () => ({
   useCart: vi.fn()
+}));
+
+vi.mock('@/context/AgeContext', () => ({
+  useAge: vi.fn()
+}));
+
+vi.mock('@/context/AuthContext', () => ({
+  useAuth: vi.fn()
 }));
 
 vi.mock('@/lib/api/products', () => ({
@@ -92,7 +102,10 @@ const mockDict = {
       limitReached: 'Osiągnięto limit',
       empty: 'Koszyk pusty',
       remove: 'Usuń',
-      summary: 'Podsumowanie'
+      summary: 'Podsumowanie',
+      checkout: {
+        authRequired: 'Zaloguj się'
+      }
     }
   }
 };
@@ -115,6 +128,11 @@ describe('ShopPage Unit Tests', () => {
       number: 0,
     });
     (useLanguage as any).mockReturnValue({ dict: mockDict });
+    (useAge as any).mockReturnValue({ ageStatus: 'adult' });
+    (useAuth as any).mockReturnValue({
+      user: { role: 'CUSTOMER' },
+      setToast: vi.fn()
+    });
     (useCart as any).mockReturnValue({
       cartItems: [],
       cartItemsCount: 0,

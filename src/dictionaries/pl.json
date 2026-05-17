@@ -5,7 +5,11 @@
     "yes": "Tak, mam ukończone 18 lat",
     "no": "Nie mam 18 lat",
     "restrictedMessageTitle": "Ograniczenie wiekowe",
-    "restrictedMessage": "Opcja składania zamówień na produkty alkoholowe jest dla Ciebie wyłączona, ponieważ jesteś osobą niepełnoletnią."
+    "restrictedMessage": "Opcja składania zamówień na produkty alkoholowe jest dla Ciebie wyłączona, ponieważ jesteś osobą niepełnoletnią.",
+    "restrictedPageMessage": "Ta część strony zawiera ofertę produktów alkoholowych i jest dostępna wyłącznie dla osób pełnoletnich. Możesz nadal korzystać z sekcji informacyjnych, takich jak FAQ i historia alkoholi.",
+    "homeLink": "Strona główna",
+    "faqLink": "FAQ",
+    "historyLink": "Historia alkoholi"
   },
   "navbar": {
     "lightMode": "Tryb jasny",
@@ -89,7 +93,7 @@
         "deliveryAddressPlaceholder": "Podaj pełny adres dostawy",
         "submit": "Złóż zamówienie",
         "submitting": "Składanie zamówienia...",
-        "authRequired": "Zaloguj się na konto klienta i potwierdź pełnoletność, aby złożyć zamówienie.",
+        "authRequired": "Aby złożyć zamówienie, zaloguj się lub załóż konto.",
         "ageBlocked": "Składanie zamówień jest zablokowane dla osób niepełnoletnich.",
         "ageOrRoleBlocked": "Brak uprawnień do złożenia zamówienia. Potwierdź pełnoletność lub zaloguj się ponownie.",
         "addressRequired": "Podaj adres dostawy.",

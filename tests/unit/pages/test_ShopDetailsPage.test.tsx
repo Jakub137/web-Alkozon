@@ -2,11 +2,15 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import ShopProductPage from '@/app/shop/[id]/page';
 import { useLanguage } from '@/context/LanguageContext';
+import { useAge } from '@/context/AgeContext';
 import { getProductById } from '@/lib/api/products';
 import { ApiError } from '@/lib/api/types';
 
 vi.mock('@/context/LanguageContext', () => ({
   useLanguage: vi.fn()
+}));
+vi.mock('@/context/AgeContext', () => ({
+  useAge: vi.fn()
 }));
 vi.mock('next/link', () => ({
   default: ({ children, href }: { children: React.ReactNode, href: string }) => (
@@ -35,6 +39,7 @@ describe('ShopDetailsPage Unit Tests', () => {
         }
       }
     });
+    (useAge as any).mockReturnValue({ ageStatus: 'adult' });
     (getProductById as any).mockResolvedValue({
       id: '1',
       name: 'Wódka czysta',

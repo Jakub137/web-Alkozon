@@ -5,7 +5,11 @@
     "yes": "Yes, I am 18 or older",
     "no": "I am under 18",
     "restrictedMessageTitle": "Age restriction",
-    "restrictedMessage": "The option to order alcoholic products is disabled for you because you are underage."
+    "restrictedMessage": "The option to order alcoholic products is disabled for you because you are underage.",
+    "restrictedPageMessage": "This part of the site contains alcoholic product offers and is available only to adults. You can still use informational sections such as FAQ and alcohol history.",
+    "homeLink": "Home",
+    "faqLink": "FAQ",
+    "historyLink": "Alcohol history"
   },
   "navbar": {
     "lightMode": "Light Mode",
@@ -89,7 +93,7 @@
         "deliveryAddressPlaceholder": "Enter the full delivery address",
         "submit": "Place order",
         "submitting": "Placing order...",
-        "authRequired": "Sign in as a customer and confirm your age to place an order.",
+        "authRequired": "To place an order, sign in or create an account.",
         "ageBlocked": "Ordering alcohol is blocked for underage users.",
         "ageOrRoleBlocked": "You are not allowed to place this order. Confirm age or sign in again.",
         "addressRequired": "Please enter a delivery address.",
