@@ -80,6 +80,7 @@ type SubmittedOrderSummary = {
 
 const CASH_ON_DELIVERY = "Płatność przy odbiorze";
 const DEFAULT_DELIVERY_COUNTRY = "Polska";
+const MAX_ORDER_NUMBER_ATTEMPTS = 8;
 const POSTAL_CODE_REGEX = /^\d{2}-\d{3}$/;
 
 function generateOrderNumber(): string {
@@ -90,6 +91,17 @@ function generateOrderNumber(): string {
 
 function displayOrderNumber(orderNumber: string): string {
   return orderNumber.replace(/^ORD-/i, "");
+}
+
+function isOrderNumberConflict(error: unknown): boolean {
+  if (!(error instanceof ApiError)) return false;
+  const message = `${error.message} ${error.payload?.message ?? ""}`.toLowerCase();
+  return (
+    error.status === 409 ||
+    message.includes("numer zamówienia") ||
+    message.includes("order number") ||
+    message.includes("clientordernumber")
+  );
 }
 
 function mapCheckoutErrorMessage(checkoutCopy: CheckoutCopy, error: unknown): string {
@@ -189,7 +201,6 @@ export default function CartPage() {
       return;
     }
 
-    const clientOrderNumber = generateOrderNumber();
     const delivery = {
       recipientName: `${deliveryForm.firstName.trim()} ${deliveryForm.lastName.trim()}`,
       streetAddress: deliveryForm.address.trim(),
@@ -210,14 +221,32 @@ export default function CartPage() {
     try {
       setIsSubmitting(true);
       let createdOrderNumber: string | null = null;
+      let clientOrderNumber = generateOrderNumber();
       if (items.length > 0) {
-        await authorizedRequest((accessToken) =>
-          createOrder(accessToken, {
-            clientOrderNumber,
-            items,
-            delivery,
-          })
-        );
+        let lastCreateOrderError: unknown = null;
+        for (let attempt = 0; attempt < MAX_ORDER_NUMBER_ATTEMPTS; attempt += 1) {
+          clientOrderNumber = generateOrderNumber();
+          try {
+            await authorizedRequest((accessToken) =>
+              createOrder(accessToken, {
+                clientOrderNumber,
+                items,
+                delivery,
+              })
+            );
+            lastCreateOrderError = null;
+            break;
+          } catch (error) {
+            lastCreateOrderError = error;
+            if (!isOrderNumberConflict(error)) {
+              throw error;
+            }
+          }
+        }
+
+        if (lastCreateOrderError) {
+          throw lastCreateOrderError;
+        }
         createdOrderNumber = clientOrderNumber;
       }
 
