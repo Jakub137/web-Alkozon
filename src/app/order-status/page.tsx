@@ -85,33 +85,33 @@ export default function OrderStatusPage() {
       return;
     }
 
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       if (canUseCustomerEndpoints) {
-        const result = await authorizedRequest((accessToken) =>
-          getOrderById(accessToken, normalizedOrderId, user?.email ?? undefined)
-        );
-        setOrder(result);
-        setSearched(true);
-        return;
-      }
-    } catch (error) {
-      // For CUSTOMER fallback to public tracking only when order is not found.
-      if (!(error instanceof ApiError) || error.status !== 404) {
-        if (error instanceof ApiError && (error.status === 401 || error.status === 403)) {
-          setErrorMsg(accountFeaturesMessage);
-        } else if (error instanceof ApiError) {
-          setErrorMsg(error.message);
-        } else {
-          setErrorMsg("Nie udało się pobrać statusu zamówienia.");
+        try {
+          const result = await authorizedRequest((accessToken) =>
+            getOrderById(accessToken, normalizedOrderId, user?.email ?? undefined)
+          );
+          setOrder(result);
+          setSearched(true);
+          return;
+        } catch (error) {
+          // Dla zalogowanego klienta: tylko 404 → spróbuj publicznego trackingu (np. numer z koszyka vs id w bazie).
+          if (!(error instanceof ApiError) || error.status !== 404) {
+            if (error instanceof ApiError && (error.status === 401 || error.status === 403)) {
+              setErrorMsg(accountFeaturesMessage);
+            } else if (error instanceof ApiError) {
+              setErrorMsg(error.message);
+            } else {
+              setErrorMsg("Nie udało się pobrać statusu zamówienia.");
+            }
+            setOrder(null);
+            setSearched(true);
+            return;
+          }
         }
-        setOrder(null);
-        setSearched(true);
-        return;
       }
-    }
 
-    try {
       const tracked = await trackOrderPublic(normalizedOrderId, email);
       setOrder(tracked);
       setSearched(true);
