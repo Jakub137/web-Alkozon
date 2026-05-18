@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
-import { getMyOrders, mapBackendOrderStatusToUi } from "@/lib/api/orders";
+import { extractOrderId, getMyOrders, mapBackendOrderStatusToUi } from "@/lib/api/orders";
 import { ApiError } from "@/lib/api/types";
 import { formatOrderDate, getBackendStatusLabelKey, getStatusTone } from "@/lib/orderStatusUi";
 import { subscribeOrderStatusUpdates } from "@/lib/realtime/orderUpdates";
@@ -139,7 +139,9 @@ export default function MyOrdersPage() {
                     key={entry.orderNumber}
                     type="button"
                     onClick={() =>
-                      router.push(`/order-status?orderId=${encodeURIComponent(entry.orderNumber)}`)
+                      router.push(
+                        `/order-status?orderId=${encodeURIComponent(entry.clientOrderNumber ?? extractOrderId(entry.orderNumber))}`
+                      )
                     }
                     className="w-full text-left rounded-xl border border-slate-200 dark:border-slate-700 p-3 bg-slate-50 dark:bg-slate-900/30 hover:border-blue-500 transition-colors"
                   >

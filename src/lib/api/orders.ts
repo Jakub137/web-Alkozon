@@ -35,6 +35,8 @@ export type CreateOrderDelivery = {
 
 interface ApiOrderTrackResponse {
   orderId: number;
+  orderNumber?: string | null;
+  clientOrderNumber?: string | null;
   status: BackendOrderStatus;
   createdAt: string;
   updatedAt: string;
@@ -112,6 +114,7 @@ function mapTrackOrderToRecord(track: ApiOrderTrackResponse, email: string): Ord
 
   return {
     orderNumber: `ORD-${track.orderId}`,
+    clientOrderNumber: track.clientOrderNumber ?? undefined,
     email,
     placedAt: track.createdAt,
     estimatedDelivery,

@@ -17,6 +17,11 @@ import { subscribeOrderStatusUpdates } from "@/lib/realtime/orderUpdates";
 
 const PROGRESS_STEPS: OrderProgressStep[] = ["received", "processing", "shipped", "delivered"];
 
+/** Preferuj numer kliencki (np. 6 cyfr) w polu formularza zamiast ORD-{id}. */
+function trackingInputValueFromRecord(record: OrderRecord): string {
+  return record.clientOrderNumber ?? extractOrderId(record.orderNumber) ?? record.orderNumber;
+}
+
 function getProgressIndex(status: OrderStatus): number {
   switch (status) {
     case "received":
@@ -93,6 +98,7 @@ export default function OrderStatusPage() {
             getOrderById(accessToken, normalizedOrderId, user?.email ?? undefined)
           );
           setOrder(result);
+          setOrderNumber(trackingInputValueFromRecord(result));
           setSearched(true);
           return;
         } catch (error) {
@@ -114,6 +120,9 @@ export default function OrderStatusPage() {
 
       const tracked = await trackOrderPublic(normalizedOrderId, email);
       setOrder(tracked);
+      if (tracked) {
+        setOrderNumber(trackingInputValueFromRecord(tracked));
+      }
       setSearched(true);
     } catch (error) {
       if (error instanceof ApiError && error.status === 404) {
@@ -160,13 +169,13 @@ export default function OrderStatusPage() {
     async function preloadOrder() {
       try {
         setIsLoading(true);
-        setOrderNumber(paramValue ?? "");
         setEmail(user?.email || "");
         const result = await authorizedRequest((accessToken) =>
           getOrderById(accessToken, normalizedOrderId, user?.email ?? undefined)
         );
         if (!cancelled) {
           setOrder(result);
+          setOrderNumber(trackingInputValueFromRecord(result));
           setSearched(true);
         }
       } catch (error) {

@@ -303,7 +303,7 @@ export default function CartPage() {
                 delivery,
               })
             );
-            trackingOrderNumber = order.orderNumber;
+            trackingOrderNumber = order.clientOrderNumber ?? clientOrderNumber;
             lastCreateOrderError = null;
             break;
           } catch (error) {
