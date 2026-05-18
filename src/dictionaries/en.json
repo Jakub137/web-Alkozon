@@ -276,9 +276,9 @@
     "subtitle": "Enter your order number and email address to check the current fulfillment stage.",
     "form": {
       "orderNumberLabel": "Order number",
-      "orderNumberPlaceholder": "e.g. ALK-2026-0002",
+      "orderNumberPlaceholder": "",
       "emailLabel": "Email",
-      "emailPlaceholder": "e.g. anna@example.com",
+      "emailPlaceholder": "",
       "submit": "Check status"
     },
     "access": {
@@ -387,9 +387,9 @@
       "flavors": "Flavor profiles",
       "intensity": "Intensity",
       "customName": "Custom spirit name",
-      "customNamePlaceholder": "e.g. Jakub's Smoky Reserve",
+      "customNamePlaceholder": "",
       "note": "Distillery note",
-      "notePlaceholder": "e.g. fruitier finish, less sweetness..."
+      "notePlaceholder": ""
     },
     "flavors": {
       "sweet": "Sweet",

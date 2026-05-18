@@ -27,7 +27,7 @@ test.describe("Cart Flow", () => {
 
     await page.getByRole("button", { name: "Dalej" }).click();
     await page.getByRole("button", { name: "Dalej" }).click();
-    await page.getByPlaceholder("Np. Dymna Rezerwa Jakuba").fill("E2E Custom");
+    await page.getByLabel("Nazwa własna trunku").fill("E2E Custom");
     await page.getByRole("button", { name: "Dodaj do koszyka" }).click();
 
     await page.getByRole("link", { name: "Przejdź do podsumowania" }).click();

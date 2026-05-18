@@ -12,7 +12,7 @@ test.describe("Age Gate Restrictions", () => {
 
     await page.getByRole("button", { name: "Dalej" }).click();
     await page.getByRole("button", { name: "Dalej" }).click();
-    await page.getByPlaceholder("Np. Dymna Rezerwa Jakuba").fill("E2E Underage");
+    await page.getByLabel("Nazwa własna trunku").fill("E2E Underage");
 
     const addToCartBtn = page.getByRole("button", { name: "Dodaj do koszyka" });
     await expect(addToCartBtn).toBeDisabled();
@@ -38,7 +38,7 @@ test.describe("Age Gate Restrictions", () => {
 
     await page.getByRole("button", { name: "Dalej" }).click();
     await page.getByRole("button", { name: "Dalej" }).click();
-    await page.getByPlaceholder("Np. Dymna Rezerwa Jakuba").fill("E2E Underage Reload");
+    await page.getByLabel("Nazwa własna trunku").fill("E2E Underage Reload");
 
     const addToCartBtn = page.getByRole("button", { name: "Dodaj do koszyka" });
     await expect(addToCartBtn).toBeDisabled();

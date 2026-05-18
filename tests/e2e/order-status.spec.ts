@@ -33,8 +33,8 @@ test.describe("Order Status Flow", () => {
 
     await page.goto("/order-status");
 
-    await page.getByPlaceholder("Np. ALK-2026-0002").fill("ORD-2");
-    await page.getByPlaceholder("Np. anna@example.com").fill("anna@example.com");
+    await page.getByLabel("Numer zamówienia").fill("ORD-2");
+    await page.getByLabel("E-mail").fill("anna@example.com");
     await page.getByRole("button", { name: "Sprawdź status" }).click();
 
     await expect(page.getByRole("heading", { name: "Szczegóły zamówienia" })).toBeVisible();
@@ -55,8 +55,8 @@ test.describe("Order Status Flow", () => {
 
     await page.goto("/order-status");
 
-    await page.getByPlaceholder("Np. ALK-2026-0002").fill("ORD-9999");
-    await page.getByPlaceholder("Np. anna@example.com").fill("nobody@example.com");
+    await page.getByLabel("Numer zamówienia").fill("ORD-9999");
+    await page.getByLabel("E-mail").fill("nobody@example.com");
     await page.getByRole("button", { name: "Sprawdź status" }).click();
 
     await expect(

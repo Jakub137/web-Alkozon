@@ -376,10 +376,14 @@ export default function CustomOrderPage() {
               </h2>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                <label
+                  htmlFor="custom-order-trunk-name"
+                  className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
+                >
                   {dict.customOrderPage.fields.customName}
                 </label>
                 <input
+                  id="custom-order-trunk-name"
                   type="text"
                   value={customName}
                   onChange={(e) => handleCustomNameChange(e.target.value)}
@@ -396,10 +400,14 @@ export default function CustomOrderPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                <label
+                  htmlFor="custom-order-distillery-note"
+                  className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
+                >
                   {dict.customOrderPage.fields.note}
                 </label>
                 <textarea
+                  id="custom-order-distillery-note"
                   value={note}
                   onChange={(e) => handleNoteChange(e.target.value)}
                   placeholder={dict.customOrderPage.fields.notePlaceholder}

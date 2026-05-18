@@ -220,10 +220,14 @@ export default function OrderStatusPage() {
           )}
           <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              <label
+                htmlFor="order-status-order-number"
+                className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
+              >
                 {dict.orderStatusPage.form.orderNumberLabel}
               </label>
               <input
+                id="order-status-order-number"
                 type="text"
                 value={orderNumber}
                 onChange={(event) => setOrderNumber(event.target.value)}
@@ -233,10 +237,14 @@ export default function OrderStatusPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              <label
+                htmlFor="order-status-email"
+                className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
+              >
                 {dict.orderStatusPage.form.emailLabel}
               </label>
               <input
+                id="order-status-email"
                 type="email"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}

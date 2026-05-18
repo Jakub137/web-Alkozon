@@ -276,9 +276,9 @@
     "subtitle": "Wpisz numer zamówienia i adres e-mail, aby sprawdzić aktualny etap realizacji.",
     "form": {
       "orderNumberLabel": "Numer zamówienia",
-      "orderNumberPlaceholder": "Np. ALK-2026-0002",
+      "orderNumberPlaceholder": "",
       "emailLabel": "E-mail",
-      "emailPlaceholder": "Np. anna@example.com",
+      "emailPlaceholder": "",
       "submit": "Sprawdź status"
     },
     "access": {
@@ -387,9 +387,9 @@
       "flavors": "Profile smakowe",
       "intensity": "Intensywność",
       "customName": "Nazwa własna trunku",
-      "customNamePlaceholder": "Np. Dymna Rezerwa Jakuba",
+      "customNamePlaceholder": "",
       "note": "Notatka dla destylarni",
-      "notePlaceholder": "Np. bardziej owocowy finisz, mniej słodyczy..."
+      "notePlaceholder": ""
     },
     "flavors": {
       "sweet": "Słodki",
