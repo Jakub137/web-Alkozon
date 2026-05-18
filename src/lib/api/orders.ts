@@ -89,6 +89,35 @@ export function mapCustomOrderStatusToUi(status: BackendCustomOrderStatus): Orde
   }
 }
 
+export function parseEstimatedPriceFromPreferences(
+  preferences: Record<string, unknown> | null | undefined
+): number | undefined {
+  if (!preferences) return undefined;
+  const raw = preferences.estimatedPrice;
+  if (typeof raw === "number" && Number.isFinite(raw)) return raw;
+  if (typeof raw === "string") {
+    const n = Number(raw.replace(",", ".").trim());
+    if (Number.isFinite(n)) return n;
+  }
+  return undefined;
+}
+
+/**
+ * Uzupełnia pozycję zamówienia własnego o szacunkową cenę z preferences (konfigurator).
+ */
+export function applyCustomEstimatedPriceFromPreferences(
+  record: OrderRecord,
+  preferences: Record<string, unknown> | null | undefined
+): OrderRecord {
+  if (record.kind !== "custom") return record;
+  const unit = parseEstimatedPriceFromPreferences(preferences);
+  if (unit == null || !record.items?.length) return record;
+  return {
+    ...record,
+    items: record.items.map((it, idx) => (idx === 0 ? { ...it, unitPrice: unit } : it)),
+  };
+}
+
 function deliveryDetailsToLine(details: DeliveryDetails | null | undefined): string | undefined {
   if (!details) return undefined;
   const cityLine = [details.postalCode?.trim(), details.city?.trim()].filter(Boolean).join(" ");
@@ -179,8 +208,10 @@ function mapTrackOrderToRecord(track: ApiOrderTrackResponse, email: string): Ord
 }
 
 function resolveTrackedCustomId(track: ApiCustomOrderTrackResponse): number {
-  const fromOrder = track.orderId ?? track.id;
-  if (typeof fromOrder === "number" && fromOrder > 0) return fromOrder;
+  const candidates = [track.customOrderId, track.orderId, track.id];
+  for (const c of candidates) {
+    if (typeof c === "number" && c > 0) return c;
+  }
   return 0;
 }
 
@@ -232,16 +263,15 @@ function clientOrderNumberFromCustomListApi(api: ApiCustomOrderListItem): string
   return typeof p === "string" && p.trim() ? p.trim() : undefined;
 }
 
-function mapCustomOrderListItemToRecord(
-  api: ApiCustomOrderListItem,
-  email: string
-): OrderRecord {
+function mapCustomOrderListItemToRecord(api: ApiCustomOrderListItem, email: string): OrderRecord {
   const apiStatus = api.status as BackendCustomOrderStatus;
   const status = mapCustomOrderStatusToUi(apiStatus);
   const estimatedDelivery =
     status === "delivered"
       ? api.updatedAt
       : new Date(new Date(api.createdAt).getTime() + 3 * 24 * 60 * 60 * 1000).toISOString();
+
+  const unitPrice = parseEstimatedPriceFromPreferences(api.preferences) ?? 0;
 
   return {
     kind: "custom",
@@ -264,7 +294,7 @@ function mapCustomOrderListItemToRecord(
         id: `line-custom-${api.id}`,
         name: api.description,
         quantity: 1,
-        unitPrice: 0,
+        unitPrice,
         image: "/products/custom-order.jpg",
       },
     ],

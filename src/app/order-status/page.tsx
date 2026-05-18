@@ -6,11 +6,13 @@ import { useLanguage } from "@/context/LanguageContext";
 import { OrderProgressStep, OrderRecord, OrderStatus } from "@/types/order";
 import { useAuth } from "@/context/AuthContext";
 import {
+  applyCustomEstimatedPriceFromPreferences,
   extractOrderId,
   getOrderById,
   mapBackendOrderStatusToUi,
   trackOrderPublic,
 } from "@/lib/api/orders";
+import { getCustomOrderById } from "@/lib/api/customOrders";
 import { ApiError } from "@/lib/api/types";
 import { formatOrderDate, formatOrderDateTime, getStatusTone } from "@/lib/orderStatusUi";
 import { subscribeOrderStatusUpdates } from "@/lib/realtime/orderUpdates";
@@ -71,6 +73,10 @@ export default function OrderStatusPage() {
   const orderItemsTotal = useMemo(
     () => order?.items?.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0) ?? 0,
     [order]
+  );
+  const hideCustomLinePrices = useMemo(
+    () => Boolean(order?.kind === "custom" && orderItemsTotal === 0),
+    [order?.kind, orderItemsTotal]
   );
   const statusHistory = useMemo(() => {
     if (!order?.history?.length) return [];
@@ -157,6 +163,40 @@ export default function OrderStatusPage() {
       });
     });
   }, [canUseCustomerEndpoints, token]);
+
+  useEffect(() => {
+    if (!order || order.kind !== "custom" || !canUseCustomerEndpoints) return;
+    const match = /^CUSTOM-(\d+)$/i.exec(order.orderNumber);
+    const customId = match ? Number(match[1]) : 0;
+    if (!customId) return;
+    const unit = order.items?.[0]?.unitPrice ?? 0;
+    if (unit > 0) return;
+
+    let cancelled = false;
+    void authorizedRequest(async (accessToken) => {
+      try {
+        const detail = await getCustomOrderById(accessToken, customId);
+        if (cancelled) return;
+        setOrder((prev) => {
+          if (!prev || prev.kind !== "custom") return prev;
+          const idMatch = /^CUSTOM-(\d+)$/i.exec(prev.orderNumber);
+          if (!idMatch || Number(idMatch[1]) !== customId) return prev;
+          return applyCustomEstimatedPriceFromPreferences(prev, detail.preferences ?? undefined);
+        });
+      } catch {
+        /* brak szczegółów — zostaje komunikat o cenie (gość / błąd) */
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    order?.kind,
+    order?.orderNumber,
+    order?.items?.[0]?.unitPrice,
+    canUseCustomerEndpoints,
+    authorizedRequest,
+  ]);
 
   useEffect(() => {
     const paramValue = new URLSearchParams(window.location.search).get("orderId");
@@ -513,31 +553,44 @@ export default function OrderStatusPage() {
                           {item.name}
                         </p>
                         <p className="text-xs text-slate-500 dark:text-slate-400">
-                          {dict.orderStatusPage.items.quantityLabel}: {item.quantity} ·{" "}
-                          {dict.orderStatusPage.items.unitPriceLabel}: {item.unitPrice.toFixed(2)}{" "}
-                          zl
+                          {dict.orderStatusPage.items.quantityLabel}: {item.quantity}
+                          {!hideCustomLinePrices && (
+                            <>
+                              {" "}
+                              · {dict.orderStatusPage.items.unitPriceLabel}:{" "}
+                              {item.unitPrice.toFixed(2)} zł
+                            </>
+                          )}
                         </p>
                       </div>
                       <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 whitespace-nowrap">
-                        {(item.unitPrice * item.quantity).toFixed(2)} zl
+                        {hideCustomLinePrices
+                          ? (dict.orderStatusPage.items.priceDash ?? "—")
+                          : `${(item.unitPrice * item.quantity).toFixed(2)} zł`}
                       </p>
                     </div>
                   ))}
                 </div>
 
-                <div className="mt-4 rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-900/30 flex flex-wrap items-center justify-between gap-2">
+                <div className="mt-4 rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-900/30 flex flex-col sm:flex-row flex-wrap sm:items-center sm:justify-between gap-2">
                   <p className="text-sm text-slate-600 dark:text-slate-300">
                     {dict.orderStatusPage.items.totalItemsLabel}:{" "}
                     <span className="font-semibold text-slate-900 dark:text-slate-100">
                       {orderItemsCount}
                     </span>
                   </p>
-                  <p className="text-sm text-slate-600 dark:text-slate-300">
-                    {dict.orderStatusPage.items.totalValueLabel}:{" "}
-                    <span className="font-semibold text-slate-900 dark:text-slate-100">
-                      {orderItemsTotal.toFixed(2)} zl
-                    </span>
-                  </p>
+                  {hideCustomLinePrices ? (
+                    <p className="text-sm text-slate-600 dark:text-slate-300 max-w-xl">
+                      {dict.orderStatusPage.items.customPriceHint}
+                    </p>
+                  ) : (
+                    <p className="text-sm text-slate-600 dark:text-slate-300">
+                      {dict.orderStatusPage.items.totalValueLabel}:{" "}
+                      <span className="font-semibold text-slate-900 dark:text-slate-100">
+                        {orderItemsTotal.toFixed(2)} zł
+                      </span>
+                    </p>
+                  )}
                 </div>
               </section>
             )}

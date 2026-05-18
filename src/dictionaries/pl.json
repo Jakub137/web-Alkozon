@@ -359,7 +359,9 @@
       "quantityLabel": "Ilość",
       "unitPriceLabel": "Cena za szt.",
       "totalItemsLabel": "Łączna liczba sztuk",
-      "totalValueLabel": "Wartość zamówienia"
+      "totalValueLabel": "Wartość zamówienia",
+      "customPriceHint": "Śledzenie publiczne nie zawiera kwoty. Szacunek z konfiguratora jest w danych zamówienia — po zalogowaniu odświeżymy go automatycznie, albo sprawdź „Moje zamówienia”.",
+      "priceDash": "—"
     },
     "trackingPrefix": "Śledzenie:",
     "buttons": {

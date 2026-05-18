@@ -359,7 +359,9 @@
       "quantityLabel": "Quantity",
       "unitPriceLabel": "Unit price",
       "totalItemsLabel": "Total quantity",
-      "totalValueLabel": "Order value"
+      "totalValueLabel": "Order value",
+      "customPriceHint": "Public tracking does not include price. The configurator estimate is stored on the order — after signing in we load it automatically, or open “My orders”.",
+      "priceDash": "—"
     },
     "trackingPrefix": "Tracking:",
     "buttons": {

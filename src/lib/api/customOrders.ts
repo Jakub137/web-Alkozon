@@ -24,8 +24,9 @@ export interface ApiCustomOrderListItem {
   clientOrderNumber?: string | null;
 }
 
-/** Publiczny track custom-orders (kształt może zawierać orderId lub id). */
+/** Publiczny track custom-orders (backend: customOrderId + …). */
 export interface ApiCustomOrderTrackResponse {
+  customOrderId?: number;
   orderId?: number;
   id?: number;
   clientOrderNumber?: string | null;
@@ -59,4 +60,12 @@ export async function requestCustomOrderTrack(
     email: email.trim(),
   });
   return apiRequest<ApiCustomOrderTrackResponse>(`/api/custom-orders/track?${params.toString()}`);
+}
+
+/** Szczegóły zamówienia własnego (JWT; zawiera preferences z estimatedPrice). */
+export async function getCustomOrderById(
+  token: string,
+  id: number
+): Promise<ApiCustomOrderListItem> {
+  return apiRequest<ApiCustomOrderListItem>(`/api/custom-orders/${id}`, { token });
 }
