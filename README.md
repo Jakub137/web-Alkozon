@@ -15,7 +15,7 @@ Aplikacja webowa dla systemu e-commerce Alkozon, realizująca zaawansowane mecha
 
 - **Architektura Bezpieczeństwa:** Izolowany kontekst AuthContext chroniący ścieżki i przechowujący tokeny sesyjne.
 - **Ochrona Anti Brute-Force (Rate Limiting):** Aplikacja uczy się wzorców i odrzuca dostęp do autoryzacji po osiągnięciu progu 5 błędnych prób.
-- **Funkcja Auto-Logout:** Hook stale monitorujący aktywność urządzenia i zabezpieczający pozostawione otwarte sesje poprzez automatyczne wylogowanie powiadomieniem (30s bezczynności).
+- **Funkcja Auto-Logout:** Hook stale monitorujący aktywność urządzenia i zabezpieczający pozostawione otwarte sesje poprzez automatyczne wylogowanie powiadomieniem (15 minut bezczynności).
 - **Zabezpieczenie przed Injection:** Pełne oparcie formularzy Logowania i Rejestracji na predykatach biblioteki Zod.
 - **Wielojęzyczność (i18n):** Globalny kontekst dla dynamicznych wdrożeń językowych (PL / ENG).
 - **Dark Mode:** Mechanizm Theme Switcher dopasowujący kontrasty przycisków i kafelków strony głównej.

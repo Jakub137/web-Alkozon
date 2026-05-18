@@ -28,6 +28,7 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AUTH_SESSION_STORAGE_KEY = "alkozon_auth_session";
 const FCM_TOKEN_STORAGE_KEY = "alkozon_fcm_web_token";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -42,7 +43,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(session.accessToken);
     setRefreshToken(session.refreshToken);
     setUser(session.user);
-    localStorage.setItem("alkozon_auth_session", JSON.stringify(session));
+    localStorage.setItem(AUTH_SESSION_STORAGE_KEY, JSON.stringify(session));
+  }, []);
+
+  const clearLocalSession = useCallback(() => {
+    setToken(null);
+    setRefreshToken(null);
+    setUser(null);
   }, []);
 
   const syncProfile = useCallback(async (baseSession: AuthSession): Promise<AuthSession> => {
@@ -89,7 +96,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setStoredFcmToken(existingFcmToken.trim());
     }
 
-    const rawSession = localStorage.getItem("alkozon_auth_session");
+    const rawSession = localStorage.getItem(AUTH_SESSION_STORAGE_KEY);
     if (rawSession) {
       const session = hydrateSession(rawSession);
       if (session) {
@@ -116,6 +123,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
   }, [applySession, registerFcmToken, syncProfile]);
 
+  useEffect(() => {
+    const syncSessionAcrossTabs = (event: StorageEvent) => {
+      if (event.key !== AUTH_SESSION_STORAGE_KEY) return;
+      if (event.newValue === null) {
+        clearLocalSession();
+        setToast("Wylogowano w innej karcie.");
+        setTimeout(() => setToast(null), 5000);
+      }
+    };
+
+    window.addEventListener("storage", syncSessionAcrossTabs);
+    return () => window.removeEventListener("storage", syncSessionAcrossTabs);
+  }, [clearLocalSession]);
+
   const login = (session: AuthSession) => {
     applySession(session);
     if (storedFcmToken) {
@@ -133,10 +154,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     }
 
-    setToken(null);
-    setRefreshToken(null);
-    setUser(null);
-    localStorage.removeItem("alkozon_auth_session");
+    clearLocalSession();
+    localStorage.removeItem(AUTH_SESSION_STORAGE_KEY);
     
     if (message) {
       setToast(message);
