@@ -9,11 +9,7 @@ import UnderageRestrictedPage from "@/components/UnderageRestrictedPage";
 import { getProductById } from "@/lib/api/products";
 import { ApiError } from "@/lib/api/types";
 
-export default function ShopProductPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+export default function ShopProductPage({ params }: { params: { id: string } }) {
   const { dict } = useLanguage();
   const { ageStatus } = useAge();
   const [product, setProduct] = useState<Awaited<ReturnType<typeof getProductById>> | null>(null);
@@ -141,9 +137,7 @@ export default function ShopProductPage({
                 <div className="text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">
                   {dict.shop.details.capacity}
                 </div>
-                <div className="text-sm text-slate-900 dark:text-slate-100">
-                  {product.capacity}
-                </div>
+                <div className="text-sm text-slate-900 dark:text-slate-100">{product.capacity}</div>
               </div>
 
               <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 p-4">
@@ -189,4 +183,3 @@ export default function ShopProductPage({
     </div>
   );
 }
-

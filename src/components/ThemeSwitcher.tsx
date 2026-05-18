@@ -12,9 +12,7 @@ export default function ThemeSwitcher() {
       onClick={toggleTheme}
       type="button"
       className={`w-28 py-2 rounded-lg text-sm font-medium transition-colors text-center ${
-        theme === "dark"
-          ? "bg-slate-100 text-slate-900"
-          : "bg-slate-700 text-white"
+        theme === "dark" ? "bg-slate-100 text-slate-900" : "bg-slate-700 text-white"
       }`}
     >
       {theme === "dark" ? dict.navbar.darkMode : dict.navbar.lightMode}

@@ -10,7 +10,11 @@ export const mockOrders: OrderRecord[] = [
     history: [
       { status: "received", changedAt: "2026-03-20T10:30:00.000Z" },
       { status: "paid", changedAt: "2026-03-20T10:34:00.000Z" },
-      { status: "processing", changedAt: "2026-03-21T07:20:00.000Z", note: "Kompletujemy zamówienie." },
+      {
+        status: "processing",
+        changedAt: "2026-03-21T07:20:00.000Z",
+        note: "Kompletujemy zamówienie.",
+      },
     ],
     items: [
       {
@@ -133,7 +137,11 @@ export const mockOrders: OrderRecord[] = [
       { status: "processing", changedAt: "2026-03-11T18:22:00.000Z" },
       { status: "shipped", changedAt: "2026-03-12T09:02:00.000Z" },
       { status: "delivered", changedAt: "2026-03-13T16:45:00.000Z" },
-      { status: "returned", changedAt: "2026-03-17T11:15:00.000Z", note: "Zwrot po odstąpieniu od umowy." },
+      {
+        status: "returned",
+        changedAt: "2026-03-17T11:15:00.000Z",
+        note: "Zwrot po odstąpieniu od umowy.",
+      },
     ],
     items: [
       {

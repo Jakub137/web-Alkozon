@@ -46,7 +46,7 @@ describe("Integration Tests - AgeVerificationModal", () => {
     expect(screen.queryByText("Czy masz ukończone 18 lat?")).not.toBeInTheDocument();
     expect(localStorage.getItem("alkozon_age_status")).toBe("adult");
   });
-  
+
   it("powinien zablokować i zaktualizować localStorage po kliknięciu 'Nie'", () => {
     render(
       <LanguageProvider>

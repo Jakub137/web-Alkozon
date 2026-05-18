@@ -29,10 +29,8 @@ function getFirebaseConfig() {
 }
 
 async function getMessagingApi() {
-  const [{ initializeApp, getApps, getApp }, { getMessaging, getToken, isSupported }] = await Promise.all([
-    import("firebase/app"),
-    import("firebase/messaging"),
-  ]);
+  const [{ initializeApp, getApps, getApp }, { getMessaging, getToken, isSupported }] =
+    await Promise.all([import("firebase/app"), import("firebase/messaging")]);
 
   const supported = await isSupported();
   if (!supported) return null;
@@ -60,7 +58,9 @@ export async function setupWebPushToken(): Promise<string | null> {
   if (permission !== "granted") return null;
 
   try {
-    const serviceWorkerRegistration = await navigator.serviceWorker.register("/firebase-messaging-sw.js");
+    const serviceWorkerRegistration = await navigator.serviceWorker.register(
+      "/firebase-messaging-sw.js"
+    );
     const token = await api.getToken(api.messaging, {
       vapidKey: api.vapidKey,
       serviceWorkerRegistration,

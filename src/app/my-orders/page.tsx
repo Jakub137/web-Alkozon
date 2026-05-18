@@ -20,7 +20,8 @@ export default function MyOrdersPage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const currentLocale = lang === "pl" ? "pl-PL" : "en-US";
-  const canUseCustomerEndpoints = Boolean(token) && user?.role === "CUSTOMER" && Boolean(user.ageConfirmedAt);
+  const canUseCustomerEndpoints =
+    Boolean(token) && user?.role === "CUSTOMER" && Boolean(user.ageConfirmedAt);
 
   useEffect(() => {
     if (!canUseCustomerEndpoints) return;
@@ -57,7 +58,13 @@ export default function MyOrdersPage() {
     return () => {
       cancelled = true;
     };
-  }, [canUseCustomerEndpoints, user?.email, authorizedRequest, dict.orderStatusPage.access?.customerRequired, dict.myOrdersPage.loadError]);
+  }, [
+    canUseCustomerEndpoints,
+    user?.email,
+    authorizedRequest,
+    dict.orderStatusPage.access?.customerRequired,
+    dict.myOrdersPage.loadError,
+  ]);
 
   useEffect(() => {
     if (!canUseCustomerEndpoints) return;
@@ -123,7 +130,8 @@ export default function MyOrdersPage() {
               {myOrders.map((entry) => {
                 const apiLabelKey = getBackendStatusLabelKey(entry.apiStatus);
                 const statusLabel = apiLabelKey
-                  ? dict.orderStatusPage.backendStatuses?.[apiLabelKey] || dict.orderStatusPage.statuses[entry.status]
+                  ? dict.orderStatusPage.backendStatuses?.[apiLabelKey] ||
+                    dict.orderStatusPage.statuses[entry.status]
                   : dict.orderStatusPage.statuses[entry.status];
 
                 return (
@@ -146,7 +154,8 @@ export default function MyOrdersPage() {
                       </span>
                     </div>
                     <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                      {dict.orderStatusPage.details.placedAt}: {formatOrderDate(entry.placedAt, currentLocale)}
+                      {dict.orderStatusPage.details.placedAt}:{" "}
+                      {formatOrderDate(entry.placedAt, currentLocale)}
                     </p>
                   </button>
                 );

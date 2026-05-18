@@ -5,7 +5,12 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { OrderProgressStep, OrderRecord, OrderStatus } from "@/types/order";
 import { useAuth } from "@/context/AuthContext";
-import { extractOrderId, getOrderById, mapBackendOrderStatusToUi, trackOrderPublic } from "@/lib/api/orders";
+import {
+  extractOrderId,
+  getOrderById,
+  mapBackendOrderStatusToUi,
+  trackOrderPublic,
+} from "@/lib/api/orders";
 import { ApiError } from "@/lib/api/types";
 import { formatOrderDate, formatOrderDateTime, getStatusTone } from "@/lib/orderStatusUi";
 import { subscribeOrderStatusUpdates } from "@/lib/realtime/orderUpdates";
@@ -43,7 +48,8 @@ export default function OrderStatusPage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const currentLocale = lang === "pl" ? "pl-PL" : "en-US";
-  const canUseCustomerEndpoints = Boolean(token) && user?.role === "CUSTOMER" && Boolean(user.ageConfirmedAt);
+  const canUseCustomerEndpoints =
+    Boolean(token) && user?.role === "CUSTOMER" && Boolean(user.ageConfirmedAt);
   const progressIndex = order ? getProgressIndex(order.status) : -1;
   const accountFeaturesMessage =
     dict.orderStatusPage.access?.customerRequired ||
@@ -261,7 +267,9 @@ export default function OrderStatusPage() {
 
         {searched && !order && (
           <section className="bg-white dark:bg-slate-800 border border-red-200 dark:border-red-900/40 rounded-2xl p-5 sm:p-6 shadow-sm dark:shadow-slate-900/50">
-            <p className="text-sm text-red-700 dark:text-red-300">{dict.orderStatusPage.notFound}</p>
+            <p className="text-sm text-red-700 dark:text-red-300">
+              {dict.orderStatusPage.notFound}
+            </p>
           </section>
         )}
 
@@ -276,7 +284,8 @@ export default function OrderStatusPage() {
                   className={`h-8 px-3 rounded-full text-xs font-semibold inline-flex items-center ${getStatusTone(order.status)}`}
                 >
                   {order.apiStatus
-                    ? dict.orderStatusPage.backendStatuses?.[order.apiStatus] || dict.orderStatusPage.statuses[order.status]
+                    ? dict.orderStatusPage.backendStatuses?.[order.apiStatus] ||
+                      dict.orderStatusPage.statuses[order.status]
                     : dict.orderStatusPage.statuses[order.status]}
                 </span>
               </div>
@@ -306,7 +315,8 @@ export default function OrderStatusPage() {
                   </p>
                   <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                     {order.apiStatus
-                      ? dict.orderStatusPage.backendStatuses?.[order.apiStatus] || dict.orderStatusPage.statuses[order.status]
+                      ? dict.orderStatusPage.backendStatuses?.[order.apiStatus] ||
+                        dict.orderStatusPage.statuses[order.status]
                       : dict.orderStatusPage.statuses[order.status]}
                   </p>
                 </div>
@@ -337,8 +347,8 @@ export default function OrderStatusPage() {
                           isCurrent
                             ? "bg-blue-600 border-blue-600 text-white"
                             : isCompleted
-                            ? "bg-emerald-600 border-emerald-600 text-white"
-                            : "bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300"
+                              ? "bg-emerald-600 border-emerald-600 text-white"
+                              : "bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300"
                         }`}
                       >
                         {dict.orderStatusPage.progress.steps[step]}
@@ -355,7 +365,8 @@ export default function OrderStatusPage() {
               </h3>
               <p className="text-sm text-slate-700 dark:text-slate-300">
                 {order.apiStatus
-                  ? dict.orderStatusPage.backendNextSteps?.[order.apiStatus] || dict.orderStatusPage.nextSteps[order.status]
+                  ? dict.orderStatusPage.backendNextSteps?.[order.apiStatus] ||
+                    dict.orderStatusPage.nextSteps[order.status]
                   : dict.orderStatusPage.nextSteps[order.status]}
               </p>
 
@@ -433,7 +444,9 @@ export default function OrderStatusPage() {
                       className="rounded-xl border border-slate-200 dark:border-slate-700 p-3 bg-slate-50 dark:bg-slate-900/30 flex items-center gap-3"
                     >
                       <div className="relative h-14 w-14 rounded-lg overflow-hidden bg-slate-200 dark:bg-slate-700 shrink-0">
-                        <div className="absolute inset-0 flex items-center justify-center text-lg">🍾</div>
+                        <div className="absolute inset-0 flex items-center justify-center text-lg">
+                          🍾
+                        </div>
                         {item.image && (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img
@@ -452,7 +465,8 @@ export default function OrderStatusPage() {
                         </p>
                         <p className="text-xs text-slate-500 dark:text-slate-400">
                           {dict.orderStatusPage.items.quantityLabel}: {item.quantity} ·{" "}
-                          {dict.orderStatusPage.items.unitPriceLabel}: {item.unitPrice.toFixed(2)} zl
+                          {dict.orderStatusPage.items.unitPriceLabel}: {item.unitPrice.toFixed(2)}{" "}
+                          zl
                         </p>
                       </div>
                       <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 whitespace-nowrap">
@@ -465,7 +479,9 @@ export default function OrderStatusPage() {
                 <div className="mt-4 rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-900/30 flex flex-wrap items-center justify-between gap-2">
                   <p className="text-sm text-slate-600 dark:text-slate-300">
                     {dict.orderStatusPage.items.totalItemsLabel}:{" "}
-                    <span className="font-semibold text-slate-900 dark:text-slate-100">{orderItemsCount}</span>
+                    <span className="font-semibold text-slate-900 dark:text-slate-100">
+                      {orderItemsCount}
+                    </span>
                   </p>
                   <p className="text-sm text-slate-600 dark:text-slate-300">
                     {dict.orderStatusPage.items.totalValueLabel}:{" "}

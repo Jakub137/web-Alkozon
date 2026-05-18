@@ -90,7 +90,9 @@ function readUsedOrderNumbers(): string[] {
   try {
     const raw = localStorage.getItem(ORDER_NUMBER_STORAGE_KEY);
     const parsed = raw ? JSON.parse(raw) : [];
-    return Array.isArray(parsed) ? parsed.filter((value): value is string => typeof value === "string") : [];
+    return Array.isArray(parsed)
+      ? parsed.filter((value): value is string => typeof value === "string")
+      : [];
   } catch {
     return [];
   }
@@ -100,10 +102,10 @@ function rememberUsedOrderNumber(orderNumber: string) {
   const normalized = orderNumber.trim();
   if (!/^\d{6}$/.test(normalized)) return;
 
-  const next = [normalized, ...readUsedOrderNumbers().filter((value) => value !== normalized)].slice(
-    0,
-    ORDER_NUMBER_STORAGE_LIMIT
-  );
+  const next = [
+    normalized,
+    ...readUsedOrderNumbers().filter((value) => value !== normalized),
+  ].slice(0, ORDER_NUMBER_STORAGE_LIMIT);
   localStorage.setItem(ORDER_NUMBER_STORAGE_KEY, JSON.stringify(next));
 }
 
@@ -132,7 +134,8 @@ function displayOrderNumber(orderNumber: string): string {
 
 function isOrderNumberConflict(error: unknown): boolean {
   if (!(error instanceof ApiError)) return false;
-  const fieldErrors = error.payload?.fieldErrors?.map((entry) => `${entry.field} ${entry.message}`).join(" ") ?? "";
+  const fieldErrors =
+    error.payload?.fieldErrors?.map((entry) => `${entry.field} ${entry.message}`).join(" ") ?? "";
   const message = `${error.message} ${error.payload?.message ?? ""} ${fieldErrors}`.toLowerCase();
   return (
     error.status === 409 ||
@@ -165,7 +168,11 @@ function mapCheckoutErrorMessage(checkoutCopy: CheckoutCopy, error: unknown): st
   if (error.status >= 500) {
     return checkoutCopy.serverError || "Błąd serwera. Spróbuj ponownie później.";
   }
-  return error.message || checkoutCopy.unexpectedError || "Nie udało się złożyć zamówienia. Spróbuj ponownie.";
+  return (
+    error.message ||
+    checkoutCopy.unexpectedError ||
+    "Nie udało się złożyć zamówienia. Spróbuj ponownie."
+  );
 }
 
 export default function CartPage() {
@@ -208,12 +215,15 @@ export default function CartPage() {
     }
     if (user?.role !== "CUSTOMER" || !user.ageConfirmedAt) {
       setCheckoutError(
-        checkoutCopy.authRequired || "Zaloguj się na konto klienta i potwierdź pełnoletność, aby złożyć zamówienie."
+        checkoutCopy.authRequired ||
+          "Zaloguj się na konto klienta i potwierdź pełnoletność, aby złożyć zamówienie."
       );
       return false;
     }
     if (cartItems.length === 0) {
-      setCheckoutError(checkoutCopy.invalidCart || "Koszyk nie zawiera produktów, które można wysłać do API.");
+      setCheckoutError(
+        checkoutCopy.invalidCart || "Koszyk nie zawiera produktów, które można wysłać do API."
+      );
       return false;
     }
     return true;
@@ -243,7 +253,9 @@ export default function CartPage() {
     ];
 
     if (requiredValues.some((value) => !value.trim())) {
-      setCheckoutError(checkoutCopy.requiredFields || "Uzupełnij wszystkie wymagane pola formularza.");
+      setCheckoutError(
+        checkoutCopy.requiredFields || "Uzupełnij wszystkie wymagane pola formularza."
+      );
       submitLockRef.current = false;
       return;
     }
@@ -267,7 +279,9 @@ export default function CartPage() {
     const regularItems = cartItems.filter((item) => !item.product.id.startsWith("custom-"));
     const items = buildOrderItemsFromCart(regularItems);
     if (items.length === 0 && customItems.length === 0) {
-      setCheckoutError(checkoutCopy.invalidCart || "Koszyk nie zawiera produktów, które można wysłać do API.");
+      setCheckoutError(
+        checkoutCopy.invalidCart || "Koszyk nie zawiera produktów, które można wysłać do API."
+      );
       submitLockRef.current = false;
       return;
     }
@@ -314,7 +328,8 @@ export default function CartPage() {
           for (const item of customItems) {
             if (!item.product.customOrderDetails?.description) {
               throw new Error(
-                checkoutCopy.customMissingPayload || "Brakuje danych zamówienia własnego. Dodaj je ponownie."
+                checkoutCopy.customMissingPayload ||
+                  "Brakuje danych zamówienia własnego. Dodaj je ponownie."
               );
             }
 
@@ -418,11 +433,16 @@ export default function CartPage() {
               </h2>
               <ul className="space-y-2">
                 {submittedOrder.items.map((item) => (
-                  <li key={item.id} className="flex justify-between gap-3 text-slate-700 dark:text-slate-300">
+                  <li
+                    key={item.id}
+                    className="flex justify-between gap-3 text-slate-700 dark:text-slate-300"
+                  >
                     <span>
                       {item.name} x{item.quantity}
                     </span>
-                    <span className="font-semibold whitespace-nowrap">{item.total.toFixed(2)} zl</span>
+                    <span className="font-semibold whitespace-nowrap">
+                      {item.total.toFixed(2)} zl
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -484,7 +504,9 @@ export default function CartPage() {
                 <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 truncate">
                   {item.product.name}
                 </h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400">{item.product.capacity}</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  {item.product.capacity}
+                </p>
               </div>
 
               <div className="text-sm text-slate-700 dark:text-slate-200 shrink-0">
@@ -596,7 +618,9 @@ export default function CartPage() {
                     value={deliveryForm.courierNotes}
                     onChange={(event) => updateDeliveryField("courierNotes", event.target.value)}
                     className="mt-1 w-full min-h-20 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors resize-y"
-                    placeholder={checkoutCopy.courierNotesPlaceholder || "Np. proszę zadzwonić domofonem"}
+                    placeholder={
+                      checkoutCopy.courierNotesPlaceholder || "Np. proszę zadzwonić domofonem"
+                    }
                   />
                 </label>
 

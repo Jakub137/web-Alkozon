@@ -1,6 +1,13 @@
 "use client";
 
-import React, { createContext, useCallback, useContext, useState, useEffect, ReactNode } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import type { AuthSession } from "@/lib/api/types";
 import {
   getCurrentUserApi,
@@ -52,16 +59,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }, []);
 
-  const syncProfile = useCallback(async (baseSession: AuthSession): Promise<AuthSession> => {
-    try {
-      const profile = await getCurrentUserApi(baseSession.accessToken);
-      const nextSession = mergeProfileIntoSession(baseSession, profile);
-      applySession(nextSession);
-      return nextSession;
-    } catch {
-      return baseSession;
-    }
-  }, [applySession]);
+  const syncProfile = useCallback(
+    async (baseSession: AuthSession): Promise<AuthSession> => {
+      try {
+        const profile = await getCurrentUserApi(baseSession.accessToken);
+        const nextSession = mergeProfileIntoSession(baseSession, profile);
+        applySession(nextSession);
+        return nextSession;
+      } catch {
+        return baseSession;
+      }
+    },
+    [applySession]
+  );
 
   const registerFcmToken = useCallback(
     async (accessToken: string, role: AuthSession["user"]["role"], fcmToken: string) => {
@@ -156,14 +166,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     clearLocalSession();
     localStorage.removeItem(AUTH_SESSION_STORAGE_KEY);
-    
+
     if (message) {
       setToast(message);
       setTimeout(() => setToast(null), 5000);
     }
   };
 
-  const authorizedRequest = async <T,>(request: (accessToken: string) => Promise<T>): Promise<T> => {
+  const authorizedRequest = async <T,>(
+    request: (accessToken: string) => Promise<T>
+  ): Promise<T> => {
     if (!token) {
       throw new Error("Brak tokenu sesji.");
     }
@@ -177,7 +189,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       const refreshedSession = await refreshApi(refreshToken);
       if (storedFcmToken) {
-        await registerFcmToken(refreshedSession.accessToken, refreshedSession.user.role, storedFcmToken);
+        await registerFcmToken(
+          refreshedSession.accessToken,
+          refreshedSession.user.role,
+          storedFcmToken
+        );
       }
       const sessionWithFreshProfile = await syncProfile(refreshedSession);
       return request(sessionWithFreshProfile.accessToken);
@@ -186,7 +202,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ token, refreshToken, user, login, logout, authorizedRequest, registerWebPushToken, toast, setToast }}
+      value={{
+        token,
+        refreshToken,
+        user,
+        login,
+        logout,
+        authorizedRequest,
+        registerWebPushToken,
+        toast,
+        setToast,
+      }}
     >
       {children}
       {/* Global Toast */}

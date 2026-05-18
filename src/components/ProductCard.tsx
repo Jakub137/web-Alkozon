@@ -13,7 +13,11 @@ interface ProductCardProps {
   isAddDisabled?: boolean;
 }
 
-export default function ProductCard({ product, onAddToCart, isAddDisabled = false }: ProductCardProps) {
+export default function ProductCard({
+  product,
+  onAddToCart,
+  isAddDisabled = false,
+}: ProductCardProps) {
   const { dict } = useLanguage();
   const { ageStatus } = useAge();
   const [imageSrc, setImageSrc] = useState(product.image);
@@ -32,7 +36,7 @@ export default function ProductCard({ product, onAddToCart, isAddDisabled = fals
           onError={() => setImageSrc("/placeholder-product.svg")}
         />
       </div>
-      
+
       <div className="p-4 flex flex-col grow">
         <Link
           href={`/shop/${product.id}`}
@@ -43,18 +47,18 @@ export default function ProductCard({ product, onAddToCart, isAddDisabled = fals
         <p className="block w-full min-w-0 text-sm text-slate-500 dark:text-slate-400 mb-3 transition-colors truncate">
           {product.capacity}
         </p>
-        
+
         <div className="mt-auto">
           <p className="block w-full text-xl font-bold text-slate-900 dark:text-slate-100 mb-4 transition-colors whitespace-nowrap truncate">
             {product.price.toFixed(2)} zł
           </p>
-          
+
           <button
             type="button"
             disabled={isDisabled}
             onClick={() => onAddToCart?.(product)}
             className="w-full min-w-0 h-11 px-4 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-800 text-white rounded-lg font-medium transition-colors flex items-center justify-center whitespace-nowrap truncate disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600 disabled:dark:hover:bg-blue-500"
-          >          
+          >
             {dict.shop.product.addToCart}
           </button>
         </div>

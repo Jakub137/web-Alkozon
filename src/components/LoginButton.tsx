@@ -20,7 +20,7 @@ export default function LoginButton({ compact = false }: LoginButtonProps) {
   useEffect(() => {
     setMounted(true);
   }, []);
-  
+
   const buttonClass = `w-auto min-w-[7rem] px-4 py-2 flex items-center justify-center gap-2 rounded-lg text-sm font-medium transition text-center ${
     theme === "dark"
       ? "bg-blue-600 text-white hover:bg-blue-700"
@@ -76,8 +76,8 @@ export default function LoginButton({ compact = false }: LoginButtonProps) {
             Witaj, {shortUserName}
           </span>
         </div>
-        <button 
-          onClick={() => void logout("Pomyślnie wylogowano.")} 
+        <button
+          onClick={() => void logout("Pomyślnie wylogowano.")}
           className="text-sm font-medium text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 transition-colors flex items-center gap-1"
           title="Wyloguj"
         >
@@ -88,7 +88,7 @@ export default function LoginButton({ compact = false }: LoginButtonProps) {
   }
 
   return (
-    <Link 
+    <Link
       href="/login"
       title={dict.navbar.login}
       aria-label={dict.navbar.login}

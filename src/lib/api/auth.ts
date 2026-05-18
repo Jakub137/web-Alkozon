@@ -79,7 +79,10 @@ function sessionFromTokens(tokens: TokenResponse): AuthSession {
   };
 }
 
-export function mergeProfileIntoSession(session: AuthSession, profile: UserMeResponse): AuthSession {
+export function mergeProfileIntoSession(
+  session: AuthSession,
+  profile: UserMeResponse
+): AuthSession {
   const role = profile.role;
   return {
     ...session,

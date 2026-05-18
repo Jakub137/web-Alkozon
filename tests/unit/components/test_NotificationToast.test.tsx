@@ -1,17 +1,17 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, act } from '@testing-library/react';
-import NotificationToast from '@/components/NotificationToast';
-import { useNotification, AppNotification } from '@/context/NotificationContext';
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { render, screen, act } from "@testing-library/react";
+import NotificationToast from "@/components/NotificationToast";
+import { useNotification, AppNotification } from "@/context/NotificationContext";
 
-vi.mock('@/context/NotificationContext', () => ({
-  useNotification: vi.fn()
+vi.mock("@/context/NotificationContext", () => ({
+  useNotification: vi.fn(),
 }));
 
-describe('NotificationToast Unit Tests', () => {
+describe("NotificationToast Unit Tests", () => {
   const mockNotification: AppNotification = {
-    id: '123',
-    message: 'Testowy komunikat',
-    type: 'success'
+    id: "123",
+    message: "Testowy komunikat",
+    type: "success",
   };
 
   beforeEach(() => {
@@ -22,25 +22,25 @@ describe('NotificationToast Unit Tests', () => {
     vi.useRealTimers();
   });
 
-  it('powinien poprawnie wyrenderować wiadomość z powiadomienia', () => {
+  it("powinien poprawnie wyrenderować wiadomość z powiadomienia", () => {
     (useNotification as any).mockReturnValue({
-      removeNotification: vi.fn()
+      removeNotification: vi.fn(),
     });
 
     render(<NotificationToast notification={mockNotification} />);
-    
-    expect(screen.getByText('Testowy komunikat')).toBeInTheDocument();
+
+    expect(screen.getByText("Testowy komunikat")).toBeInTheDocument();
   });
 
-  it('powinien wywołać removeNotification po zamknięciu (i po animacji 300ms)', () => {
+  it("powinien wywołać removeNotification po zamknięciu (i po animacji 300ms)", () => {
     const removeNotificationMock = vi.fn();
     (useNotification as any).mockReturnValue({
-      removeNotification: removeNotificationMock
+      removeNotification: removeNotificationMock,
     });
 
     render(<NotificationToast notification={mockNotification} />);
-    
-    const closeBtn = screen.getByRole('button');
+
+    const closeBtn = screen.getByRole("button");
     act(() => {
       closeBtn.click();
     });
@@ -53,6 +53,6 @@ describe('NotificationToast Unit Tests', () => {
       vi.advanceTimersByTime(300);
     });
 
-    expect(removeNotificationMock).toHaveBeenCalledWith('123');
+    expect(removeNotificationMock).toHaveBeenCalledWith("123");
   });
 });

@@ -14,7 +14,7 @@ function TestCartComponent() {
     imageUrl: "/img",
     category: "wine",
     capacity: "500ml",
-    stock: 10
+    stock: 10,
   };
 
   return (
@@ -48,7 +48,7 @@ describe("Integration Tests - CartContext", () => {
     );
 
     fireEvent.click(screen.getByText("Dodaj"));
-    
+
     expect(screen.getByTestId("item-count").textContent).toBe("1");
   });
 

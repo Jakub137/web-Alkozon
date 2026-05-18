@@ -581,8 +581,8 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
         en: "It is one of the most diverse categories in terms of aromas and bar applications.",
       },
       {
-        pl: "Historyczny termin \"ratafia\" bywal uzywany jako nazwa trunkow podawanych przy ratyfikacji umow i traktatow.",
-        en: "The historical term \"ratafia\" was used for drinks served during treaty and agreement ratifications.",
+        pl: 'Historyczny termin "ratafia" bywal uzywany jako nazwa trunkow podawanych przy ratyfikacji umow i traktatow.',
+        en: 'The historical term "ratafia" was used for drinks served during treaty and agreement ratifications.',
       },
     ],
     timeline: [
@@ -598,8 +598,8 @@ export const historyContent: Record<HistoryCategory, HistoryEntry> = {
         period: "XVII-XIX w.",
         title: { pl: "Rozwoj receptur", en: "Recipe development" },
         description: {
-          pl: "Powstaja coraz bardziej dopracowane receptury, a producenci buduja style regionalne i markowe. W obiegu funkcjonuje tez okreslenie \"ratafia\", historycznie laczone z trunkami podawanymi przy ratyfikacji umow.",
-          en: "Recipes become more refined, and producers build regional and branded styles. The term \"ratafia\" is also used historically for drinks served during agreement ratifications.",
+          pl: 'Powstaja coraz bardziej dopracowane receptury, a producenci buduja style regionalne i markowe. W obiegu funkcjonuje tez okreslenie "ratafia", historycznie laczone z trunkami podawanymi przy ratyfikacji umow.',
+          en: 'Recipes become more refined, and producers build regional and branded styles. The term "ratafia" is also used historically for drinks served during agreement ratifications.',
         },
       },
       {

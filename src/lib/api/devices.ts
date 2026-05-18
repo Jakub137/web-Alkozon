@@ -7,7 +7,10 @@ export interface RegisterFcmTokenRequest {
   platform: DevicePlatform;
 }
 
-export async function registerFcmDeviceApi(accessToken: string, payload: RegisterFcmTokenRequest): Promise<void> {
+export async function registerFcmDeviceApi(
+  accessToken: string,
+  payload: RegisterFcmTokenRequest
+): Promise<void> {
   await apiRequest<void>("/api/devices/fcm", {
     method: "POST",
     token: accessToken,

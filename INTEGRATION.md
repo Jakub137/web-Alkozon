@@ -17,19 +17,19 @@
 
 Skopiuj `.env.example` do `.env.local` i uzupełnij:
 
-| Zmienna | Opis |
-|--------|------|
-| `NEXT_PUBLIC_API_URL` | Bazowy URL API (bez końcowego `/`), np. `https://api-alcozon.onrender.com` |
-| `NEXT_PUBLIC_WS_URL` | Opcjonalnie: pełny URL WebSocketa do powiadomień o statusie zamówienia. Jeśli puste, front próbuje wywnioskować adres z `NEXT_PUBLIC_API_URL` |
-| `NEXT_PUBLIC_ENABLE_WEB_PUSH` | `true`/`false` — włącza bootstrap Web Push (domyślnie `false`) |
-| `NEXT_PUBLIC_FIREBASE_API_KEY` | Konfiguracja Firebase Web App |
-| `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN` | Konfiguracja Firebase Web App |
-| `NEXT_PUBLIC_FIREBASE_PROJECT_ID` | Konfiguracja Firebase Web App |
-| `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET` | Konfiguracja Firebase Web App |
-| `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | Konfiguracja Firebase Web App |
-| `NEXT_PUBLIC_FIREBASE_APP_ID` | Konfiguracja Firebase Web App |
-| `NEXT_PUBLIC_FIREBASE_VAPID_KEY` | Klucz Web Push (Firebase Cloud Messaging) |
-| `NEXT_PUBLIC_ENABLE_NOTIFICATION_MOCK_WS` | Opcjonalne mock powiadomień w UI (`true` tylko do demo; domyślnie `false`) |
+| Zmienna                                    | Opis                                                                                                                                          |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_API_URL`                      | Bazowy URL API (bez końcowego `/`), np. `https://api-alcozon.onrender.com`                                                                    |
+| `NEXT_PUBLIC_WS_URL`                       | Opcjonalnie: pełny URL WebSocketa do powiadomień o statusie zamówienia. Jeśli puste, front próbuje wywnioskować adres z `NEXT_PUBLIC_API_URL` |
+| `NEXT_PUBLIC_ENABLE_WEB_PUSH`              | `true`/`false` — włącza bootstrap Web Push (domyślnie `false`)                                                                                |
+| `NEXT_PUBLIC_FIREBASE_API_KEY`             | Konfiguracja Firebase Web App                                                                                                                 |
+| `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`         | Konfiguracja Firebase Web App                                                                                                                 |
+| `NEXT_PUBLIC_FIREBASE_PROJECT_ID`          | Konfiguracja Firebase Web App                                                                                                                 |
+| `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`      | Konfiguracja Firebase Web App                                                                                                                 |
+| `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | Konfiguracja Firebase Web App                                                                                                                 |
+| `NEXT_PUBLIC_FIREBASE_APP_ID`              | Konfiguracja Firebase Web App                                                                                                                 |
+| `NEXT_PUBLIC_FIREBASE_VAPID_KEY`           | Klucz Web Push (Firebase Cloud Messaging)                                                                                                     |
+| `NEXT_PUBLIC_ENABLE_NOTIFICATION_MOCK_WS`  | Opcjonalne mock powiadomień w UI (`true` tylko do demo; domyślnie `false`)                                                                    |
 
 ## Uruchomienie lokalne
 

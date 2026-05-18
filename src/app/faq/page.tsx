@@ -82,7 +82,9 @@ export default function FaqPage() {
               className="w-full h-12 pl-12 pr-4 rounded-2xl border border-slate-200 dark:border-slate-600 bg-white/90 dark:bg-slate-800/90 text-slate-900 dark:text-slate-100 placeholder-slate-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/60 focus:border-blue-500 transition-shadow"
             />
           </label>
-          <p className="mt-2 text-center text-xs sm:text-sm text-slate-500 dark:text-slate-400">{summaryText}</p>
+          <p className="mt-2 text-center text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+            {summaryText}
+          </p>
         </div>
 
         <div className="w-full max-w-3xl mx-auto mb-8">
@@ -112,7 +114,9 @@ export default function FaqPage() {
             <div className="inline-flex rounded-full bg-slate-100 dark:bg-slate-700/80 p-4 mb-4">
               <Search className="w-10 h-10 text-slate-400 dark:text-slate-500" strokeWidth={1.5} />
             </div>
-            <p className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-2">{dict.faqPage.noResults}</p>
+            <p className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-2">
+              {dict.faqPage.noResults}
+            </p>
             {dict.faqPage.noResultsHint != null && (
               <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto">
                 {dict.faqPage.noResultsHint}

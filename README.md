@@ -25,12 +25,12 @@ Aplikacja webowa dla systemu e-commerce Alkozon, realizująca zaawansowane mecha
 Aby uruchomić aplikację w środowisku developerskim, upewnij się, że posiadasz zainstalowanego Node.js.
 
 1. Pobierz brakujące moduły `node_modules`:
+
    ```bash
    npm install
    ```
 
 2. (Opcjonalnie) Zasil zmienne środowiskowe tworząc nową instancję `.env.local` na wzór `.env.example`, aby podłączyć bazowe URL do serwerów API.
-   
 3. Uruchom silnik deweloperski Next:
    ```bash
    npm run dev
@@ -39,4 +39,5 @@ Aby uruchomić aplikację w środowisku developerskim, upewnij się, że posiada
 Otwórz [http://localhost:3000](http://localhost:3000) w swojej przeglądarce, by zobaczyć platformę.
 
 ---
-*Projekt uczelniany - Warstwa Webowa przygotowana w ramach zespołu Alkozon.*
+
+_Projekt uczelniany - Warstwa Webowa przygotowana w ramach zespołu Alkozon._

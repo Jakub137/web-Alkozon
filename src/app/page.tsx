@@ -15,20 +15,60 @@ export default function Home() {
       <p className="text-lg text-slate-600 dark:text-slate-300 mb-8 max-w-2xl transition-colors">
         {dict.home.subtitle}
       </p>
-      
+
       <div className="flex flex-wrap justify-center gap-6 max-w-4xl">
-        <Tile icon={<Store className="w-8 h-8 text-blue-500" />} title={dict.home.tiles.shop.title} desc={dict.home.tiles.shop.desc} href="/shop" />
-        <Tile icon={<ShoppingCart className="w-8 h-8 text-green-500" />} title={dict.home.tiles.cart.title} desc={dict.home.tiles.cart.desc} href="/cart" />
-        <Tile icon={<Truck className="w-8 h-8 text-amber-500" />} title={dict.home.tiles.status.title} desc={dict.home.tiles.status.desc} href="/order-status" />
-        <Tile icon={<BookOpen className="w-8 h-8 text-purple-500" />} title={dict.home.tiles.history.title} desc={dict.home.tiles.history.desc} href="/history" />
-        <Tile icon={<Beaker className="w-8 h-8 text-pink-500" />} title={dict.home.tiles.custom.title} desc={dict.home.tiles.custom.desc} href="/custom-order" />
-        <Tile icon={<HelpCircle className="w-8 h-8 text-rose-500" />} title={dict.home.tiles.faq.title} desc={dict.home.tiles.faq.desc} href="/faq" />
+        <Tile
+          icon={<Store className="w-8 h-8 text-blue-500" />}
+          title={dict.home.tiles.shop.title}
+          desc={dict.home.tiles.shop.desc}
+          href="/shop"
+        />
+        <Tile
+          icon={<ShoppingCart className="w-8 h-8 text-green-500" />}
+          title={dict.home.tiles.cart.title}
+          desc={dict.home.tiles.cart.desc}
+          href="/cart"
+        />
+        <Tile
+          icon={<Truck className="w-8 h-8 text-amber-500" />}
+          title={dict.home.tiles.status.title}
+          desc={dict.home.tiles.status.desc}
+          href="/order-status"
+        />
+        <Tile
+          icon={<BookOpen className="w-8 h-8 text-purple-500" />}
+          title={dict.home.tiles.history.title}
+          desc={dict.home.tiles.history.desc}
+          href="/history"
+        />
+        <Tile
+          icon={<Beaker className="w-8 h-8 text-pink-500" />}
+          title={dict.home.tiles.custom.title}
+          desc={dict.home.tiles.custom.desc}
+          href="/custom-order"
+        />
+        <Tile
+          icon={<HelpCircle className="w-8 h-8 text-rose-500" />}
+          title={dict.home.tiles.faq.title}
+          desc={dict.home.tiles.faq.desc}
+          href="/faq"
+        />
       </div>
     </div>
   );
 }
 
-function Tile({ icon, title, desc, href = "#" }: { icon: React.ReactNode, title: string, desc: string, href?: string }) {
+function Tile({
+  icon,
+  title,
+  desc,
+  href = "#",
+}: {
+  icon: React.ReactNode;
+  title: string;
+  desc: string;
+  href?: string;
+}) {
   return (
     <Link
       href={href}

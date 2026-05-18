@@ -14,24 +14,17 @@ import { ApiError } from "@/lib/api/types";
 import { SAFE_TEXT_REGEX, STRONG_PASSWORD_REGEX } from "@/lib/validation/backendPatterns";
 
 const registerSchema = z.object({
-  username: z
-    .string()
-    .min(3, { message: "Nazwa użytkownika od 3 znaków" })
-    .regex(SAFE_TEXT_REGEX, {
-      message: "Niedozwolone znaki (np. cudzysłowy, nawiasy klamrowe) — zgodnie z walidacją API",
-    }),
+  username: z.string().min(3, { message: "Nazwa użytkownika od 3 znaków" }).regex(SAFE_TEXT_REGEX, {
+    message: "Niedozwolone znaki (np. cudzysłowy, nawiasy klamrowe) — zgodnie z walidacją API",
+  }),
   email: z.string().email({ message: "Niepoprawny format adresu email" }),
-  password: z
-    .string()
-    .regex(STRONG_PASSWORD_REGEX, {
-      message:
-        "Hasło: 8–128 znaków, mała i wielka litera, cyfra oraz znak specjalny z zestawu @$!%*?&",
-    }),
-  ageConfirmed: z
-    .boolean()
-    .refine((value) => value, {
-      message: "Musisz potwierdzić pełnoletność, aby założyć konto klienta.",
-    }),
+  password: z.string().regex(STRONG_PASSWORD_REGEX, {
+    message:
+      "Hasło: 8–128 znaków, mała i wielka litera, cyfra oraz znak specjalny z zestawu @$!%*?&",
+  }),
+  ageConfirmed: z.boolean().refine((value) => value, {
+    message: "Musisz potwierdzić pełnoletność, aby założyć konto klienta.",
+  }),
 });
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
@@ -44,7 +37,11 @@ export default function RegisterPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormValues>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
       ageConfirmed: false,
@@ -87,7 +84,13 @@ export default function RegisterPage() {
             Weryfikacja & Rejestracja
           </h2>
           <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
-            lub <Link href="/login" className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 transition-colors">zaloguj się</Link>
+            lub{" "}
+            <Link
+              href="/login"
+              className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 transition-colors"
+            >
+              zaloguj się
+            </Link>
           </p>
         </div>
 
@@ -98,7 +101,9 @@ export default function RegisterPage() {
         )}
         <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Nazwa Użytkownika (Login)</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              Nazwa Użytkownika (Login)
+            </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <User className="h-5 w-5 text-slate-400" />
@@ -111,11 +116,17 @@ export default function RegisterPage() {
                 placeholder="Janek123"
               />
             </div>
-            {errors.username && <p className="mt-1.5 text-sm text-red-500 font-medium animate-in fade-in">{errors.username.message}</p>}
+            {errors.username && (
+              <p className="mt-1.5 text-sm text-red-500 font-medium animate-in fade-in">
+                {errors.username.message}
+              </p>
+            )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Adres Email</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              Adres Email
+            </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Mail className="h-5 w-5 text-slate-400" />
@@ -128,11 +139,17 @@ export default function RegisterPage() {
                 placeholder="jan@kowalski.pl"
               />
             </div>
-            {errors.email && <p className="mt-1.5 text-sm text-red-500 font-medium animate-in fade-in">{errors.email.message}</p>}
+            {errors.email && (
+              <p className="mt-1.5 text-sm text-red-500 font-medium animate-in fade-in">
+                {errors.email.message}
+              </p>
+            )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Bezpieczne Hasło</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              Bezpieczne Hasło
+            </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Lock className="h-5 w-5 text-slate-400" />
@@ -157,10 +174,15 @@ export default function RegisterPage() {
                 )}
               </button>
             </div>
-            {errors.password && <p className="mt-1.5 text-sm text-red-500 font-medium animate-in fade-in">{errors.password.message}</p>}
-            
+            {errors.password && (
+              <p className="mt-1.5 text-sm text-red-500 font-medium animate-in fade-in">
+                {errors.password.message}
+              </p>
+            )}
+
             <p className="mt-3 text-xs text-slate-500 dark:text-slate-400 font-medium bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-2 rounded-md">
-              Walidacja jak w API (bezpieczny tekst w nazwie, hasło z małą i wielką literą, cyfrą oraz znakiem @$!%*?&).
+              Walidacja jak w API (bezpieczny tekst w nazwie, hasło z małą i wielką literą, cyfrą
+              oraz znakiem @$!%*?&).
             </p>
           </div>
 
@@ -172,9 +194,7 @@ export default function RegisterPage() {
                 disabled={isSubmitting}
                 className="mt-0.5 h-4 w-4 rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500"
               />
-              <span>
-                Potwierdzam, że mam ukończone 18 lat i mogę założyć konto klienta.
-              </span>
+              <span>Potwierdzam, że mam ukończone 18 lat i mogę założyć konto klienta.</span>
             </label>
             {errors.ageConfirmed && (
               <p className="mt-1.5 text-sm text-red-500 font-medium animate-in fade-in">

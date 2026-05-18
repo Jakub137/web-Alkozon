@@ -1,73 +1,75 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
-import LoginButton from '@/components/LoginButton';
-import { useAuth } from '@/context/AuthContext';
-import { useLanguage } from '@/context/LanguageContext';
-import { useTheme } from '@/context/ThemeContext';
+import { describe, it, expect, vi } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
+import LoginButton from "@/components/LoginButton";
+import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
+import { useTheme } from "@/context/ThemeContext";
 
-vi.mock('@/context/AuthContext', () => ({
-  useAuth: vi.fn()
+vi.mock("@/context/AuthContext", () => ({
+  useAuth: vi.fn(),
 }));
 
-vi.mock('@/context/LanguageContext', () => ({
-  useLanguage: vi.fn()
+vi.mock("@/context/LanguageContext", () => ({
+  useLanguage: vi.fn(),
 }));
 
-vi.mock('@/context/ThemeContext', () => ({
-  useTheme: vi.fn()
+vi.mock("@/context/ThemeContext", () => ({
+  useTheme: vi.fn(),
 }));
 
-vi.mock('next/link', () => ({
-  default: ({ children, href }: { children: React.ReactNode, href: string }) => (
-    <a href={href} data-testid="login-link">{children}</a>
-  )
+vi.mock("next/link", () => ({
+  default: ({ children, href }: { children: React.ReactNode; href: string }) => (
+    <a href={href} data-testid="login-link">
+      {children}
+    </a>
+  ),
 }));
 
-describe('LoginButton Unit Tests', () => {
+describe("LoginButton Unit Tests", () => {
   beforeEach(() => {
     (useLanguage as any).mockReturnValue({
       dict: {
         navbar: {
-          login: 'Zaloguj'
-        }
-      }
+          login: "Zaloguj",
+        },
+      },
     });
 
     (useTheme as any).mockReturnValue({
-      theme: 'light'
+      theme: "light",
     });
   });
 
-  it('powinien wyświetlić przycisk logowania dla niezalogowanego użytkownika', () => {
+  it("powinien wyświetlić przycisk logowania dla niezalogowanego użytkownika", () => {
     (useAuth as any).mockReturnValue({
       user: null,
-      logout: vi.fn()
+      logout: vi.fn(),
     });
 
     render(<LoginButton />);
-    
-    const loginLink = screen.getByTestId('login-link');
+
+    const loginLink = screen.getByTestId("login-link");
     expect(loginLink).toBeInTheDocument();
-    expect(loginLink).toHaveTextContent('Zaloguj');
-    expect(loginLink).toHaveAttribute('href', '/login');
+    expect(loginLink).toHaveTextContent("Zaloguj");
+    expect(loginLink).toHaveAttribute("href", "/login");
   });
 
-  it('powinien wyświetlić nazwę użytkownika i przycisk wylogowania dla zalogowanego użytkownika', () => {
+  it("powinien wyświetlić nazwę użytkownika i przycisk wylogowania dla zalogowanego użytkownika", () => {
     const logoutMock = vi.fn();
     (useAuth as any).mockReturnValue({
-      user: { username: 'testuser' },
-      logout: logoutMock
+      user: { username: "testuser" },
+      logout: logoutMock,
     });
 
     render(<LoginButton />);
 
-    expect(screen.getByText('Witaj, testu...')).toBeInTheDocument();
-    expect(screen.getByTitle('Witaj, testuser')).toBeInTheDocument();
-    
-    const logoutBtn = screen.getByTitle('Wyloguj');
+    expect(screen.getByText("Witaj, testu...")).toBeInTheDocument();
+    expect(screen.getByTitle("Witaj, testuser")).toBeInTheDocument();
+
+    const logoutBtn = screen.getByTitle("Wyloguj");
     expect(logoutBtn).toBeInTheDocument();
 
     fireEvent.click(logoutBtn);
-    expect(logoutMock).toHaveBeenCalledWith('Pomyślnie wylogowano.');
+    expect(logoutMock).toHaveBeenCalledWith("Pomyślnie wylogowano.");
   });
 });

@@ -89,7 +89,9 @@ export function mapApiOrderToRecord(apiOrder: ApiOrderResponse, email = ""): Ord
     deliveryDetails: apiOrder.deliveryDetails ?? null,
     history: [
       { status: "received", changedAt: apiOrder.createdAt },
-      ...(apiOrder.deliveredAt ? [{ status: "delivered" as const, changedAt: apiOrder.deliveredAt }] : []),
+      ...(apiOrder.deliveredAt
+        ? [{ status: "delivered" as const, changedAt: apiOrder.deliveredAt }]
+        : []),
     ],
     items: apiOrder.items.map((item) => ({
       id: String(item.productId),
@@ -117,12 +119,18 @@ function mapTrackOrderToRecord(track: ApiOrderTrackResponse, email: string): Ord
     apiStatus: track.status,
     history: [
       { status: "received", changedAt: track.createdAt },
-      ...(status === "delivered" ? [{ status: "delivered" as const, changedAt: track.updatedAt }] : []),
+      ...(status === "delivered"
+        ? [{ status: "delivered" as const, changedAt: track.updatedAt }]
+        : []),
     ],
   };
 }
 
-export async function getOrderById(token: string, orderId: string, email?: string): Promise<OrderRecord> {
+export async function getOrderById(
+  token: string,
+  orderId: string,
+  email?: string
+): Promise<OrderRecord> {
   const result = await apiRequest<ApiOrderResponse>(`/api/orders/${orderId}`, { token });
   return mapApiOrderToRecord(result, email);
 }

@@ -18,11 +18,7 @@ export const metadata: Metadata = {
   description: "Twój sklep monopolowy",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pl" suppressHydrationWarning>
       <head>
@@ -73,7 +69,7 @@ export default function RootLayout({
                   <Suspense fallback={null}>
                     <BackHomeButton />
                   </Suspense>
-                  <LanguageSwitcher />           
+                  <LanguageSwitcher />
                   <ThemeSwitcher />
                   <LoginButton />
                 </div>
@@ -89,9 +85,7 @@ export default function RootLayout({
           <MobileBackButtonSlot />
 
           {/* Główna treść strony */}
-          <main className="grow flex flex-col">
-            {children}
-          </main>
+          <main className="grow flex flex-col">{children}</main>
         </Providers>
       </body>
     </html>

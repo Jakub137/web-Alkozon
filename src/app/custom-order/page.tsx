@@ -71,7 +71,13 @@ function limitWords(value: string, maxWords: number) {
 
 export default function CustomOrderPage() {
   const { dict } = useLanguage();
-  const { addToCart, cartItemsCount, cartItemsLimit, customOrderItemsCount, customOrderItemsLimit } = useCart();
+  const {
+    addToCart,
+    cartItemsCount,
+    cartItemsLimit,
+    customOrderItemsCount,
+    customOrderItemsLimit,
+  } = useCart();
   const { ageStatus } = useAge();
   const { user } = useAuth();
 
@@ -134,8 +140,7 @@ export default function CustomOrderPage() {
   const isCustomOrderLimitReached = customOrderItemsCount >= customOrderItemsLimit;
   const canOrder = user?.role === "CUSTOMER" && Boolean(user.ageConfirmedAt);
   const authRequiredMessage =
-    dict.shop.cart.checkout?.authRequired ||
-    "Aby złożyć zamówienie, zaloguj się lub załóż konto.";
+    dict.shop.cart.checkout?.authRequired || "Aby złożyć zamówienie, zaloguj się lub załóż konto.";
 
   const showToast = (message: string, type: "success" | "limit") => {
     setToastMessage(message);
@@ -221,8 +226,8 @@ export default function CustomOrderPage() {
                     active
                       ? "bg-blue-600 border-blue-600 text-white"
                       : completed
-                      ? "bg-emerald-600 border-emerald-600 text-white"
-                      : "bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300"
+                        ? "bg-emerald-600 border-emerald-600 text-white"
+                        : "bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300"
                   }`}
                 >
                   {dict.customOrderPage.steps[`step${value}`]}
@@ -383,9 +388,7 @@ export default function CustomOrderPage() {
                   className="w-full h-11 px-4 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
                 />
                 <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 flex items-center justify-between gap-3">
-                  <span>
-                  {dict.customOrderPage.validation.nameHint}
-                  </span>
+                  <span>{dict.customOrderPage.validation.nameHint}</span>
                   <span className="whitespace-nowrap">
                     {customNameLength}/{MAX_CUSTOM_NAME_CHARS}
                   </span>
@@ -407,7 +410,6 @@ export default function CustomOrderPage() {
                   {noteWordCount}/{MAX_NOTE_WORDS} {dict.customOrderPage.validation.wordsLabel}
                 </p>
               </div>
-
             </div>
           )}
 
@@ -443,7 +445,13 @@ export default function CustomOrderPage() {
                 <button
                   type="button"
                   onClick={handleAddToCart}
-                  disabled={!canSubmit || addedMessageVisible || isTotalCartLimitReached || isCustomOrderLimitReached || ageStatus === "underage"}
+                  disabled={
+                    !canSubmit ||
+                    addedMessageVisible ||
+                    isTotalCartLimitReached ||
+                    isCustomOrderLimitReached ||
+                    ageStatus === "underage"
+                  }
                   className="h-11 min-w-[160px] px-4 rounded-lg bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
                 >
                   {dict.customOrderPage.buttons.addToCart}
@@ -454,11 +462,12 @@ export default function CustomOrderPage() {
           {step === 3 && (
             <div className="mt-2 text-xs text-red-600 dark:text-red-400 text-right">
               {ageStatus === "underage" && (
-                <p>{dict.ageGate?.restrictedMessage || "Opcja składania zamówień na produkty alkoholowe jest dla Ciebie wyłączona."}</p>
+                <p>
+                  {dict.ageGate?.restrictedMessage ||
+                    "Opcja składania zamówień na produkty alkoholowe jest dla Ciebie wyłączona."}
+                </p>
               )}
-              {!canOrder && ageStatus !== "underage" && (
-                <p>{authRequiredMessage}</p>
-              )}
+              {!canOrder && ageStatus !== "underage" && <p>{authRequiredMessage}</p>}
               {isTotalCartLimitReached && ageStatus !== "underage" && canOrder && (
                 <p>{dict.customOrderPage.messages.limitTotalReached}</p>
               )}
@@ -510,7 +519,10 @@ export default function CustomOrderPage() {
             </div>
             <div className="flex justify-between gap-3">
               <span>{dict.customOrderPage.pricing.strength}</span>
-              <span>{pricing.abvAdjustment >= 0 ? "+" : ""}{pricing.abvAdjustment.toFixed(2)} zl</span>
+              <span>
+                {pricing.abvAdjustment >= 0 ? "+" : ""}
+                {pricing.abvAdjustment.toFixed(2)} zl
+              </span>
             </div>
             <div className="flex justify-between gap-3">
               <span>{dict.customOrderPage.pricing.flavors}</span>

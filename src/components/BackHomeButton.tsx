@@ -19,8 +19,7 @@ export default function BackHomeButton({ iconOnly = false, className = "" }: Bac
     return null;
   }
 
-  const returnHref =
-    pathname === "/cart" && searchParams.get("from") === "shop" ? "/shop" : "/";
+  const returnHref = pathname === "/cart" && searchParams.get("from") === "shop" ? "/shop" : "/";
 
   return (
     <Link

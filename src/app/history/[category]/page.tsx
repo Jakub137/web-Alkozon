@@ -70,7 +70,9 @@ export default function HistoryCategoryPage() {
           {dict.historyPage.backToHistory}
         </Link>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-100 mb-2 flex items-center gap-3">
-          <span className="text-slate-500"><CategoryIcon category={categoryParam as HistoryCategory} className="w-8 h-8" /></span>
+          <span className="text-slate-500">
+            <CategoryIcon category={categoryParam as HistoryCategory} className="w-8 h-8" />
+          </span>
           {dict.shop.categories[categoryParam]}
         </h1>
         <p className="text-slate-600 dark:text-slate-300">{entry.teaser[lang]}</p>
@@ -82,7 +84,9 @@ export default function HistoryCategoryPage() {
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
               {dict.historyPage.sections.origin}
             </h2>
-            <p className="text-sm leading-6 text-slate-700 dark:text-slate-300">{entry.origin[lang]}</p>
+            <p className="text-sm leading-6 text-slate-700 dark:text-slate-300">
+              {entry.origin[lang]}
+            </p>
           </div>
 
           <div>
@@ -110,7 +114,9 @@ export default function HistoryCategoryPage() {
                   <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-1">
                     {step.title[lang]}
                   </h3>
-                  <p className="text-sm text-slate-700 dark:text-slate-300">{step.description[lang]}</p>
+                  <p className="text-sm text-slate-700 dark:text-slate-300">
+                    {step.description[lang]}
+                  </p>
                 </div>
               ))}
             </div>
@@ -126,11 +132,15 @@ export default function HistoryCategoryPage() {
                   key={`${item.period}-${item.title.en}`}
                   className="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-900/30"
                 >
-                  <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 mb-1">{item.period}</p>
+                  <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 mb-1">
+                    {item.period}
+                  </p>
                   <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-1">
                     {item.title[lang]}
                   </h3>
-                  <p className="text-sm text-slate-700 dark:text-slate-300">{item.description[lang]}</p>
+                  <p className="text-sm text-slate-700 dark:text-slate-300">
+                    {item.description[lang]}
+                  </p>
                 </div>
               ))}
             </div>
@@ -145,25 +155,28 @@ export default function HistoryCategoryPage() {
                 const slot = index + 1;
 
                 return (
-                <div key={slot} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/30 p-2">
-                  <button
-                    type="button"
-                    onClick={() => setPreviewSlot(slot)}
-                    className="relative h-40 w-full overflow-hidden rounded-lg cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                  <div
+                    key={slot}
+                    className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/30 p-2"
                   >
-                    <Image
-                      src={getGalleryImageSrc(slot)}
-                      alt={caption[lang]}
-                      fill
-                      sizes="(min-width: 640px) 50vw, 100vw"
-                      unoptimized
-                      className="object-cover transition-transform duration-200 hover:scale-105"
-                    />
-                  </button>
-                  <p className="mt-2 px-1 text-xs leading-5 text-slate-600 dark:text-slate-300">
-                    {caption[lang]}
-                  </p>
-                </div>
+                    <button
+                      type="button"
+                      onClick={() => setPreviewSlot(slot)}
+                      className="relative h-40 w-full overflow-hidden rounded-lg cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                    >
+                      <Image
+                        src={getGalleryImageSrc(slot)}
+                        alt={caption[lang]}
+                        fill
+                        sizes="(min-width: 640px) 50vw, 100vw"
+                        unoptimized
+                        className="object-cover transition-transform duration-200 hover:scale-105"
+                      />
+                    </button>
+                    <p className="mt-2 px-1 text-xs leading-5 text-slate-600 dark:text-slate-300">
+                      {caption[lang]}
+                    </p>
+                  </div>
                 );
               })}
             </div>
@@ -232,7 +245,10 @@ export default function HistoryCategoryPage() {
           <div className="relative mx-auto h-full w-full max-w-6xl">
             <Image
               src={getGalleryImageSrc(previewSlot)}
-              alt={entry.gallery[previewSlot - 1]?.[lang] ?? `${dict.shop.categories[categoryParam]} ${previewSlot}`}
+              alt={
+                entry.gallery[previewSlot - 1]?.[lang] ??
+                `${dict.shop.categories[categoryParam]} ${previewSlot}`
+              }
               fill
               sizes="100vw"
               unoptimized
@@ -241,9 +257,7 @@ export default function HistoryCategoryPage() {
               priority
             />
             <div className="absolute left-0 right-0 bottom-0 p-3 sm:p-4 bg-black/45">
-              <p className="text-sm text-white">
-                {entry.gallery[previewSlot - 1]?.[lang]}
-              </p>
+              <p className="text-sm text-white">{entry.gallery[previewSlot - 1]?.[lang]}</p>
             </div>
           </div>
         </div>

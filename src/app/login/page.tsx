@@ -23,14 +23,18 @@ const MAX_ATTEMPTS = 5;
 export default function LoginPage() {
   const { login } = useAuth();
   const router = useRouter();
-  
+
   const [showPassword, setShowPassword] = useState(false);
   const [attempts, setAttempts] = useState(0);
   const [isLocked, setIsLocked] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormValues>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
   });
 
@@ -38,7 +42,9 @@ export default function LoginPage() {
     const savedAttempts = parseInt(localStorage.getItem("login_attempts") || "0");
     if (savedAttempts >= MAX_ATTEMPTS) {
       setIsLocked(true);
-      setErrorMsg("Konto zablokowane ze względów bezpieczeństwa. Zrestartuj sesję (wyczyść klucze przeglądarki).");
+      setErrorMsg(
+        "Konto zablokowane ze względów bezpieczeństwa. Zrestartuj sesję (wyczyść klucze przeglądarki)."
+      );
     }
     setAttempts(savedAttempts);
   }, []);
@@ -56,7 +62,7 @@ export default function LoginPage() {
       const newAttempts = attempts + 1;
       setAttempts(newAttempts);
       localStorage.setItem("login_attempts", newAttempts.toString());
-      
+
       if (error instanceof ApiError && error.status === 429) {
         setErrorMsg("Zbyt wiele prób logowania. Spróbuj ponownie za chwilę.");
         return;
@@ -86,7 +92,13 @@ export default function LoginPage() {
             Portal Logowania
           </h2>
           <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
-            lub <Link href="/register" className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 transition-colors">zarejestruj nowe konto</Link>
+            lub{" "}
+            <Link
+              href="/register"
+              className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 transition-colors"
+            >
+              zarejestruj nowe konto
+            </Link>
           </p>
         </div>
 
@@ -102,7 +114,9 @@ export default function LoginPage() {
 
         <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Adres Email</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              Adres Email
+            </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Mail className="h-5 w-5 text-slate-400" />
@@ -115,11 +129,17 @@ export default function LoginPage() {
                 placeholder="test@test.pl"
               />
             </div>
-            {errors.email && <p className="mt-1.5 text-sm text-red-500 font-medium animate-in fade-in">{errors.email.message}</p>}
+            {errors.email && (
+              <p className="mt-1.5 text-sm text-red-500 font-medium animate-in fade-in">
+                {errors.email.message}
+              </p>
+            )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Hasło</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              Hasło
+            </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Lock className="h-5 w-5 text-slate-400" />
@@ -144,7 +164,11 @@ export default function LoginPage() {
                 )}
               </button>
             </div>
-            {errors.password && <p className="mt-1.5 text-sm text-red-500 font-medium animate-in fade-in">{errors.password.message}</p>}
+            {errors.password && (
+              <p className="mt-1.5 text-sm text-red-500 font-medium animate-in fade-in">
+                {errors.password.message}
+              </p>
+            )}
           </div>
 
           <button

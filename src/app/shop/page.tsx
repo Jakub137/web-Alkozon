@@ -77,7 +77,8 @@ export default function ShopPage() {
         setIsLoading(true);
         setErrorMsg(null);
 
-        const selectedCategory = selectedCategories.length === 1 ? selectedCategories[0] : undefined;
+        const selectedCategory =
+          selectedCategories.length === 1 ? selectedCategories[0] : undefined;
         const response = await getProducts({
           page: Math.max(currentPage - 1, 0),
           size: ITEMS_PER_PAGE,
@@ -142,9 +143,7 @@ export default function ShopPage() {
   }, [currentPage, totalPages]);
 
   const toggleCategory = (cat: ProductCategory) => {
-    setSelectedCategories((prev) =>
-      prev.includes(cat) ? [] : [cat]
-    );
+    setSelectedCategories((prev) => (prev.includes(cat) ? [] : [cat]));
   };
 
   if (ageStatus === "underage") {
@@ -409,7 +408,9 @@ export default function ShopPage() {
                   >
                     <span className="truncate">{item.product.name}</span>
                     <div className="shrink-0 flex items-center gap-2">
-                      <span className="text-xs text-slate-500 dark:text-slate-400">x{item.quantity}</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400">
+                        x{item.quantity}
+                      </span>
                       <button
                         type="button"
                         onClick={() => removeFromCart(item.product.id)}
@@ -433,7 +434,6 @@ export default function ShopPage() {
           </div>
         </div>
       )}
-
     </div>
   );
 }

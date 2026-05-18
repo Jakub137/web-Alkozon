@@ -49,7 +49,8 @@ export default function AgeVerificationModal() {
           {dict.ageGate?.title || "Czy masz ukończone 18 lat?"}
         </h2>
         <p className="text-slate-600 dark:text-slate-400 mb-8">
-          {dict.ageGate?.description || "Ta strona zawiera treści przeznaczone wyłącznie dla osób dorosłych. Prosimy o potwierdzenie wieku."}
+          {dict.ageGate?.description ||
+            "Ta strona zawiera treści przeznaczone wyłącznie dla osób dorosłych. Prosimy o potwierdzenie wieku."}
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button

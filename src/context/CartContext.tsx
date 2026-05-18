@@ -8,9 +8,7 @@ export type CartItem = {
   quantity: number;
 };
 
-type AddToCartResult =
-  | { ok: true }
-  | { ok: false; reason: "total_limit" | "custom_limit" };
+type AddToCartResult = { ok: true } | { ok: false; reason: "total_limit" | "custom_limit" };
 
 interface CartContextType {
   cartItems: CartItem[];

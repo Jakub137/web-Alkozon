@@ -11,10 +11,16 @@ export default function HeaderNavLinks() {
       <Link href="/shop" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
         {dict.navbar.shop}
       </Link>
-      <Link href="/order-status" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+      <Link
+        href="/order-status"
+        className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+      >
         {dict.navbar.orderStatus}
       </Link>
-      <Link href="/my-orders" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+      <Link
+        href="/my-orders"
+        className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+      >
         {dict.navbar.myOrders}
       </Link>
     </nav>

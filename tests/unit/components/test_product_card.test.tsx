@@ -4,17 +4,19 @@ import ProductCard from "@/components/ProductCard";
 
 // Mockujemy nawigację i hooki używane w komponencie
 vi.mock("next/link", () => ({
-  default: ({ children, href }: { children: React.ReactNode, href: string }) => (
-    <a href={href} data-testid="mock-link">{children}</a>
-  )
+  default: ({ children, href }: { children: React.ReactNode; href: string }) => (
+    <a href={href} data-testid="mock-link">
+      {children}
+    </a>
+  ),
 }));
 
 vi.mock("@/context/CartContext", () => ({
-  useCart: () => ({ addToCart: vi.fn() })
+  useCart: () => ({ addToCart: vi.fn() }),
 }));
 
 vi.mock("@/context/AgeContext", () => ({
-  useAge: () => ({ ageStatus: "adult" })
+  useAge: () => ({ ageStatus: "adult" }),
 }));
 
 vi.mock("@/context/LanguageContext", () => ({
@@ -25,11 +27,11 @@ vi.mock("@/context/LanguageContext", () => ({
           pricePerUnit: "Cena za",
           addToCart: "Dodaj do koszyka",
           inCart: "W koszyku",
-          unavailable: "Niedostępne"
-        }
-      }
-    }
-  })
+          unavailable: "Niedostępne",
+        },
+      },
+    },
+  }),
 }));
 
 describe("UI Tests - ProductCard", () => {
@@ -51,7 +53,7 @@ describe("UI Tests - ProductCard", () => {
 
     // Sprawdzamy czy nazwa istnieje
     expect(screen.getByText("Wino wytrawne")).toBeInTheDocument();
-    
+
     // Sprawdzamy czy cena renderuje się z przecinkiem/walutą
     expect(screen.getByText("49.99 zł")).toBeInTheDocument();
   });

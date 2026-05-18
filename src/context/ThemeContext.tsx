@@ -13,13 +13,13 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 function updateThemeClass(newTheme: Theme) {
   const root = document.documentElement;
-  
+
   if (newTheme === "dark") {
     root.classList.add("dark");
   } else {
     root.classList.remove("dark");
   }
-  
+
   localStorage.setItem("theme", newTheme);
 }
 
@@ -29,14 +29,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const saved = localStorage.getItem("theme") as Theme | null;
     let currentTheme: Theme;
-    
+
     if (saved === "dark" || saved === "light") {
       currentTheme = saved;
     } else {
       const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
       currentTheme = prefersDark ? "dark" : "light";
     }
-    
+
     setTheme(currentTheme);
     updateThemeClass(currentTheme);
   }, []);
@@ -49,11 +49,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
-  return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>;
 }
 
 export function useTheme() {
