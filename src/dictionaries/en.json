@@ -309,7 +309,11 @@
       "IN_PACKING": "In packing",
       "IN_DELIVERY": "In delivery",
       "DELIVERED": "Delivered",
-      "CANCELLED": "Cancelled"
+      "CANCELLED": "Cancelled",
+      "PENDING": "Submitted",
+      "IN_PROGRESS": "In progress",
+      "COMPLETED": "Completed",
+      "REJECTED": "Rejected"
     },
     "progress": {
       "title": "Order progress",
@@ -337,7 +341,11 @@
       "IN_PACKING": "Your order is being packed and prepared for handoff to courier.",
       "IN_DELIVERY": "The shipment is on the way to you.",
       "DELIVERED": "The shipment has been delivered. Thank you for your order!",
-      "CANCELLED": "This order has been cancelled. Contact us if you need assistance."
+      "CANCELLED": "This order has been cancelled. Contact us if you need assistance.",
+      "PENDING": "Your custom spirit request has been received.",
+      "IN_PROGRESS": "The distillery is working on your custom batch.",
+      "COMPLETED": "Your custom order has been completed.",
+      "REJECTED": "This custom order was rejected. Contact us for details."
     },
     "myOrders": {
       "title": "My orders",
@@ -363,6 +371,7 @@
   "myOrdersPage": {
     "title": "My orders",
     "subtitle": "Orders linked to your customer account. Click an entry to see details on the status page.",
+    "customOrderBadge": "Custom order",
     "linkOrderStatus": "Look up an order by number and email",
     "loadError": "Could not load your orders.",
     "empty": "No orders on this account yet."

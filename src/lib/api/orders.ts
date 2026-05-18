@@ -1,6 +1,19 @@
 import { apiRequest } from "./client";
+import {
+  listMyCustomOrders,
+  requestCustomOrderTrack,
+  type ApiCustomOrderListItem,
+  type ApiCustomOrderTrackResponse,
+} from "./customOrders";
+import { ApiError } from "./types";
 import type { Product } from "@/types/product";
-import type { BackendOrderStatus, DeliveryDetails, OrderRecord, OrderStatus } from "@/types/order";
+import type {
+  BackendCustomOrderStatus,
+  BackendOrderStatus,
+  DeliveryDetails,
+  OrderRecord,
+  OrderStatus,
+} from "@/types/order";
 
 interface ApiOrderItem {
   productId: number;
@@ -15,7 +28,8 @@ interface ApiOrderResponse {
   clientOrderNumber?: string | null;
   customerId: number;
   status: BackendOrderStatus;
-  deliveryAddress: string;
+  /** Opcjonalne — backend może zwracać tylko deliveryDetails. */
+  deliveryAddress?: string | null;
   deliveryDetails?: DeliveryDetails | null;
   totalAmount: number;
   createdAt: string;
@@ -60,12 +74,38 @@ export function mapBackendOrderStatusToUi(status: BackendOrderStatus): OrderStat
   }
 }
 
+export function mapCustomOrderStatusToUi(status: BackendCustomOrderStatus): OrderStatus {
+  switch (status) {
+    case "PENDING":
+      return "received";
+    case "IN_PROGRESS":
+      return "processing";
+    case "COMPLETED":
+      return "delivered";
+    case "REJECTED":
+      return "cancelled";
+    default:
+      return "processing";
+  }
+}
+
+function deliveryDetailsToLine(details: DeliveryDetails | null | undefined): string | undefined {
+  if (!details) return undefined;
+  const cityLine = [details.postalCode?.trim(), details.city?.trim()].filter(Boolean).join(" ");
+  const parts = [details.streetAddress?.trim(), cityLine || undefined].filter(Boolean);
+  const line = parts.join(", ").trim();
+  return line || undefined;
+}
+
 function estimateDelivery(createdAt: string, deliveredAt: string | null): string {
   if (deliveredAt) return deliveredAt;
   const base = new Date(createdAt).getTime();
   return new Date(base + 3 * 24 * 60 * 60 * 1000).toISOString();
 }
 
+/**
+ * Wartość do parametru orderId w trackingu: cyfry, ORD-*, CUSTOM-* (bez zmian wielkości liter po normalizacji).
+ */
 export function extractOrderId(orderNumber: string): string {
   const raw = orderNumber.trim();
   if (!raw) return "";
@@ -73,13 +113,21 @@ export function extractOrderId(orderNumber: string): string {
   const prefixed = raw.match(/^ORD-(\d+)$/i);
   if (prefixed?.[1]) return prefixed[1];
 
+  if (/^CUSTOM-\d+$/i.test(raw)) return raw;
+
   if (/^\d+$/.test(raw)) return raw;
   return "";
 }
 
 export function mapApiOrderToRecord(apiOrder: ApiOrderResponse, email = ""): OrderRecord {
   const status = mapBackendOrderStatusToUi(apiOrder.status);
+  const deliveryAddress =
+    (apiOrder.deliveryAddress && apiOrder.deliveryAddress.trim()) ||
+    deliveryDetailsToLine(apiOrder.deliveryDetails) ||
+    undefined;
+
   return {
+    kind: "shop",
     orderNumber: `ORD-${apiOrder.id}`,
     clientOrderNumber: apiOrder.clientOrderNumber ?? apiOrder.orderNumber ?? undefined,
     email,
@@ -87,7 +135,7 @@ export function mapApiOrderToRecord(apiOrder: ApiOrderResponse, email = ""): Ord
     estimatedDelivery: estimateDelivery(apiOrder.createdAt, apiOrder.deliveredAt),
     status,
     apiStatus: apiOrder.status,
-    deliveryAddress: apiOrder.deliveryAddress,
+    deliveryAddress,
     deliveryDetails: apiOrder.deliveryDetails ?? null,
     history: [
       { status: "received", changedAt: apiOrder.createdAt },
@@ -113,6 +161,7 @@ function mapTrackOrderToRecord(track: ApiOrderTrackResponse, email: string): Ord
       : new Date(new Date(track.createdAt).getTime() + 3 * 24 * 60 * 60 * 1000).toISOString();
 
   return {
+    kind: "shop",
     orderNumber: `ORD-${track.orderId}`,
     clientOrderNumber: track.clientOrderNumber ?? undefined,
     email,
@@ -125,6 +174,99 @@ function mapTrackOrderToRecord(track: ApiOrderTrackResponse, email: string): Ord
       ...(status === "delivered"
         ? [{ status: "delivered" as const, changedAt: track.updatedAt }]
         : []),
+    ],
+  };
+}
+
+function resolveTrackedCustomId(track: ApiCustomOrderTrackResponse): number {
+  const fromOrder = track.orderId ?? track.id;
+  if (typeof fromOrder === "number" && fromOrder > 0) return fromOrder;
+  return 0;
+}
+
+function mapCustomOrderTrackToRecord(
+  track: ApiCustomOrderTrackResponse,
+  email: string
+): OrderRecord {
+  const apiStatus = track.status as BackendCustomOrderStatus;
+  const status = mapCustomOrderStatusToUi(apiStatus);
+  const id = resolveTrackedCustomId(track);
+  const estimatedDelivery =
+    status === "delivered"
+      ? track.updatedAt
+      : new Date(new Date(track.createdAt).getTime() + 3 * 24 * 60 * 60 * 1000).toISOString();
+
+  const desc = (track.description && track.description.trim()) || "";
+
+  return {
+    kind: "custom",
+    orderNumber: id > 0 ? `CUSTOM-${id}` : "CUSTOM-0",
+    clientOrderNumber: track.clientOrderNumber ?? undefined,
+    customDescription: track.description ?? undefined,
+    email,
+    placedAt: track.createdAt,
+    estimatedDelivery,
+    status,
+    apiStatus,
+    history: [
+      { status: "received", changedAt: track.createdAt },
+      ...(status === "delivered"
+        ? [{ status: "delivered" as const, changedAt: track.updatedAt }]
+        : []),
+    ],
+    items: [
+      {
+        id: id > 0 ? `line-custom-${id}` : "line-custom",
+        name: desc || "Custom order",
+        quantity: 1,
+        unitPrice: 0,
+        image: "/products/custom-order.jpg",
+      },
+    ],
+  };
+}
+
+function clientOrderNumberFromCustomListApi(api: ApiCustomOrderListItem): string | undefined {
+  if (api.clientOrderNumber?.trim()) return api.clientOrderNumber.trim();
+  const p = api.preferences?.clientOrderNumber;
+  return typeof p === "string" && p.trim() ? p.trim() : undefined;
+}
+
+function mapCustomOrderListItemToRecord(
+  api: ApiCustomOrderListItem,
+  email: string
+): OrderRecord {
+  const apiStatus = api.status as BackendCustomOrderStatus;
+  const status = mapCustomOrderStatusToUi(apiStatus);
+  const estimatedDelivery =
+    status === "delivered"
+      ? api.updatedAt
+      : new Date(new Date(api.createdAt).getTime() + 3 * 24 * 60 * 60 * 1000).toISOString();
+
+  return {
+    kind: "custom",
+    orderNumber: `CUSTOM-${api.id}`,
+    clientOrderNumber: clientOrderNumberFromCustomListApi(api),
+    customDescription: api.description,
+    email,
+    placedAt: api.createdAt,
+    estimatedDelivery,
+    status,
+    apiStatus,
+    history: [
+      { status: "received", changedAt: api.createdAt },
+      ...(status === "delivered"
+        ? [{ status: "delivered" as const, changedAt: api.updatedAt }]
+        : []),
+    ],
+    items: [
+      {
+        id: `line-custom-${api.id}`,
+        name: api.description,
+        quantity: 1,
+        unitPrice: 0,
+        image: "/products/custom-order.jpg",
+      },
     ],
   };
 }
@@ -143,13 +285,40 @@ export async function getMyOrders(token: string, email?: string): Promise<OrderR
   return result.map((order) => mapApiOrderToRecord(order, email));
 }
 
-export async function trackOrderPublic(orderId: string, email: string): Promise<OrderRecord> {
+export async function getMyOrdersMerged(token: string, email?: string): Promise<OrderRecord[]> {
+  const safeEmail = email ?? "";
+  const [shop, customRows] = await Promise.all([
+    getMyOrders(token, email),
+    listMyCustomOrders(token),
+  ]);
+  const custom = customRows.map((row) => mapCustomOrderListItemToRecord(row, safeEmail));
+  return [...shop, ...custom].sort(
+    (a, b) => new Date(b.placedAt).getTime() - new Date(a.placedAt).getTime()
+  );
+}
+
+async function trackShopOrderPublic(orderId: string, email: string): Promise<OrderRecord> {
   const params = new URLSearchParams({
     orderId: orderId.trim(),
     email: email.trim(),
   });
   const result = await apiRequest<ApiOrderTrackResponse>(`/api/orders/track?${params.toString()}`);
   return mapTrackOrderToRecord(result, email.trim());
+}
+
+/**
+ * Najpierw sklep (/api/orders/track), przy 404 — zamówienie własne (/api/custom-orders/track).
+ */
+export async function trackOrderPublic(orderId: string, email: string): Promise<OrderRecord> {
+  try {
+    return await trackShopOrderPublic(orderId, email);
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      const raw = await requestCustomOrderTrack(orderId, email);
+      return mapCustomOrderTrackToRecord(raw, email.trim());
+    }
+    throw error;
+  }
 }
 
 export async function createOrder(

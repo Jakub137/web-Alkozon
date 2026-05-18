@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
-import { extractOrderId, getMyOrders, mapBackendOrderStatusToUi } from "@/lib/api/orders";
+import { extractOrderId, getMyOrdersMerged, mapBackendOrderStatusToUi } from "@/lib/api/orders";
 import { ApiError } from "@/lib/api/types";
 import { formatOrderDate, getBackendStatusLabelKey, getStatusTone } from "@/lib/orderStatusUi";
 import { subscribeOrderStatusUpdates } from "@/lib/realtime/orderUpdates";
@@ -32,7 +32,7 @@ export default function MyOrdersPage() {
         setIsLoading(true);
         setErrorMsg(null);
         const result = await authorizedRequest((accessToken) =>
-          getMyOrders(accessToken, user?.email ?? undefined)
+          getMyOrdersMerged(accessToken, user?.email ?? undefined)
         );
         if (!cancelled) setMyOrders(result);
       } catch (error) {
@@ -76,7 +76,7 @@ export default function MyOrdersPage() {
       const targetOrderNumber = `ORD-${event.orderId}`;
       setMyOrders((prev) =>
         prev.map((entry) =>
-          entry.orderNumber === targetOrderNumber
+          entry.kind !== "custom" && entry.orderNumber === targetOrderNumber
             ? { ...entry, status: nextUiStatus, apiStatus: event.status }
             : entry
         )
@@ -128,20 +128,24 @@ export default function MyOrdersPage() {
           ) : (
             <div className="space-y-2">
               {myOrders.map((entry) => {
+                const backendLabels = dict.orderStatusPage.backendStatuses as
+                  | Record<string, string>
+                  | undefined;
                 const apiLabelKey = getBackendStatusLabelKey(entry.apiStatus);
-                const statusLabel = apiLabelKey
-                  ? dict.orderStatusPage.backendStatuses?.[apiLabelKey] ||
-                    dict.orderStatusPage.statuses[entry.status]
-                  : dict.orderStatusPage.statuses[entry.status];
+                const statusLabel =
+                  apiLabelKey && backendLabels?.[apiLabelKey]
+                    ? backendLabels[apiLabelKey]
+                    : dict.orderStatusPage.statuses[entry.status];
+
+                const trackId =
+                  entry.clientOrderNumber ?? extractOrderId(entry.orderNumber) ?? entry.orderNumber;
 
                 return (
                   <button
                     key={entry.orderNumber}
                     type="button"
                     onClick={() =>
-                      router.push(
-                        `/order-status?orderId=${encodeURIComponent(entry.clientOrderNumber ?? extractOrderId(entry.orderNumber))}`
-                      )
+                      router.push(`/order-status?orderId=${encodeURIComponent(trackId)}`)
                     }
                     className="w-full text-left rounded-xl border border-slate-200 dark:border-slate-700 p-3 bg-slate-50 dark:bg-slate-900/30 hover:border-blue-500 transition-colors"
                   >
@@ -155,6 +159,16 @@ export default function MyOrdersPage() {
                         {statusLabel}
                       </span>
                     </div>
+                    {entry.kind === "custom" && (
+                      <p className="mt-1 text-xs font-medium text-blue-600 dark:text-blue-400">
+                        {dict.myOrdersPage.customOrderBadge}
+                      </p>
+                    )}
+                    {entry.kind === "custom" && entry.customDescription && (
+                      <p className="mt-1 text-xs text-slate-600 dark:text-slate-400 line-clamp-2">
+                        {entry.customDescription}
+                      </p>
+                    )}
                     <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                       {dict.orderStatusPage.details.placedAt}:{" "}
                       {formatOrderDate(entry.placedAt, currentLocale)}

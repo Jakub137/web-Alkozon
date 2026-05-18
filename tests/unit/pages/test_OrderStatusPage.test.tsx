@@ -4,6 +4,7 @@ import OrderStatusPage from "@/app/order-status/page";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { getOrderById, trackOrderPublic } from "@/lib/api/orders";
+import { ApiError } from "@/lib/api/types";
 
 vi.mock("@/context/LanguageContext", () => ({
   useLanguage: vi.fn(),
@@ -68,6 +69,7 @@ const mockDict = {
     },
     buttons: { goToShop: "Sklep", contact: "Kontakt" },
   },
+  myOrdersPage: { customOrderBadge: "Zamówienie własne" },
 };
 
 describe("OrderStatusPage Unit Tests", () => {
@@ -80,7 +82,7 @@ describe("OrderStatusPage Unit Tests", () => {
       authorizedRequest: (fn: any) => fn("mock-token"),
     });
     (getOrderById as any).mockResolvedValue(null);
-    (trackOrderPublic as any).mockResolvedValue(null);
+    (trackOrderPublic as any).mockRejectedValue(new ApiError("Order not found", 404));
   });
 
   it("powinien zablokować formularz gdy pusty", () => {
@@ -89,8 +91,8 @@ describe("OrderStatusPage Unit Tests", () => {
     expect(submitBtn).toBeDisabled();
   });
 
-  it("powinien wyświetlić brak zamówienia jeśli track API zwróci null", async () => {
-    (trackOrderPublic as any).mockResolvedValue(null);
+  it("powinien wyświetlić brak zamówienia jeśli track API zwróci 404", async () => {
+    (trackOrderPublic as any).mockRejectedValue(new ApiError("Order not found", 404));
     render(<OrderStatusPage />);
 
     fireEvent.change(screen.getByPlaceholderText("Nr zamówienia"), { target: { value: "123" } });
@@ -105,7 +107,10 @@ describe("OrderStatusPage Unit Tests", () => {
 
   it("powinien wyświetlić status po znalezieniu zamówienia przez track API", async () => {
     (trackOrderPublic as any).mockResolvedValue({
-      orderNumber: "123",
+      kind: "shop",
+      email: "",
+      orderNumber: "ORD-1",
+      clientOrderNumber: undefined,
       status: "processing",
       placedAt: "2025-01-01",
       estimatedDelivery: "2025-01-05",

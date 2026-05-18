@@ -16,6 +16,9 @@ export type BackendOrderStatus =
   | "DELIVERED"
   | "CANCELLED";
 
+/** Statusy zamówienia własnego (API custom-orders). */
+export type BackendCustomOrderStatus = "PENDING" | "IN_PROGRESS" | "COMPLETED" | "REJECTED";
+
 export type OrderProgressStep = "received" | "processing" | "shipped" | "delivered";
 
 export type OrderTracking = {
@@ -49,13 +52,17 @@ export type DeliveryDetails = {
 };
 
 export type OrderRecord = {
+  /** Zamówienie sklepowe vs konfiguracja własna (custom-orders). */
+  kind?: "shop" | "custom";
+  /** Krótki opis trunku (tylko custom). */
+  customDescription?: string;
   orderNumber: string;
   clientOrderNumber?: string;
   email: string;
   placedAt: string;
   estimatedDelivery: string;
   status: OrderStatus;
-  apiStatus?: BackendOrderStatus;
+  apiStatus?: BackendOrderStatus | BackendCustomOrderStatus;
   tracking?: OrderTracking;
   history?: OrderStatusHistoryItem[];
   items?: OrderItem[];

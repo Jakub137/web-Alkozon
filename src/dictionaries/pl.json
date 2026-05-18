@@ -309,7 +309,11 @@
       "IN_PACKING": "W pakowaniu",
       "IN_DELIVERY": "W dostawie",
       "DELIVERED": "Dostarczone",
-      "CANCELLED": "Anulowane"
+      "CANCELLED": "Anulowane",
+      "PENDING": "Złożone",
+      "IN_PROGRESS": "W realizacji",
+      "COMPLETED": "Dostarczone",
+      "REJECTED": "Anulowane"
     },
     "progress": {
       "title": "Postęp zamówienia",
@@ -337,7 +341,11 @@
       "IN_PACKING": "Zamówienie jest pakowane i przygotowywane do przekazania kurierowi.",
       "IN_DELIVERY": "Przesyłka jest w drodze do Ciebie.",
       "DELIVERED": "Przesyłka została dostarczona. Dziękujemy za zamówienie!",
-      "CANCELLED": "To zamówienie zostało anulowane. W razie pytań skontaktuj się z nami."
+      "CANCELLED": "To zamówienie zostało anulowane. W razie pytań skontaktuj się z nami.",
+      "PENDING": "Zamówienie własne zostało przyjęte. Wkrótce zajmie się nim destylarnia.",
+      "IN_PROGRESS": "Twój autorski trunek jest w realizacji.",
+      "COMPLETED": "Zamówienie własne zostało zakończone.",
+      "REJECTED": "To zamówienie własne zostało odrzucone. Skontaktuj się z nami po szczegóły."
     },
     "myOrders": {
       "title": "Moje zamówienia",
@@ -363,6 +371,7 @@
   "myOrdersPage": {
     "title": "Moje zamówienia",
     "subtitle": "Zamówienia powiązane z Twoim kontem klienta. Kliknij pozycję, aby zobaczyć szczegóły na stronie statusu.",
+    "customOrderBadge": "Zamówienie własne",
     "linkOrderStatus": "Szukaj zamówienia po numerze i e-mailu",
     "loadError": "Nie udało się pobrać listy zamówień.",
     "empty": "Brak zamówień na koncie."

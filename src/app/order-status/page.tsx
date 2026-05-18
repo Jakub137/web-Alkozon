@@ -148,7 +148,7 @@ export default function OrderStatusPage() {
       const targetOrderNumber = `ORD-${event.orderId}`;
 
       setOrder((prev) => {
-        if (!prev || prev.orderNumber !== targetOrderNumber) return prev;
+        if (!prev || prev.kind === "custom" || prev.orderNumber !== targetOrderNumber) return prev;
         return {
           ...prev,
           status: nextUiStatus,
@@ -170,21 +170,43 @@ export default function OrderStatusPage() {
       try {
         setIsLoading(true);
         setEmail(user?.email || "");
-        const result = await authorizedRequest((accessToken) =>
-          getOrderById(accessToken, normalizedOrderId, user?.email ?? undefined)
-        );
-        if (!cancelled) {
-          setOrder(result);
-          setOrderNumber(trackingInputValueFromRecord(result));
-          setSearched(true);
-        }
-      } catch (error) {
-        if (cancelled) return;
-        if (error instanceof ApiError && error.status !== 404) {
-          if (error.status === 401 || error.status === 403) {
-            setErrorMsg(accountFeaturesMessage);
-          } else {
-            setErrorMsg(error.message);
+        try {
+          const result = await authorizedRequest((accessToken) =>
+            getOrderById(accessToken, normalizedOrderId, user?.email ?? undefined)
+          );
+          if (!cancelled) {
+            setOrder(result);
+            setOrderNumber(trackingInputValueFromRecord(result));
+            setSearched(true);
+          }
+        } catch (error) {
+          if (cancelled) return;
+          if (error instanceof ApiError && error.status === 404 && user?.email) {
+            try {
+              const tracked = await trackOrderPublic(normalizedOrderId, user.email);
+              if (!cancelled) {
+                setOrder(tracked);
+                setOrderNumber(trackingInputValueFromRecord(tracked));
+                setSearched(true);
+              }
+            } catch (trackErr) {
+              if (!cancelled) {
+                if (trackErr instanceof ApiError && trackErr.status === 404) {
+                  setOrder(null);
+                  setSearched(true);
+                } else if (trackErr instanceof ApiError) {
+                  setErrorMsg(trackErr.message);
+                }
+              }
+            }
+            return;
+          }
+          if (error instanceof ApiError && error.status !== 404) {
+            if (error.status === 401 || error.status === 403) {
+              setErrorMsg(accountFeaturesMessage);
+            } else {
+              setErrorMsg(error.message);
+            }
           }
         }
       } finally {
@@ -293,16 +315,24 @@ export default function OrderStatusPage() {
         {order && (
           <>
             <section className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 sm:p-6 shadow-sm dark:shadow-slate-900/50 space-y-5">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
-                  {dict.orderStatusPage.details.title}
-                </h2>
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+                    {dict.orderStatusPage.details.title}
+                  </h2>
+                  {order.kind === "custom" && (
+                    <p className="mt-1 text-xs font-medium text-blue-600 dark:text-blue-400">
+                      {dict.myOrdersPage.customOrderBadge}
+                    </p>
+                  )}
+                </div>
                 <span
                   className={`h-8 px-3 rounded-full text-xs font-semibold inline-flex items-center ${getStatusTone(order.status)}`}
                 >
                   {order.apiStatus
-                    ? dict.orderStatusPage.backendStatuses?.[order.apiStatus] ||
-                      dict.orderStatusPage.statuses[order.status]
+                    ? (
+                        dict.orderStatusPage.backendStatuses as Record<string, string> | undefined
+                      )?.[String(order.apiStatus)] || dict.orderStatusPage.statuses[order.status]
                     : dict.orderStatusPage.statuses[order.status]}
                 </span>
               </div>
@@ -332,8 +362,9 @@ export default function OrderStatusPage() {
                   </p>
                   <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                     {order.apiStatus
-                      ? dict.orderStatusPage.backendStatuses?.[order.apiStatus] ||
-                        dict.orderStatusPage.statuses[order.status]
+                      ? (
+                          dict.orderStatusPage.backendStatuses as Record<string, string> | undefined
+                        )?.[String(order.apiStatus)] || dict.orderStatusPage.statuses[order.status]
                       : dict.orderStatusPage.statuses[order.status]}
                   </p>
                 </div>
@@ -382,8 +413,9 @@ export default function OrderStatusPage() {
               </h3>
               <p className="text-sm text-slate-700 dark:text-slate-300">
                 {order.apiStatus
-                  ? dict.orderStatusPage.backendNextSteps?.[order.apiStatus] ||
-                    dict.orderStatusPage.nextSteps[order.status]
+                  ? (dict.orderStatusPage.backendNextSteps as Record<string, string> | undefined)?.[
+                      String(order.apiStatus)
+                    ] || dict.orderStatusPage.nextSteps[order.status]
                   : dict.orderStatusPage.nextSteps[order.status]}
               </p>
 

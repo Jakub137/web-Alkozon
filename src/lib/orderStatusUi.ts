@@ -1,4 +1,4 @@
-import type { BackendOrderStatus, OrderStatus } from "@/types/order";
+import type { BackendCustomOrderStatus, BackendOrderStatus, OrderStatus } from "@/types/order";
 
 export function getStatusTone(status: OrderStatus): string {
   if (status === "cancelled" || status === "payment_failed" || status === "returned") {
@@ -10,7 +10,9 @@ export function getStatusTone(status: OrderStatus): string {
   return "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300";
 }
 
-export function getBackendStatusLabelKey(status?: BackendOrderStatus): BackendOrderStatus | null {
+export function getBackendStatusLabelKey(
+  status?: BackendOrderStatus | BackendCustomOrderStatus
+): BackendOrderStatus | BackendCustomOrderStatus | null {
   return status ?? null;
 }
 

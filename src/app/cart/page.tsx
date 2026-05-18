@@ -335,6 +335,7 @@ export default function CartPage() {
 
             for (let i = 0; i < item.quantity; i += 1) {
               const customOrder = await createCustomOrder(accessToken, {
+                clientOrderNumber,
                 description: item.product.customOrderDetails.description,
                 preferences: {
                   ...item.product.customOrderDetails.preferences,
