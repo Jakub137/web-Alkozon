@@ -10,7 +10,6 @@ jobs:
   unit-integration:
     runs-on: ubuntu-latest
     env:
-      # Ostrzeżenia GitHub: akcje JS (checkout, setup-node) na Node 20 — wymuszenie Node 24
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - uses: actions/checkout@v4
@@ -19,9 +18,23 @@ jobs:
           node-version: "22"
           cache: "npm"
       - run: npm ci
-      - run: npm run test:run
+      - run: npm run test:unit
+      - run: npm run test:integration-ui
       - run: npm run lint
       - run: npm run build
+
+  integration-api:
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - run: npm run test:integration-api
 
   e2e:
     runs-on: ubuntu-latest

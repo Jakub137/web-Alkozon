@@ -54,20 +54,28 @@ Aplikacja domyślnie: `http://localhost:3000`.
 
 ## Testy (skrót)
 
-- **Unit + integracja (Vitest)** — komponenty, logika i **klient API** z mockiem `fetch` (`tests/integration/api/` — ścieżki `/api/...`, bez prawdziwego Springa). Na CI: `npm run test:run` (w przeglądarce PR: reporter `github-actions` dodaje adnotacje do plików przy błędach).
-- **E2E (Playwright)** — `npm run test:e2e` (w CI reporter `github` + raport `html`). Pełny backend nie jest wymagany dzięki mockom routów tam, gdzie test tak zakłada.
+| Zakres | Polecenie | Na GitHubie (osobny job) |
+|--------|-----------|---------------------------|
+| Unit (`tests/unit`) | `npm run test:unit` | **unit-integration** (razem z poniższym + lint + build) |
+| Integracja UI (`test_cart`, `age_modal`) | `npm run test:integration-ui` | **unit-integration** |
+| Klient API / `fetch` (`tests/integration/api`) | `npm run test:integration-api` | **integration-api** |
+| E2E (Playwright) | `npm run test:e2e` | **e2e** |
+
+Pełny zestaw jak lokalnie / przed push: `npm run test:run` (= unit + integration-ui + integration-api).
 
 ```bash
 npm run lint
-npm run test:run   # jednorazowo (jak na GitHub Actions)
-npm run test       # tryb watch lokalnie
+npm run test:unit
+npm run test:integration-ui
+npm run test:integration-api
+npm run test:run            # wszystkie trzy powyżej
 npm run build
 npm run test:e2e
 ```
 
-**API Spring** (`api-alcozon`): testy JUnit / MockMvc żyją w repozytorium backendu — tam sprawdzasz kontrolery i bazę; w tym repo testujemy tylko **warstwę frontową** wołającą HTTP.
+**API Spring** (`api-alcozon`): testy JUnit / MockMvc w repozytorium backendu.
 
-E2E zakładają uruchomiony serwer deweloperski (zgodnie z konfiguracją Playwright w repo).
+W CI reporter Vitest `github-actions` (przy `GITHUB_ACTIONS`) dodaje adnotacje przy padniętych testach; Playwright używa reportera `github` w CI.
 
 ## Produkcja - checklista wdrożeniowa
 

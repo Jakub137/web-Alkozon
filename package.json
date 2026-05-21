@@ -11,7 +11,10 @@
     "format:check": "prettier . --check",
     "typecheck": "tsc --noEmit",
     "test": "vitest",
-    "test:run": "vitest run",
+    "test:unit": "vitest run tests/unit",
+    "test:integration-ui": "vitest run tests/integration/test_cart.test.tsx tests/integration/test_age_modal.test.tsx",
+    "test:integration-api": "vitest run tests/integration/api",
+    "test:run": "npm run test:unit && npm run test:integration-ui && npm run test:integration-api",
     "test:e2e": "playwright test"
   },
   "dependencies": {
