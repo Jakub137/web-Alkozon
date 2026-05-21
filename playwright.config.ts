@@ -8,7 +8,12 @@ export default defineConfig({
   // Dwie pełne próby × długi waitFor = bardzo długi job na GH; jedna retry wystarczy na chwilową flakiness.
   retries: process.env.CI ? 1 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: "html",
+  reporter: process.env.CI
+    ? [
+        ["github"],
+        ["html", { open: "never" }],
+      ]
+    : "html",
   use: {
     baseURL: "http://localhost:3000",
     trace: "on-first-retry",

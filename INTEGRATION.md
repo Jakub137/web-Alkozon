@@ -54,12 +54,18 @@ Aplikacja domyślnie: `http://localhost:3000`.
 
 ## Testy (skrót)
 
+- **Unit + integracja (Vitest)** — komponenty, logika i **klient API** z mockiem `fetch` (`tests/integration/api/` — ścieżki `/api/...`, bez prawdziwego Springa). Na CI: `npm run test:run` (w przeglądarce PR: reporter `github-actions` dodaje adnotacje do plików przy błędach).
+- **E2E (Playwright)** — `npm run test:e2e` (w CI reporter `github` + raport `html`). Pełny backend nie jest wymagany dzięki mockom routów tam, gdzie test tak zakłada.
+
 ```bash
 npm run lint
-npm run test
+npm run test:run   # jednorazowo (jak na GitHub Actions)
+npm run test       # tryb watch lokalnie
 npm run build
 npm run test:e2e
 ```
+
+**API Spring** (`api-alcozon`): testy JUnit / MockMvc żyją w repozytorium backendu — tam sprawdzasz kontrolery i bazę; w tym repo testujemy tylko **warstwę frontową** wołającą HTTP.
 
 E2E zakładają uruchomiony serwer deweloperski (zgodnie z konfiguracją Playwright w repo).
 

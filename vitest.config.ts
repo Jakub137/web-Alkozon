@@ -8,6 +8,7 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./vitest.setup.ts"],
     globals: true,
+    reporters: process.env.GITHUB_ACTIONS ? ["default", "github-actions"] : "default",
     exclude: [
       "**/node_modules/**",
       "**/dist/**",
