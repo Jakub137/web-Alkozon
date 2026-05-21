@@ -2,10 +2,17 @@ import { renderHook, act } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { useAutoLogout } from "@/hooks/useAutoLogout";
 import * as AuthContextModule from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
+import pl from "@/dictionaries/pl.json";
+
+vi.mock("@/context/LanguageContext", () => ({
+  useLanguage: vi.fn(),
+}));
 
 describe("Unit Tests - useAutoLogout Hook", () => {
   beforeEach(() => {
     vi.useFakeTimers();
+    (useLanguage as any).mockReturnValue({ dict: pl, lang: "pl" });
     vi.spyOn(AuthContextModule, "useAuth").mockReturnValue({
       user: { email: "test@alkozon.pl", role: "CUSTOMER" } as any,
       logout: vi.fn(),
@@ -61,7 +68,7 @@ describe("Unit Tests - useAutoLogout Hook", () => {
     renderHook(() => useAutoLogout());
 
     vi.advanceTimersByTime(15 * 60 * 1000 + 5000);
-    expect(mockLogout).toHaveBeenCalledOnce();
+    expect(mockLogout).toHaveBeenCalledWith(pl.auth.toast.loggedOutInactivity);
   });
 
   it("resetuje licznik po aktywności użytkownika (mousemove)", () => {

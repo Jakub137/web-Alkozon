@@ -2,11 +2,17 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import LoginPage from "@/app/login/page";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { useRouter } from "next/navigation";
 import { loginApi } from "@/lib/api/auth";
+import pl from "@/dictionaries/pl.json";
 
 vi.mock("@/context/AuthContext", () => ({
   useAuth: vi.fn(),
+}));
+
+vi.mock("@/context/LanguageContext", () => ({
+  useLanguage: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({
@@ -30,6 +36,7 @@ describe("LoginPage Unit Tests", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
+    (useLanguage as any).mockReturnValue({ dict: pl, lang: "pl" });
     (useAuth as any).mockReturnValue({ login: mockLogin });
     (useRouter as any).mockReturnValue({ push: mockPush });
     (loginApi as any).mockResolvedValue({
@@ -71,9 +78,7 @@ describe("LoginPage Unit Tests", () => {
     render(<LoginPage />);
 
     expect(
-      screen.getByText(
-        "Konto zablokowane ze względów bezpieczeństwa. Zrestartuj sesję (wyczyść klucze przeglądarki)."
-      )
+      screen.getByText(pl.auth.errors.accountLockedRestart)
     ).toBeInTheDocument();
 
     const submitBtn = screen.getByRole("button", { name: "System Zablokowany" });

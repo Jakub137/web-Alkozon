@@ -1,9 +1,10 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import LoginButton from "@/components/LoginButton";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { useTheme } from "@/context/ThemeContext";
+import pl from "@/dictionaries/pl.json";
 
 vi.mock("@/context/AuthContext", () => ({
   useAuth: vi.fn(),
@@ -28,11 +29,8 @@ vi.mock("next/link", () => ({
 describe("LoginButton Unit Tests", () => {
   beforeEach(() => {
     (useLanguage as any).mockReturnValue({
-      dict: {
-        navbar: {
-          login: "Zaloguj",
-        },
-      },
+      dict: pl,
+      lang: "pl",
     });
 
     (useTheme as any).mockReturnValue({
@@ -70,6 +68,6 @@ describe("LoginButton Unit Tests", () => {
     expect(logoutBtn).toBeInTheDocument();
 
     fireEvent.click(logoutBtn);
-    expect(logoutMock).toHaveBeenCalledWith("Pomyślnie wylogowano.");
+    expect(logoutMock).toHaveBeenCalledWith(pl.auth.toast.logoutSuccess);
   });
 });
