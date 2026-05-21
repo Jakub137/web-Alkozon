@@ -161,7 +161,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     window.addEventListener("storage", syncSessionAcrossTabs);
     return () => window.removeEventListener("storage", syncSessionAcrossTabs);
-  }, [clearLocalSession, dict.auth.toast.loggedOutOtherTab]);
+  }, [clearLocalSession, dict.auth.toast.loggedOutOtherTab, setToast]);
 
   const login = (session: AuthSession) => {
     applySession(session);
