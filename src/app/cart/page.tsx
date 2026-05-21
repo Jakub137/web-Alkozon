@@ -334,18 +334,40 @@ export default function CartPage() {
             }
 
             for (let i = 0; i < item.quantity; i += 1) {
-              const customOrder = await createCustomOrder(accessToken, {
-                clientOrderNumber,
-                description: item.product.customOrderDetails.description,
-                preferences: {
-                  ...item.product.customOrderDetails.preferences,
-                  clientOrderNumber,
-                  delivery,
-                  paymentMethod,
-                },
-              });
-              if (!createdOrderNumber) {
-                createdOrderNumber = clientOrderNumber || `CUSTOM-${customOrder.id}`;
+              let lastCustomCreateError: unknown = null;
+              for (let attempt = 0; attempt < MAX_ORDER_NUMBER_ATTEMPTS; attempt += 1) {
+                const lineClientOrderNumber = generateOrderNumber();
+                try {
+                  const customOrder = await createCustomOrder(accessToken, {
+                    clientOrderNumber: lineClientOrderNumber,
+                    description: item.product.customOrderDetails.description,
+                    preferences: {
+                      ...item.product.customOrderDetails.preferences,
+                      clientOrderNumber: lineClientOrderNumber,
+                      delivery,
+                      paymentMethod,
+                    },
+                  });
+                  rememberUsedOrderNumber(lineClientOrderNumber);
+                  if (!createdOrderNumber) {
+                    createdOrderNumber = lineClientOrderNumber || `CUSTOM-${customOrder.id}`;
+                  }
+                  if (!trackingOrderNumber) {
+                    trackingOrderNumber = lineClientOrderNumber;
+                  }
+                  lastCustomCreateError = null;
+                  break;
+                } catch (error) {
+                  lastCustomCreateError = error;
+                  if (!isOrderNumberConflict(error)) {
+                    throw error;
+                  }
+                  rememberUsedOrderNumber(lineClientOrderNumber);
+                }
+              }
+
+              if (lastCustomCreateError) {
+                throw lastCustomCreateError;
               }
             }
           }
