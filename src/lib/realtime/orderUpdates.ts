@@ -3,9 +3,22 @@
 import { Client, type IMessage } from "@stomp/stompjs";
 import type { BackendOrderStatus } from "@/types/order";
 
+export type OrderRealtimeEventType =
+  | "ORDER_SUBMITTED"
+  | "ORDER_STATUS_CHANGED"
+  | "DISPATCH_PENDING"
+  | "DELIVERY_ASSIGNED"
+  | "ORDER_DELIVERED"
+  | "ORDER_CANCELLED";
+
+/** Payload STOMP z `/user/queue/order-updates` (zgodny z OrderRealtimeEvent.java). */
 export interface OrderStatusUpdateEvent {
+  type?: OrderRealtimeEventType;
   orderId: number;
-  status: BackendOrderStatus;
+  clientOrderNumber?: string | null;
+  status: BackendOrderStatus | string;
+  deliveryId?: number;
+  courierUserId?: number;
 }
 
 function resolveWsUrl(): string {
@@ -29,8 +42,12 @@ function parseEvent(message: IMessage): OrderStatusUpdateEvent | null {
       return null;
     }
     return {
+      type: data.type as OrderRealtimeEventType | undefined,
       orderId: data.orderId,
-      status: data.status as BackendOrderStatus,
+      clientOrderNumber: data.clientOrderNumber ?? null,
+      status: data.status,
+      deliveryId: data.deliveryId,
+      courierUserId: data.courierUserId,
     };
   } catch {
     return null;

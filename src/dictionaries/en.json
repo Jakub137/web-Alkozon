@@ -108,6 +108,7 @@
         "paymentMethodCashOnDelivery": "Cash on delivery",
         "openForm": "Place order",
         "summaryTitle": "Order has been placed",
+        "orderNumbersList": "Several orders were placed. Tracking numbers:",
         "orderNumber": "Order number",
         "status": "Status",
         "statusSubmitted": "Submitted",

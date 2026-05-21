@@ -5,9 +5,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
-import { extractOrderId, getMyOrdersMerged, mapBackendOrderStatusToUi } from "@/lib/api/orders";
+import { extractOrderId, getMyOrdersMerged } from "@/lib/api/orders";
 import { ApiError } from "@/lib/api/types";
 import { formatOrderDate, getBackendStatusLabelKey, getStatusTone } from "@/lib/orderStatusUi";
+import { applyRealtimeEventToOrderRecord } from "@/lib/realtime/orderRealtimeApply";
 import { subscribeOrderStatusUpdates } from "@/lib/realtime/orderUpdates";
 import type { OrderRecord } from "@/types/order";
 
@@ -72,14 +73,8 @@ export default function MyOrdersPage() {
     if (!accessToken) return;
 
     return subscribeOrderStatusUpdates(accessToken, (event) => {
-      const nextUiStatus = mapBackendOrderStatusToUi(event.status);
-      const targetOrderNumber = `ORD-${event.orderId}`;
       setMyOrders((prev) =>
-        prev.map((entry) =>
-          entry.kind !== "custom" && entry.orderNumber === targetOrderNumber
-            ? { ...entry, status: nextUiStatus, apiStatus: event.status }
-            : entry
-        )
+        prev.map((entry) => applyRealtimeEventToOrderRecord(entry, event) ?? entry)
       );
     });
   }, [canUseCustomerEndpoints, token]);

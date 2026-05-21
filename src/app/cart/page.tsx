@@ -31,6 +31,7 @@ type CheckoutCopy = {
   paymentMethodCashOnDelivery?: string;
   openForm?: string;
   summaryTitle?: string;
+  orderNumbersList?: string;
   orderNumber?: string;
   status?: string;
   statusSubmitted?: string;
@@ -67,6 +68,8 @@ type DeliveryForm = {
 
 type SubmittedOrderSummary = {
   orderNumber: string;
+  /** Wszystkie numery do śledzenia (np. wiele POST custom przy quantity > 1). */
+  placedOrderNumbers: string[];
   trackingOrderNumber: string;
   status: string;
   customerName: string;
@@ -290,6 +293,7 @@ export default function CartPage() {
       setIsSubmitting(true);
       let createdOrderNumber: string | null = null;
       let trackingOrderNumber: string | null = null;
+      const placedOrderNumbers: string[] = [];
       let clientOrderNumber = generateOrderNumber();
       if (items.length > 0) {
         let lastCreateOrderError: unknown = null;
@@ -304,6 +308,7 @@ export default function CartPage() {
               })
             );
             trackingOrderNumber = order.clientOrderNumber ?? clientOrderNumber;
+            placedOrderNumbers.push(trackingOrderNumber);
             lastCreateOrderError = null;
             break;
           } catch (error) {
@@ -349,6 +354,7 @@ export default function CartPage() {
                     },
                   });
                   rememberUsedOrderNumber(lineClientOrderNumber);
+                  placedOrderNumbers.push(lineClientOrderNumber);
                   if (!createdOrderNumber) {
                     createdOrderNumber = lineClientOrderNumber || `CUSTOM-${customOrder.id}`;
                   }
@@ -384,9 +390,17 @@ export default function CartPage() {
         total: item.product.price * item.quantity,
       }));
 
+      const uniquePlaced =
+        placedOrderNumbers.length > 0
+          ? [...new Set(placedOrderNumbers)]
+          : createdOrderNumber
+            ? [createdOrderNumber]
+            : ["UNKNOWN"];
+
       setSubmittedOrder({
-        orderNumber: createdOrderNumber || "UNKNOWN",
-        trackingOrderNumber: trackingOrderNumber || createdOrderNumber || "UNKNOWN",
+        orderNumber: createdOrderNumber || uniquePlaced[0] || "UNKNOWN",
+        placedOrderNumbers: uniquePlaced,
+        trackingOrderNumber: trackingOrderNumber || createdOrderNumber || uniquePlaced[0] || "UNKNOWN",
         status: checkoutCopy.statusSubmitted || "Złożone",
         customerName: `${deliveryForm.firstName.trim()} ${deliveryForm.lastName.trim()}`,
         address: deliveryForm.address.trim(),
@@ -414,9 +428,23 @@ export default function CartPage() {
             <p className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 mb-2">
               {checkoutCopy.summaryTitle || "Zamówienie zostało złożone"}
             </p>
-            <h1 className="text-3xl font-extrabold text-slate-900 dark:text-slate-100">
-              #{displayOrderNumber(submittedOrder.orderNumber)}
-            </h1>
+            {submittedOrder.placedOrderNumbers.length > 1 ? (
+              <div className="mt-2 space-y-2">
+                <p className="text-sm text-slate-600 dark:text-slate-300">
+                  {checkoutCopy.orderNumbersList ||
+                    "Złożono kilka zamówień. Numery do śledzenia:"}
+                </p>
+                <ul className="space-y-1 text-lg font-bold text-slate-900 dark:text-slate-100">
+                  {submittedOrder.placedOrderNumbers.map((num) => (
+                    <li key={num}>#{displayOrderNumber(num)}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <h1 className="text-3xl font-extrabold text-slate-900 dark:text-slate-100">
+                #{displayOrderNumber(submittedOrder.orderNumber)}
+              </h1>
+            )}
             <p className="mt-2 text-slate-600 dark:text-slate-300">
               {checkoutCopy.status || "Status"}: {submittedOrder.status}
             </p>

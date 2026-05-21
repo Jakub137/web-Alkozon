@@ -15,6 +15,7 @@ import {
 import { getCustomOrderById } from "@/lib/api/customOrders";
 import { ApiError } from "@/lib/api/types";
 import { formatOrderDate, formatOrderDateTime, getStatusTone } from "@/lib/orderStatusUi";
+import { applyRealtimeEventToOrderRecord } from "@/lib/realtime/orderRealtimeApply";
 import { subscribeOrderStatusUpdates } from "@/lib/realtime/orderUpdates";
 
 const PROGRESS_STEPS: OrderProgressStep[] = ["received", "processing", "shipped", "delivered"];
@@ -150,16 +151,9 @@ export default function OrderStatusPage() {
     if (!accessToken) return;
 
     return subscribeOrderStatusUpdates(accessToken, (event) => {
-      const nextUiStatus = mapBackendOrderStatusToUi(event.status);
-      const targetOrderNumber = `ORD-${event.orderId}`;
-
       setOrder((prev) => {
-        if (!prev || prev.kind === "custom" || prev.orderNumber !== targetOrderNumber) return prev;
-        return {
-          ...prev,
-          status: nextUiStatus,
-          apiStatus: event.status,
-        };
+        if (!prev) return prev;
+        return applyRealtimeEventToOrderRecord(prev, event) ?? prev;
       });
     });
   }, [canUseCustomerEndpoints, token]);

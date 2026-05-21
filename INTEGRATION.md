@@ -52,6 +52,14 @@ Aplikacja domyślnie: `http://localhost:3000`.
 - **Web Push bootstrap** — komponent `WebPushBootstrap` uruchamia pobranie tokena FCM dla zalogowanego użytkownika (nie `GUEST`) i przesyła token do API. Działa tylko gdy `NEXT_PUBLIC_ENABLE_WEB_PUSH=true` oraz konfiguracja Firebase jest kompletna.
 - **Globalny feed powiadomień** — mock `[MOCK WS]` jest wyłączony domyślnie; można go włączyć tylko zmienną `NEXT_PUBLIC_ENABLE_NOTIFICATION_MOCK_WS=true` do celów demo.
 
+## Real-time (STOMP)
+
+- Po zalogowaniu jako **CUSTOMER**: `CONNECT` na `wss://…/ws` z nagłówkiem `Authorization: Bearer <accessToken>`, subskrypcja **`/user/queue/order-updates`**.
+- Implementacja: `src/lib/realtime/orderUpdates.ts`, dopasowanie wpisów: `src/lib/realtime/orderRealtimeApply.ts`.
+- Payload: `type`, `orderId`, `clientOrderNumber`, `status` — **ten sam enum** `OrderStatus` dla sklepu i custom (`SUBMITTED`…`CANCELLED`). Custom wysyła `CustomOrderRealtimeNotifier` przy `PATCH /api/custom-orders/{id}/status`.
+- Strony **`/my-orders`** i **`/order-status`** (zalogowany klient) odświeżają status bez F5 — zarówno **`ORD-{id}`**, jak i **`CUSTOM-{id}`** / numer 6-cyfrowy (`clientOrderNumber`).
+- Env: `NEXT_PUBLIC_API_URL`, opcjonalnie `NEXT_PUBLIC_WS_URL`.
+
 ## Testy (skrót)
 
 | Zakres | Polecenie | Na GitHubie (osobny job) |

@@ -108,6 +108,7 @@
         "paymentMethodCashOnDelivery": "Płatność przy odbiorze",
         "openForm": "Złóż zamówienie",
         "summaryTitle": "Zamówienie zostało złożone",
+        "orderNumbersList": "Złożono kilka zamówień. Numery do śledzenia:",
         "orderNumber": "Numer zamówienia",
         "status": "Status",
         "statusSubmitted": "Złożone",

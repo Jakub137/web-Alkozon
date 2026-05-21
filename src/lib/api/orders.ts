@@ -89,6 +89,28 @@ export function mapCustomOrderStatusToUi(status: BackendCustomOrderStatus): Orde
   }
 }
 
+const UNIFIED_BACKEND_STATUSES: BackendOrderStatus[] = [
+  "SUBMITTED",
+  "IN_PRODUCTION",
+  "IN_PACKING",
+  "IN_DELIVERY",
+  "DELIVERED",
+  "CANCELLED",
+];
+
+/** Custom-orders na main: ten sam enum co sklep; starsze odpowiedzi mogą mieć PENDING/IN_PROGRESS. */
+export function mapApiCustomStatusToUi(status: string): {
+  status: OrderStatus;
+  apiStatus: BackendOrderStatus | BackendCustomOrderStatus;
+} {
+  if (UNIFIED_BACKEND_STATUSES.includes(status as BackendOrderStatus)) {
+    const apiStatus = status as BackendOrderStatus;
+    return { status: mapBackendOrderStatusToUi(apiStatus), apiStatus };
+  }
+  const legacy = status as BackendCustomOrderStatus;
+  return { status: mapCustomOrderStatusToUi(legacy), apiStatus: legacy };
+}
+
 export function parseEstimatedPriceFromPreferences(
   preferences: Record<string, unknown> | null | undefined
 ): number | undefined {
@@ -219,8 +241,7 @@ function mapCustomOrderTrackToRecord(
   track: ApiCustomOrderTrackResponse,
   email: string
 ): OrderRecord {
-  const apiStatus = track.status as BackendCustomOrderStatus;
-  const status = mapCustomOrderStatusToUi(apiStatus);
+  const { status, apiStatus } = mapApiCustomStatusToUi(track.status);
   const id = resolveTrackedCustomId(track);
   const estimatedDelivery =
     status === "delivered"
@@ -264,8 +285,7 @@ function clientOrderNumberFromCustomListApi(api: ApiCustomOrderListItem): string
 }
 
 function mapCustomOrderListItemToRecord(api: ApiCustomOrderListItem, email: string): OrderRecord {
-  const apiStatus = api.status as BackendCustomOrderStatus;
-  const status = mapCustomOrderStatusToUi(apiStatus);
+  const { status, apiStatus } = mapApiCustomStatusToUi(api.status);
   const estimatedDelivery =
     status === "delivered"
       ? api.updatedAt
