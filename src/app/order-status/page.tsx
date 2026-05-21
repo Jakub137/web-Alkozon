@@ -190,13 +190,7 @@ export default function OrderStatusPage() {
     return () => {
       cancelled = true;
     };
-  }, [
-    order?.kind,
-    order?.orderNumber,
-    order?.items?.[0]?.unitPrice,
-    canUseCustomerEndpoints,
-    authorizedRequest,
-  ]);
+  }, [order, canUseCustomerEndpoints, authorizedRequest]);
 
   useEffect(() => {
     const paramValue = new URLSearchParams(window.location.search).get("orderId");
