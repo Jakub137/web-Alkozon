@@ -203,7 +203,7 @@ export default function CustomOrderPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grow">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grow min-w-0 w-full overflow-x-hidden">
       <header className="mb-8 text-center">
         <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-slate-100 mb-3 transition-colors">
           {dict.customOrderPage.title}
@@ -238,8 +238,8 @@ export default function CustomOrderPage() {
         </div>
       </div>
 
-      <div className="w-full sm:w-[920px] sm:max-w-[920px] mx-auto grid grid-cols-1 lg:grid-cols-[620px_276px] gap-6 items-start">
-        <section className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 sm:p-6 shadow-sm dark:shadow-slate-900/50">
+      <div className="w-full max-w-[920px] mx-auto grid grid-cols-1 lg:grid-cols-[minmax(0,620px)_minmax(0,276px)] gap-6 items-start min-w-0">
+        <section className="w-full min-w-0 max-w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 sm:p-6 shadow-sm dark:shadow-slate-900/50 overflow-hidden">
           {step === 1 && (
             <div className="space-y-6">
               <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
@@ -421,12 +421,12 @@ export default function CustomOrderPage() {
             </div>
           )}
 
-          <div className="mt-8 flex items-center justify-between gap-3">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between min-w-0">
             <button
               type="button"
               onClick={() => setStep((prev) => Math.max(1, prev - 1))}
               disabled={step === 1}
-              className="h-11 min-w-[120px] px-4 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="h-11 w-full sm:w-auto sm:min-w-[120px] px-4 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shrink-0"
             >
               {dict.customOrderPage.buttons.back}
             </button>
@@ -436,16 +436,16 @@ export default function CustomOrderPage() {
                 type="button"
                 onClick={() => setStep((prev) => Math.min(3, prev + 1))}
                 disabled={step === 2 && !canGoToStep3}
-                className="h-11 min-w-[120px] px-4 rounded-lg bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="h-11 w-full sm:w-auto sm:min-w-[120px] px-4 rounded-lg bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors shrink-0"
               >
                 {dict.customOrderPage.buttons.next}
               </button>
             ) : (
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto min-w-0 max-w-full">
                 {showGoToSummaryButton && (
                   <Link
                     href="/cart?from=custom-order"
-                    className="h-11 min-w-[180px] px-4 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 font-medium inline-flex items-center justify-center transition-colors hover:border-blue-500"
+                    className="h-11 w-full sm:w-auto min-w-0 px-4 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 font-medium inline-flex items-center justify-center text-center text-sm sm:text-base transition-colors hover:border-blue-500"
                   >
                     {dict.customOrderPage.buttons.goToSummary}
                   </Link>
@@ -460,7 +460,7 @@ export default function CustomOrderPage() {
                     isCustomOrderLimitReached ||
                     ageStatus === "underage"
                   }
-                  className="h-11 min-w-[160px] px-4 rounded-lg bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
+                  className="h-11 w-full sm:w-auto min-w-0 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm sm:text-base"
                 >
                   {dict.customOrderPage.buttons.addToCart}
                 </button>

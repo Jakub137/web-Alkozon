@@ -2,11 +2,13 @@
 
 import { useEffect, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 const INACTIVITY_LIMIT_MS = 15 * 60 * 1000; // 15 minutes
 
 export function useAutoLogout() {
   const { user, logout } = useAuth();
+  const { dict } = useLanguage();
   const lastActive = useRef<number>(0);
 
   useEffect(() => {
@@ -26,7 +28,7 @@ export function useAutoLogout() {
 
     const interval = setInterval(() => {
       if (Date.now() - lastActive.current > INACTIVITY_LIMIT_MS) {
-        void logout("Wylogowano ze względów bezpieczeństwa (Brak aktywności).");
+        void logout(dict.auth.toast.loggedOutInactivity);
       }
     }, 5000);
 
@@ -37,7 +39,7 @@ export function useAutoLogout() {
       window.removeEventListener("scroll", trackActivity);
       clearInterval(interval);
     };
-  }, [user, logout]);
+  }, [dict.auth.toast.loggedOutInactivity, logout, user]);
 }
 
 export function AutoLogoutListener() {

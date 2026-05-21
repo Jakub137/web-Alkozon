@@ -120,7 +120,6 @@ export default function ShopPage() {
         dict.shop.cart.checkout?.authRequired ||
           "Aby złożyć zamówienie, zaloguj się lub załóż konto."
       );
-      window.setTimeout(() => setToast(null), 5000);
       return;
     }
 

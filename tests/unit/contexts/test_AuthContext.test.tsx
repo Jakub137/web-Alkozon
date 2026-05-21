@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 import { render, screen, act } from "@testing-library/react";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 vi.mock("@/lib/api/auth", () => ({
   logoutApi: vi.fn().mockResolvedValue(undefined),
@@ -53,9 +54,11 @@ describe("AuthContext Unit Tests", () => {
 
   it("powinien domyślnie inicjować z wartościami null jeśli brak danych w localStorage", () => {
     render(
-      <AuthProvider>
-        <TestComponent />
-      </AuthProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      </LanguageProvider>
     );
     expect(screen.getByTestId("token").textContent).toBe("null");
     expect(screen.getByTestId("user").textContent).toBe("null");
@@ -74,9 +77,11 @@ describe("AuthContext Unit Tests", () => {
     );
 
     render(
-      <AuthProvider>
-        <TestComponent />
-      </AuthProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      </LanguageProvider>
     );
     expect(screen.getByTestId("token").textContent).toBe("stored-token");
     expect(screen.getByTestId("user").textContent).toBe("storedUser");
@@ -84,9 +89,11 @@ describe("AuthContext Unit Tests", () => {
 
   it("funkcja login powinna poprawnie ustawić token i usera oraz zapisać do localStorage", () => {
     render(
-      <AuthProvider>
-        <TestComponent />
-      </AuthProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      </LanguageProvider>
     );
 
     act(() => {
@@ -105,9 +112,11 @@ describe("AuthContext Unit Tests", () => {
 
   it("funkcja logout powinna wyczyścić stan, localStorage i pokazać toast, po czym zniknąć po 5s", async () => {
     render(
-      <AuthProvider>
-        <TestComponent />
-      </AuthProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      </LanguageProvider>
     );
 
     // Najpierw się logujemy

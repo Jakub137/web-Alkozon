@@ -5,6 +5,12 @@ import { useAuth } from "@/context/AuthContext";
 import { useAge } from "@/context/AgeContext";
 import { useRouter } from "next/navigation";
 import { confirmAgeApi, registerApi } from "@/lib/api/auth";
+import { useLanguage } from "@/context/LanguageContext";
+import pl from "@/dictionaries/pl.json";
+
+vi.mock("@/context/LanguageContext", () => ({
+  useLanguage: vi.fn(),
+}));
 
 vi.mock("@/context/AuthContext", () => ({
   useAuth: vi.fn(),
@@ -37,6 +43,7 @@ describe("RegisterPage Unit Tests", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    (useLanguage as any).mockReturnValue({ dict: pl, lang: "pl" });
     (useAuth as any).mockReturnValue({ login: mockLogin, setToast: mockSetToast });
     (useAge as any).mockReturnValue({ setAgeStatus: mockSetAgeStatus });
     (useRouter as any).mockReturnValue({ push: mockPush });

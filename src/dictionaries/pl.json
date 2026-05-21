@@ -378,6 +378,24 @@
     "loadError": "Nie udało się pobrać listy zamówień.",
     "empty": "Brak zamówień na koncie."
   },
+  "auth": {
+    "errors": {
+      "invalidCredentials": "Nieprawidłowy email lub hasło.",
+      "emailAlreadyRegistered": "Ten adres email jest już zarejestrowany.",
+      "tooManyLoginAttempts": "Zbyt wiele prób logowania. Spróbuj ponownie za chwilę.",
+      "accountLocked": "Konto zablokowane z powodu zbyt wielu nieudanych prób logowania.",
+      "loginFailedRemaining": "Błędne dane. Ochrona Brute-Force: Pozostało prób {remaining}",
+      "accountLockedRestart": "Konto zablokowane ze względów bezpieczeństwa. Zrestartuj sesję (wyczyść klucze przeglądarki).",
+      "registerFailed": "Nie udało się utworzyć konta. Spróbuj ponownie.",
+      "generic": "Wystąpił błąd. Spróbuj ponownie."
+    },
+    "toast": {
+      "registeredSuccess": "Konto zostało pomyślnie utworzone! Zostałeś automatycznie zalogowany.",
+      "logoutSuccess": "Pomyślnie wylogowano.",
+      "loggedOutOtherTab": "Wylogowano w innej karcie.",
+      "loggedOutInactivity": "Wylogowano ze względów bezpieczeństwa (brak aktywności)."
+    }
+  },
   "customOrderPage": {
     "title": "Zamówienie własne",
     "subtitle": "Skonfiguruj swój autorski trunek i sprawdź orientacyjną cenę w czasie rzeczywistym.",

@@ -6,6 +6,7 @@ import React, {
   useContext,
   useState,
   useEffect,
+  useRef,
   ReactNode,
 } from "react";
 import type { AuthSession } from "@/lib/api/types";
@@ -19,6 +20,7 @@ import {
 } from "@/lib/api/auth";
 import { registerFcmDeviceApi } from "@/lib/api/devices";
 import { ApiError } from "@/lib/api/types";
+import { useLanguage } from "@/context/LanguageContext";
 
 type User = AuthSession["user"] | null;
 
@@ -31,20 +33,29 @@ interface AuthContextType {
   authorizedRequest: <T>(request: (token: string) => Promise<T>) => Promise<T>;
   registerWebPushToken: (fcmToken: string) => Promise<void>;
   toast: string | null;
-  setToast: (msg: string | null) => void;
+  setToast: (msg: string | null, durationMs?: number) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const AUTH_SESSION_STORAGE_KEY = "alkozon_auth_session";
 const FCM_TOKEN_STORAGE_KEY = "alkozon_fcm_web_token";
 
+const DEFAULT_TOAST_DURATION_MS = 5000;
+
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const { dict } = useLanguage();
   const [token, setToken] = useState<string | null>(null);
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
   const [user, setUser] = useState<User>(null);
-  const [toast, setToast] = useState<string | null>(null);
+  const [toast, setToastMessage] = useState<string | null>(null);
+  const toastDurationRef = useRef(DEFAULT_TOAST_DURATION_MS);
   const [isClient, setIsClient] = useState(false);
   const [storedFcmToken, setStoredFcmToken] = useState<string | null>(null);
+
+  const setToast = useCallback((msg: string | null, durationMs = DEFAULT_TOAST_DURATION_MS) => {
+    toastDurationRef.current = durationMs;
+    setToastMessage(msg);
+  }, []);
 
   const applySession = useCallback((session: AuthSession) => {
     setToken(session.accessToken);
@@ -134,18 +145,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [applySession, registerFcmToken, syncProfile]);
 
   useEffect(() => {
+    if (!toast) return;
+    const timeoutId = window.setTimeout(() => setToastMessage(null), toastDurationRef.current);
+    return () => window.clearTimeout(timeoutId);
+  }, [toast]);
+
+  useEffect(() => {
     const syncSessionAcrossTabs = (event: StorageEvent) => {
       if (event.key !== AUTH_SESSION_STORAGE_KEY) return;
       if (event.newValue === null) {
         clearLocalSession();
-        setToast("Wylogowano w innej karcie.");
-        setTimeout(() => setToast(null), 5000);
+        setToast(dict.auth.toast.loggedOutOtherTab);
       }
     };
 
     window.addEventListener("storage", syncSessionAcrossTabs);
     return () => window.removeEventListener("storage", syncSessionAcrossTabs);
-  }, [clearLocalSession]);
+  }, [clearLocalSession, dict.auth.toast.loggedOutOtherTab]);
 
   const login = (session: AuthSession) => {
     applySession(session);
@@ -169,7 +185,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (message) {
       setToast(message);
-      setTimeout(() => setToast(null), 5000);
     }
   };
 
@@ -217,7 +232,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       {children}
       {/* Global Toast */}
       {isClient && toast && (
-        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 bg-slate-800 dark:bg-slate-700 text-white px-6 py-3 rounded-xl shadow-xl shadow-slate-900/20 text-sm font-medium transition-all animate-bounce">
+        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 max-w-[calc(100vw-2rem)] bg-slate-800 dark:bg-slate-700 text-white px-6 py-3 rounded-xl shadow-xl shadow-slate-900/20 text-sm font-medium transition-all animate-bounce text-center">
           {toast}
         </div>
       )}

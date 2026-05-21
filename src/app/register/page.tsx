@@ -11,6 +11,8 @@ import { useAuth } from "@/context/AuthContext";
 import { useAge } from "@/context/AgeContext";
 import { confirmAgeApi, registerApi } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/types";
+import { useLanguage } from "@/context/LanguageContext";
+import { mapAuthApiErrorMessage } from "@/lib/api/mapApiErrorMessage";
 import { SAFE_TEXT_REGEX, STRONG_PASSWORD_REGEX } from "@/lib/validation/backendPatterns";
 
 const registerSchema = z.object({
@@ -32,6 +34,7 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 export default function RegisterPage() {
   const router = useRouter();
   const { login, setToast } = useAuth();
+  const { dict } = useLanguage();
   const { setAgeStatus } = useAge();
   const [showPassword, setShowPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -63,13 +66,13 @@ export default function RegisterPage() {
       const confirmedSession = await confirmAgeApi(session.accessToken).catch(() => session);
       login(confirmedSession);
       setAgeStatus("adult");
-      setToast("Konto zostało pomyślnie utworzone! Zostałeś automatycznie zalogowany.");
+      setToast(dict.auth.toast.registeredSuccess, 2000);
       router.push("/");
     } catch (error) {
       if (error instanceof ApiError) {
-        setErrorMsg(error.message);
+        setErrorMsg(mapAuthApiErrorMessage(error, dict.auth.errors, dict.auth.errors.registerFailed));
       } else {
-        setErrorMsg("Nie udało się utworzyć konta. Spróbuj ponownie.");
+        setErrorMsg(dict.auth.errors.registerFailed);
       }
     } finally {
       setIsSubmitting(false);

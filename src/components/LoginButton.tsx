@@ -54,7 +54,7 @@ export default function LoginButton({ compact = false }: LoginButtonProps) {
             <User className="w-4 h-4" />
           </div>
           <button
-            onClick={() => void logout("Pomyślnie wylogowano.")}
+            onClick={() => void logout(dict.auth.toast.logoutSuccess)}
             className="h-9 w-9 inline-flex items-center justify-center rounded-full text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 transition-colors"
             title="Wyloguj"
             aria-label="Wyloguj"
@@ -77,7 +77,7 @@ export default function LoginButton({ compact = false }: LoginButtonProps) {
           </span>
         </div>
         <button
-          onClick={() => void logout("Pomyślnie wylogowano.")}
+          onClick={() => void logout(dict.auth.toast.logoutSuccess)}
           className="text-sm font-medium text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 transition-colors flex items-center gap-1"
           title="Wyloguj"
         >

@@ -378,6 +378,24 @@
     "loadError": "Could not load your orders.",
     "empty": "No orders on this account yet."
   },
+  "auth": {
+    "errors": {
+      "invalidCredentials": "Invalid email or password.",
+      "emailAlreadyRegistered": "This email address is already registered.",
+      "tooManyLoginAttempts": "Too many login attempts. Please try again shortly.",
+      "accountLocked": "Account locked due to too many failed login attempts.",
+      "loginFailedRemaining": "Wrong credentials. Brute-force protection: {remaining} attempts remaining",
+      "accountLockedRestart": "Account locked for security reasons. Restart your session (clear browser storage).",
+      "registerFailed": "Could not create account. Please try again.",
+      "generic": "Something went wrong. Please try again."
+    },
+    "toast": {
+      "registeredSuccess": "Account created successfully! You have been logged in automatically.",
+      "logoutSuccess": "Signed out successfully.",
+      "loggedOutOtherTab": "Signed out in another tab.",
+      "loggedOutInactivity": "Signed out for security reasons (inactivity)."
+    }
+  },
   "customOrderPage": {
     "title": "Custom order",
     "subtitle": "Configure your own signature spirit and see an estimated price in real time.",

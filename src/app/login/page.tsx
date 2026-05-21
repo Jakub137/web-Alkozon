@@ -10,6 +10,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { loginApi } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/types";
+import { useLanguage } from "@/context/LanguageContext";
+import { mapAuthApiErrorMessage } from "@/lib/api/mapApiErrorMessage";
 
 export const loginSchema = z.object({
   email: z.string().email({ message: "Niepoprawny format adresu email" }),
@@ -22,6 +24,7 @@ const MAX_ATTEMPTS = 5;
 
 export default function LoginPage() {
   const { login } = useAuth();
+  const { dict } = useLanguage();
   const router = useRouter();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -42,12 +45,10 @@ export default function LoginPage() {
     const savedAttempts = parseInt(localStorage.getItem("login_attempts") || "0");
     if (savedAttempts >= MAX_ATTEMPTS) {
       setIsLocked(true);
-      setErrorMsg(
-        "Konto zablokowane ze względów bezpieczeństwa. Zrestartuj sesję (wyczyść klucze przeglądarki)."
-      );
+      setErrorMsg(dict.auth.errors.accountLockedRestart);
     }
     setAttempts(savedAttempts);
-  }, []);
+  }, [dict.auth.errors.accountLockedRestart]);
 
   const onSubmit = async (data: LoginFormValues) => {
     if (isLocked) return;
@@ -64,17 +65,21 @@ export default function LoginPage() {
       localStorage.setItem("login_attempts", newAttempts.toString());
 
       if (error instanceof ApiError && error.status === 429) {
-        setErrorMsg("Zbyt wiele prób logowania. Spróbuj ponownie za chwilę.");
+        setErrorMsg(dict.auth.errors.tooManyLoginAttempts);
         return;
       }
 
       if (newAttempts >= MAX_ATTEMPTS) {
         setIsLocked(true);
-        setErrorMsg("Konto zablokowane z powodu zbyt wielu nieudanych prób logowania.");
+        setErrorMsg(dict.auth.errors.accountLocked);
       } else {
-        const fallback = `Błędne dane. Ochrona Brute-Force: Pozostało prób ${MAX_ATTEMPTS - newAttempts}`;
+        const remaining = MAX_ATTEMPTS - newAttempts;
+        const fallback = dict.auth.errors.loginFailedRemaining.replace(
+          "{remaining}",
+          String(remaining)
+        );
         if (error instanceof ApiError) {
-          setErrorMsg(error.message || fallback);
+          setErrorMsg(mapAuthApiErrorMessage(error, dict.auth.errors, fallback));
         } else {
           setErrorMsg(fallback);
         }
