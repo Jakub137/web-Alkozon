@@ -151,7 +151,7 @@ export default function ShopPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grow flex flex-col">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grow flex flex-col min-w-0 w-full overflow-x-hidden">
       <header className="mb-8 text-center">
         <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-slate-100 mb-4 transition-colors">
           {dict.shop.title}
@@ -161,9 +161,9 @@ export default function ShopPage() {
         </p>
       </header>
 
-      <div className="flex flex-col lg:flex-row gap-6 flex-1">
-        <aside className="w-full lg:w-64 lg:min-w-64 lg:max-w-64 shrink-0">
-          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-sm dark:shadow-slate-900/50">
+      <div className="flex flex-col lg:flex-row gap-6 flex-1 min-w-0 max-w-full">
+        <aside className="w-full min-w-0 max-w-full lg:w-64 lg:min-w-64 lg:max-w-64 shrink-0">
+          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-sm dark:shadow-slate-900/50 min-w-0 max-w-full overflow-hidden">
             <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-4 transition-colors">
               {dict.shop.filters.title}
             </h2>
@@ -237,8 +237,8 @@ export default function ShopPage() {
           </div>
         </aside>
 
-        <div className="flex-1 flex flex-col">
-          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 mb-6 shadow-sm dark:shadow-slate-900/50">
+        <div className="flex-1 flex flex-col min-w-0 max-w-full">
+          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 mb-6 shadow-sm dark:shadow-slate-900/50 min-w-0 max-w-full">
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="flex-1">
                 <input
@@ -289,7 +289,7 @@ export default function ShopPage() {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 min-w-0 max-w-full [&>*]:min-w-0">
                 {products.map((product) => (
                   <ProductCard
                     key={product.id}
@@ -301,12 +301,13 @@ export default function ShopPage() {
               </div>
 
               {totalPages > 1 && (
-                <div className="mt-auto pt-8 flex items-center justify-center gap-2">
+                <div className="mt-auto pt-8 w-full max-w-full">
+                  <div className="flex flex-wrap items-center justify-center gap-2">
                   <button
                     type="button"
                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
-                    className="h-10 min-w-[90px] px-4 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="h-10 min-w-0 px-3 sm:px-4 sm:min-w-[90px] rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shrink-0"
                     aria-label={dict.shop.pagination.prev}
                   >
                     {dict.shop.pagination.prev}
@@ -335,11 +336,12 @@ export default function ShopPage() {
                     type="button"
                     onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                     disabled={currentPage === totalPages}
-                    className="h-10 min-w-[90px] px-4 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="h-10 min-w-0 px-3 sm:px-4 sm:min-w-[90px] rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shrink-0"
                     aria-label={dict.shop.pagination.next}
                   >
                     {dict.shop.pagination.next}
                   </button>
+                  </div>
                 </div>
               )}
             </>

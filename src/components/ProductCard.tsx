@@ -25,8 +25,8 @@ export default function ProductCard({
   const isDisabled = isAddDisabled || ageStatus === "underage";
 
   return (
-    <div className="w-full sm:w-[200px] h-[400px] sm:flex-none flex flex-col min-w-0 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm dark:shadow-slate-900/50 hover:shadow-md dark:hover:shadow-slate-900/70 hover:border-blue-400 dark:hover:border-blue-500 transition-all group overflow-hidden">
-      <div className="relative w-full h-64 bg-slate-100 dark:bg-slate-900 flex items-center justify-center p-4">
+    <div className="w-full max-w-full h-[400px] flex flex-col min-w-0 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm dark:shadow-slate-900/50 hover:shadow-md dark:hover:shadow-slate-900/70 hover:border-blue-400 dark:hover:border-blue-500 transition-all group overflow-hidden">
+      <div className="relative w-full max-w-full h-64 bg-slate-100 dark:bg-slate-900 flex items-center justify-center p-4 overflow-hidden">
         <Image
           src={imageSrc}
           alt={product.name}
@@ -57,7 +57,7 @@ export default function ProductCard({
             type="button"
             disabled={isDisabled}
             onClick={() => onAddToCart?.(product)}
-            className="w-full min-w-0 h-11 px-4 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-800 text-white rounded-lg font-medium transition-colors flex items-center justify-center whitespace-nowrap truncate disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600 disabled:dark:hover:bg-blue-500"
+            className="w-full min-w-0 h-11 px-3 sm:px-4 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-800 text-white rounded-lg font-medium transition-colors flex items-center justify-center text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600 disabled:dark:hover:bg-blue-500"
           >
             {dict.shop.product.addToCart}
           </button>
