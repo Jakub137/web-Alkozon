@@ -3,6 +3,7 @@ import { render, screen } from "@testing-library/react";
 import ShopProductPage from "@/app/shop/[id]/page";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAge } from "@/context/AgeContext";
+import { useParams } from "next/navigation";
 import { getProductById } from "@/lib/api/products";
 import { ApiError } from "@/lib/api/types";
 
@@ -20,6 +21,9 @@ vi.mock("next/link", () => ({
 vi.mock("@/lib/api/products", () => ({
   getProductById: vi.fn(),
 }));
+vi.mock("next/navigation", () => ({
+  useParams: vi.fn(() => ({ id: "1" })),
+}));
 
 describe("ShopDetailsPage Unit Tests", () => {
   beforeEach(() => {
@@ -29,6 +33,7 @@ describe("ShopDetailsPage Unit Tests", () => {
         shop: {
           noProducts: "Nie znaleziono produktu",
           details: {
+            productNotFound: "Nie znaleziono produktu",
             backToShop: "Wróć do sklepu",
             capacity: "Pojemność",
             alcoholContent: "Zawartość alkoholu",
@@ -55,12 +60,14 @@ describe("ShopDetailsPage Unit Tests", () => {
       new ApiError("Not found", 404, { status: 404, message: "Not found" })
     );
 
-    render(<ShopProductPage params={{ id: "999" }} />);
+    (useParams as any).mockReturnValue({ id: "999" });
+    render(<ShopProductPage />);
     expect(await screen.findByText("Nie znaleziono produktu")).toBeInTheDocument();
   });
 
   it("powinien wyrenderować szczegóły produktu gdy istnieje", async () => {
-    render(<ShopProductPage params={{ id: "1" }} />);
+    (useParams as any).mockReturnValue({ id: "1" });
+    render(<ShopProductPage />);
     expect(await screen.findByText("Wódka czysta")).toBeInTheDocument();
     expect(screen.getAllByText("0.5L").length).toBeGreaterThan(0);
     expect(screen.getByText("50.00 zł")).toBeInTheDocument();

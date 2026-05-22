@@ -69,6 +69,7 @@
       "next": "Następna"
     },
     "details": {
+      "productNotFound": "Nie znaleziono produktu.",
       "backToShop": "Powrót do sklepu",
       "descriptionTitle": "Opis",
       "historyTitle": "Historia",

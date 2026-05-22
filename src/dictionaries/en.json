@@ -69,6 +69,7 @@
       "next": "Next"
     },
     "details": {
+      "productNotFound": "Product not found.",
       "backToShop": "Back to shop",
       "descriptionTitle": "Description",
       "historyTitle": "History",

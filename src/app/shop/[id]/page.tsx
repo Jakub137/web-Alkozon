@@ -2,16 +2,22 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAge } from "@/context/AgeContext";
 import UnderageRestrictedPage from "@/components/UnderageRestrictedPage";
 import { getProductById } from "@/lib/api/products";
 import { ApiError } from "@/lib/api/types";
 
-export default function ShopProductPage({ params }: { params: { id: string } }) {
+export default function ShopProductPage() {
   const { dict } = useLanguage();
   const { ageStatus } = useAge();
+  const routeParams = useParams<{ id: string }>();
+  const productId = useMemo(() => {
+    const raw = routeParams?.id;
+    return Array.isArray(raw) ? raw[0] : raw ?? "";
+  }, [routeParams?.id]);
   const [product, setProduct] = useState<Awaited<ReturnType<typeof getProductById>> | null>(null);
   const [imageSrc, setImageSrc] = useState("/placeholder-product.svg");
   const [isLoading, setIsLoading] = useState(true);
@@ -32,7 +38,13 @@ export default function ShopProductPage({ params }: { params: { id: string } }) 
         setIsLoading(true);
         setNotFound(false);
         setErrorMsg(null);
-        const data = await getProductById(params.id);
+        if (!productId) {
+          setNotFound(true);
+          setProduct(null);
+          return;
+        }
+
+        const data = await getProductById(productId);
         if (!cancelled) {
           setProduct(data);
           setImageSrc(data.image || "/placeholder-product.svg");
@@ -56,7 +68,7 @@ export default function ShopProductPage({ params }: { params: { id: string } }) 
     return () => {
       cancelled = true;
     };
-  }, [ageStatus, params.id]);
+  }, [ageStatus, productId]);
 
   if (ageStatus === "underage") {
     return <UnderageRestrictedPage />;
@@ -76,7 +88,7 @@ export default function ShopProductPage({ params }: { params: { id: string } }) 
     return (
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grow">
         <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 text-center text-slate-600 dark:text-slate-300 shadow-sm dark:shadow-slate-900/50">
-          {dict.shop.noProducts}
+          {dict.shop.details.productNotFound}
         </div>
         <div className="mt-6">
           <Link

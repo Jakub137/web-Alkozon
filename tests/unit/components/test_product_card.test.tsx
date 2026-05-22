@@ -58,11 +58,13 @@ describe("UI Tests - ProductCard", () => {
     expect(screen.getByText("49.99 zł")).toBeInTheDocument();
   });
 
-  it("powinien zawierać link do strony szczegółów produktu", () => {
+  it("powinien zawierać linki do strony szczegółów produktu (zdjęcie i nazwa)", () => {
     render(<ProductCard product={mockProduct} />);
 
-    // Szukamy po data-testid dodanym w mocku Link z Next.js
-    const link = screen.getByTestId("mock-link");
-    expect(link).toHaveAttribute("href", "/shop/1");
+    const links = screen.getAllByTestId("mock-link");
+    expect(links).toHaveLength(2);
+    for (const link of links) {
+      expect(link).toHaveAttribute("href", "/shop/1");
+    }
   });
 });
