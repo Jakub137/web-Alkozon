@@ -1,4 +1,19 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page, type Route } from "@playwright/test";
+
+const TRACK_NOT_FOUND_BODY = JSON.stringify({ status: 404, message: "Order not found" });
+
+/** trackOrderPublic: najpierw sklep, przy 404 — custom-orders/track (oba muszą być zamockowane w E2E). */
+async function mockPublicTrackingNotFound(page: Page) {
+  const fulfill404 = async (route: Route) => {
+    await route.fulfill({
+      status: 404,
+      contentType: "application/json",
+      body: TRACK_NOT_FOUND_BODY,
+    });
+  };
+  await page.route("**/api/orders/track**", fulfill404);
+  await page.route("**/api/custom-orders/track**", fulfill404);
+}
 
 test.describe("Order Status Flow", () => {
   test("powinien znaleźć zamówienie po poprawnych danych", async ({ page }) => {
@@ -27,7 +42,14 @@ test.describe("Order Status Flow", () => {
       await route.fulfill({
         status: 404,
         contentType: "application/json",
-        body: JSON.stringify({ status: 404, message: "Order not found" }),
+        body: TRACK_NOT_FOUND_BODY,
+      });
+    });
+    await page.route("**/api/custom-orders/track**", async (route) => {
+      await route.fulfill({
+        status: 404,
+        contentType: "application/json",
+        body: TRACK_NOT_FOUND_BODY,
       });
     });
 
@@ -45,13 +67,7 @@ test.describe("Order Status Flow", () => {
     await page.addInitScript(() => {
       window.localStorage.setItem("alkozon_age_status", "adult");
     });
-    await page.route("**/api/orders/track**", async (route) => {
-      await route.fulfill({
-        status: 404,
-        contentType: "application/json",
-        body: JSON.stringify({ status: 404, message: "Order not found" }),
-      });
-    });
+    await mockPublicTrackingNotFound(page);
 
     await page.goto("/order-status");
 
