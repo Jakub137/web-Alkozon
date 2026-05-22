@@ -42,7 +42,10 @@ export default function LoginButton({ compact = false }: LoginButtonProps) {
   const shortUserName =
     user?.username && user.username.length > 5 ? `${user.username.slice(0, 5)}...` : user?.username;
 
-  if (user) {
+  /** Sesja GUEST z API (JWT anonimowy) — nie traktujemy jak zalogowanego klienta w UI. */
+  const isLoggedInCustomer = Boolean(user?.role && user.role !== "GUEST");
+
+  if (isLoggedInCustomer) {
     if (compact) {
       return (
         <div className="flex items-center gap-1">

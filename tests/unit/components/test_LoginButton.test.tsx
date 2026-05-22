@@ -52,10 +52,22 @@ describe("LoginButton Unit Tests", () => {
     expect(loginLink).toHaveAttribute("href", "/login");
   });
 
+  it("powinien wyświetlić przycisk logowania dla sesji gościa (GUEST)", () => {
+    (useAuth as any).mockReturnValue({
+      user: { username: "Gość", role: "GUEST" },
+      logout: vi.fn(),
+    });
+
+    render(<LoginButton />);
+
+    expect(screen.getByTestId("login-link")).toBeInTheDocument();
+    expect(screen.queryByText(/Witaj/i)).not.toBeInTheDocument();
+  });
+
   it("powinien wyświetlić nazwę użytkownika i przycisk wylogowania dla zalogowanego użytkownika", () => {
     const logoutMock = vi.fn();
     (useAuth as any).mockReturnValue({
-      user: { username: "testuser" },
+      user: { username: "testuser", role: "CUSTOMER" },
       logout: logoutMock,
     });
 
