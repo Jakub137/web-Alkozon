@@ -49,15 +49,15 @@ test.describe("Shop Page Flow", () => {
     await ageBtn.waitFor({ state: "visible", timeout: 5000 }).catch(() => {});
     if (await ageBtn.isVisible()) await ageBtn.click();
 
-    const firstProductLink = page.locator('a[href^="/shop/"]').first();
-    await expect(firstProductLink).toBeVisible({ timeout: 8_000 });
-    const firstProductName = (await firstProductLink.innerText()).trim();
+    const firstProductName = mockedProducts[0].name;
+    const productNameLink = page.getByRole("link", { name: firstProductName });
+    await expect(productNameLink).toBeVisible({ timeout: 8_000 });
     const query = firstProductName.slice(0, Math.min(4, firstProductName.length));
 
     const searchInput = page.getByPlaceholder("Szukaj produktu...");
     await searchInput.fill(query);
     await page.waitForTimeout(500);
 
-    await expect(page.getByText(firstProductName)).toBeVisible();
+    await expect(productNameLink).toBeVisible();
   });
 });
