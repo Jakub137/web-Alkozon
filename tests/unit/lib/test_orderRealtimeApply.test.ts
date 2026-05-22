@@ -3,6 +3,7 @@ import {
   applyRealtimeEventToOrderRecord,
   isUnifiedBackendOrderStatus,
   orderMatchesRealtimeEvent,
+  syncOrderHistoryWithStatus,
 } from "@/lib/realtime/orderRealtimeApply";
 import type { OrderRecord } from "@/types/order";
 
@@ -100,6 +101,18 @@ describe("orderRealtimeApply", () => {
     });
     expect(updated?.status).toBe("processing");
     expect(updated?.apiStatus).toBe("IN_PRODUCTION");
+    expect(updated?.history?.map((h) => h.status)).toEqual(["received", "processing"]);
+  });
+
+  it("uzupełnia oś czasu o etapy do bieżącego statusu", () => {
+    const history = syncOrderHistoryWithStatus(
+      [{ status: "received", changedAt: "2026-05-21T18:00:00.000Z" }],
+      "shipped",
+      "2026-05-21T18:00:00.000Z",
+      "2026-05-21T20:15:00.000Z"
+    );
+    expect(history.map((h) => h.status)).toEqual(["received", "processing", "shipped"]);
+    expect(history[2].changedAt).toBe("2026-05-21T20:15:00.000Z");
   });
 
   it("rozpoznaje unified OrderStatus z API", () => {

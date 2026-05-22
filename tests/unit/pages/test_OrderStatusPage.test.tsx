@@ -12,6 +12,12 @@ vi.mock("@/context/LanguageContext", () => ({
 vi.mock("@/context/AuthContext", () => ({
   useAuth: vi.fn(),
 }));
+vi.mock("@/context/NotificationContext", () => ({
+  useNotification: vi.fn(() => ({ addNotification: vi.fn(), removeNotification: vi.fn() })),
+}));
+vi.mock("@/lib/realtime/orderUpdates", () => ({
+  subscribeOrderStatusUpdates: vi.fn(() => () => undefined),
+}));
 vi.mock("next/link", () => ({
   default: ({ children, href }: { children: React.ReactNode; href: string }) => (
     <a href={href}>{children}</a>

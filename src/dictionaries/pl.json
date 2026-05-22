@@ -355,6 +355,9 @@
     },
     "timelineTitle": "Oś czasu zmian statusu",
     "timelineNotePrefix": "Notatka:",
+    "realtime": {
+      "statusChanged": "Zamówienie {orderNumber}: status zmieniony na „{status}”"
+    },
     "items": {
       "title": "Produkty w zamówieniu",
       "quantityLabel": "Ilość",

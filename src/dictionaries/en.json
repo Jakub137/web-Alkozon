@@ -355,6 +355,9 @@
     },
     "timelineTitle": "Status timeline",
     "timelineNotePrefix": "Note:",
+    "realtime": {
+      "statusChanged": "Order {orderNumber}: status changed to \"{status}\""
+    },
     "items": {
       "title": "Order items",
       "quantityLabel": "Quantity",

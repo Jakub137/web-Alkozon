@@ -17,6 +17,7 @@ import { ApiError } from "@/lib/api/types";
 import { formatOrderDate, formatOrderDateTime, getStatusTone } from "@/lib/orderStatusUi";
 import { applyRealtimeEventToOrderRecord } from "@/lib/realtime/orderRealtimeApply";
 import { subscribeOrderStatusUpdates } from "@/lib/realtime/orderUpdates";
+import { useNotification } from "@/context/NotificationContext";
 
 const PROGRESS_STEPS: OrderProgressStep[] = ["received", "processing", "shipped", "delivered"];
 
@@ -45,9 +46,21 @@ function getProgressIndex(status: OrderStatus): number {
   }
 }
 
+function resolveStatusLabel(
+  dict: ReturnType<typeof useLanguage>["dict"],
+  order: OrderRecord
+): string {
+  const backendLabels = dict.orderStatusPage.backendStatuses as Record<string, string> | undefined;
+  if (order.apiStatus && backendLabels?.[String(order.apiStatus)]) {
+    return backendLabels[String(order.apiStatus)];
+  }
+  return dict.orderStatusPage.statuses[order.status];
+}
+
 export default function OrderStatusPage() {
   const { dict, lang } = useLanguage();
   const { token, user, authorizedRequest } = useAuth();
+  const { addNotification } = useNotification();
   const [orderNumber, setOrderNumber] = useState("");
   const [email, setEmail] = useState("");
   const [searched, setSearched] = useState(false);
@@ -153,10 +166,23 @@ export default function OrderStatusPage() {
     return subscribeOrderStatusUpdates(accessToken, (event) => {
       setOrder((prev) => {
         if (!prev) return prev;
-        return applyRealtimeEventToOrderRecord(prev, event) ?? prev;
+        const updated = applyRealtimeEventToOrderRecord(prev, event);
+        if (!updated) return prev;
+
+        const orderRef = updated.clientOrderNumber || updated.orderNumber;
+        const statusLabel = resolveStatusLabel(dict, updated);
+        const template =
+          dict.orderStatusPage.realtime?.statusChanged ||
+          "Zamówienie {orderNumber}: nowy status — {status}";
+        addNotification(
+          template.replace("{orderNumber}", orderRef).replace("{status}", statusLabel),
+          "info"
+        );
+
+        return updated;
       });
     });
-  }, [canUseCustomerEndpoints, token]);
+  }, [addNotification, canUseCustomerEndpoints, dict, token]);
 
   useEffect(() => {
     if (!order || order.kind !== "custom" || !canUseCustomerEndpoints) return;

@@ -6,6 +6,7 @@ import type {
   BackendOrderStatus,
   OrderRecord,
   OrderStatus,
+  OrderStatusHistoryItem,
 } from "@/types/order";
 import type { OrderStatusUpdateEvent } from "@/lib/realtime/orderUpdates";
 
@@ -72,17 +73,74 @@ export function mapRealtimeStatusToOrderUpdate(
   };
 }
 
+const TIMELINE_MILESTONES: OrderStatus[] = ["received", "processing", "shipped", "delivered"];
+
+function progressIndexForTimeline(status: OrderStatus): number {
+  switch (status) {
+    case "received":
+    case "paid":
+      return 0;
+    case "processing":
+      return 1;
+    case "shipped":
+      return 2;
+    case "delivered":
+    case "returned":
+      return 3;
+    default:
+      return -1;
+  }
+}
+
+/**
+ * Uzupełnia oś czasu o brakujące etapy postępu (np. Przyjęte → W realizacji → Wysłane).
+ * Ostatni etap dostaje aktualny czas zdarzenia STOMP.
+ */
+export function syncOrderHistoryWithStatus(
+  history: OrderStatusHistoryItem[] | undefined,
+  currentStatus: OrderStatus,
+  placedAt: string,
+  changedAt = new Date().toISOString()
+): OrderStatusHistoryItem[] {
+  const progressIdx = progressIndexForTimeline(currentStatus);
+  if (progressIdx < 0) {
+    const base = history?.length ? [...history] : [];
+    const last = base[base.length - 1];
+    if (last?.status === currentStatus) return base;
+    return [...base, { status: currentStatus, changedAt }];
+  }
+
+  const byStatus = new Map((history ?? []).map((item) => [item.status, item]));
+  const result: OrderStatusHistoryItem[] = [];
+
+  for (let i = 0; i <= progressIdx; i += 1) {
+    const step = TIMELINE_MILESTONES[i];
+    const previous = byStatus.get(step);
+    result.push({
+      status: step,
+      changedAt: i === progressIdx ? changedAt : (previous?.changedAt ?? placedAt),
+    });
+  }
+
+  return result;
+}
+
 export function applyRealtimeEventToOrderRecord(
   entry: OrderRecord,
-  event: OrderStatusUpdateEvent
+  event: OrderStatusUpdateEvent,
+  changedAt = new Date().toISOString()
 ): OrderRecord | null {
   if (!orderMatchesRealtimeEvent(entry, event)) {
     return null;
   }
   const mapped = mapRealtimeStatusToOrderUpdate(event.status, entry.kind);
+  if (mapped.status === entry.status && mapped.apiStatus === entry.apiStatus) {
+    return null;
+  }
   return {
     ...entry,
     status: mapped.status,
     apiStatus: mapped.apiStatus,
+    history: syncOrderHistoryWithStatus(entry.history, mapped.status, entry.placedAt, changedAt),
   };
 }
