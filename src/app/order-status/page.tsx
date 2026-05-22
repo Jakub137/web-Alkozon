@@ -9,7 +9,6 @@ import {
   applyCustomEstimatedPriceFromPreferences,
   extractOrderId,
   getOrderById,
-  mapBackendOrderStatusToUi,
   trackOrderPublic,
 } from "@/lib/api/orders";
 import { getCustomOrderById } from "@/lib/api/customOrders";
