@@ -39,20 +39,18 @@ export default function LoginButton({ compact = false }: LoginButtonProps) {
     );
   }
 
-  const shortUserName =
-    user?.username && user.username.length > 5 ? `${user.username.slice(0, 5)}...` : user?.username;
-
-  /** Sesja GUEST z API (JWT anonimowy) — nie traktujemy jak zalogowanego klienta w UI. */
-  const isLoggedInCustomer = Boolean(user?.role && user.role !== "GUEST");
-
-  if (isLoggedInCustomer) {
+  /** Sesja GUEST z API (JWT anonimowy) — w UI tylko przycisk „Zaloguj”, bez „Witaj, Gość”. */
+  if (user && user.role !== "GUEST") {
+    const shortUserName =
+      user.username.length > 5 ? `${user.username.slice(0, 5)}...` : user.username;
+    const welcomeLabel = `Witaj, ${user.username}`;
     if (compact) {
       return (
         <div className="flex items-center gap-1">
           <div
             className="h-10 w-10 inline-flex items-center justify-center rounded-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200"
-            title={`Witaj, ${user.username}`}
-            aria-label={`Witaj, ${user.username}`}
+            title={welcomeLabel}
+            aria-label={welcomeLabel}
           >
             <User className="w-4 h-4" />
           </div>
@@ -74,7 +72,7 @@ export default function LoginButton({ compact = false }: LoginButtonProps) {
           <User className="w-4 h-4" />
           <span
             className="hidden sm:inline max-w-[9rem] md:max-w-[12rem] truncate"
-            title={`Witaj, ${user.username}`}
+            title={welcomeLabel}
           >
             Witaj, {shortUserName}
           </span>
