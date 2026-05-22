@@ -1,15 +1,6 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import ProductCard from "@/components/ProductCard";
-
-// Mockujemy nawigację i hooki używane w komponencie
-vi.mock("next/link", () => ({
-  default: ({ children, href }: { children: React.ReactNode; href: string }) => (
-    <a href={href} data-testid="mock-link">
-      {children}
-    </a>
-  ),
-}));
 
 vi.mock("@/context/CartContext", () => ({
   useCart: () => ({ addToCart: vi.fn() }),
@@ -51,20 +42,13 @@ describe("UI Tests - ProductCard", () => {
   it("powinien wyrenderować wszystkie informacje o produkcie", () => {
     render(<ProductCard product={mockProduct} />);
 
-    // Sprawdzamy czy nazwa istnieje
     expect(screen.getByText("Wino wytrawne")).toBeInTheDocument();
-
-    // Sprawdzamy czy cena renderuje się z przecinkiem/walutą
     expect(screen.getByText("49.99 zł")).toBeInTheDocument();
   });
 
-  it("powinien zawierać linki do strony szczegółów produktu (zdjęcie i nazwa)", () => {
+  it("nie powinien zawierać linku do strony szczegółów produktu", () => {
     render(<ProductCard product={mockProduct} />);
 
-    const links = screen.getAllByTestId("mock-link");
-    expect(links).toHaveLength(2);
-    for (const link of links) {
-      expect(link).toHaveAttribute("href", "/shop/1");
-    }
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
   });
 });
